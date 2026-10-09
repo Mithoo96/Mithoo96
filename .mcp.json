@@ -1,14 +1,11 @@
 {
   "mcpServers": {
     "mindstudio": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@mindstudio-ai/agent@0.1.149",
-        "mcp"
-      ],
-      "env": {}
+      "type": "http",
+      "url": "https://v1.mindstudio-api.com/developer/mcp/v1/d3027c51-f1bb-46d6-bdd3-5e2ad46089b5",
+      "headers": {
+        "Authorization": "Bearer ${MINDSTUDIO_MCP_TOKEN}"
+      }
     }
   }
 }
