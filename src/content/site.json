@@ -1,0 +1,60 @@
+{
+  "_help": "Editable business content. See docs/OWNER-GUIDE.md. After editing, run `npm run build` (or let the deploy do it). Text that changes per language uses { \"ht\": …, \"en\": …, \"fr\": … }.",
+  "brand": {
+    "name": "Mithoo Media Group",
+    "foundingNote": ""
+  },
+  "contact": {
+    "_status": "Initial values from the project brief — CONFIRM before launch.",
+    "email": "info@mithoofreelance.com",
+    "whatsappDisplay": "+1 689-323-9818",
+    "whatsappNumber": "16893239818",
+    "whatsappUrl": "https://wa.me/16893239818",
+    "instagram": { "handle": "@mithoofreelance", "url": "https://www.instagram.com/mithoofreelance/" },
+    "tiktok": { "handle": "@mithoofreelance", "url": "https://www.tiktok.com/@mithoofreelance" },
+    "portfolio": "https://mithoo.myportfolio.com",
+    "bookingUrl": "",
+    "hours": null
+  },
+  "clients": [
+    { "name": "Emroh Enterprises", "logo": null, "url": null, "publish": true, "permissionConfirmed": false },
+    { "name": "Iman Logistics", "logo": null, "url": null, "publish": true, "permissionConfirmed": false },
+    { "name": "Iman Trucking School", "logo": null, "url": null, "publish": true, "permissionConfirmed": false },
+    { "name": "Zile Boutik", "logo": null, "url": null, "publish": true, "permissionConfirmed": false },
+    { "name": "Doc Moise", "logo": null, "url": null, "publish": true, "permissionConfirmed": false }
+  ],
+  "caseStudies": [
+    {
+      "_template": "Copy this entry, fill it with REAL, client-approved information, then set published: true. Leave results empty if no verified data exists.",
+      "slug": "example-case-study",
+      "published": false,
+      "client": "",
+      "industry": { "ht": "", "en": "", "fr": "" },
+      "challenge": { "ht": "", "en": "", "fr": "" },
+      "strategy": { "ht": "", "en": "", "fr": "" },
+      "services": [],
+      "images": [{ "src": "", "alt": { "ht": "", "en": "", "fr": "" }, "kind": "after" }],
+      "results": [{ "label": { "ht": "", "en": "", "fr": "" }, "value": "", "period": "", "verified": false }],
+      "status": { "ht": "", "en": "", "fr": "" },
+      "testimonialId": null
+    }
+  ],
+  "testimonials": [
+    {
+      "_template": "Only add testimonials the client wrote and approved for publication. Set permission.granted = true with the date and how it was given.",
+      "id": "example",
+      "published": false,
+      "name": "",
+      "business": "",
+      "photo": null,
+      "quote": { "ht": "", "en": "", "fr": "" },
+      "service": "",
+      "caseStudy": null,
+      "permission": { "granted": false, "date": "", "method": "" }
+    }
+  ],
+  "seo": {
+    "ogImage": "/assets/img/og-image.png",
+    "twitter": ""
+  }
+}

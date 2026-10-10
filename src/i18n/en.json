@@ -1,0 +1,262 @@
+{
+  "langName": "English",
+  "htmlLang": "en",
+  "ogLocale": "en_US",
+  "meta": {
+    "title": "Mithoo Media Group — Brand, Websites, E-commerce & Business Systems",
+    "description": "Mithoo Media Group helps businesses build a stronger digital presence: brand identity, websites, e-commerce, marketing and automation working together to drive growth.",
+    "privacyTitle": "Privacy Policy — Mithoo Media Group",
+    "termsTitle": "Terms of Service — Mithoo Media Group",
+    "notFoundTitle": "Page not found — Mithoo Media Group"
+  },
+  "a11y": {
+    "skip": "Skip to content",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
+    "language": "Choose language",
+    "home": "Mithoo Media Group — home",
+    "newTab": "(opens in a new tab)"
+  },
+  "nav": {
+    "services": "Services",
+    "ecommerce": "E-commerce",
+    "process": "Our Process",
+    "results": "Results",
+    "about": "About",
+    "contact": "Contact",
+    "cta": "Build Your Business System"
+  },
+  "hero": {
+    "eyebrow": "Digital strategy · Brand · E-commerce · Automation",
+    "titleA": "Your business needs more than a beautiful image.",
+    "titleB": "It needs a system that makes it grow.",
+    "lede": "We help you build a stronger digital presence, attract the right customers, sell on the right platforms and put systems in place so your business runs better.",
+    "audience": "For entrepreneurs, small businesses and growing brands — in Haiti, across the diaspora and beyond.",
+    "ctaPrimary": "Build Your Business System",
+    "ctaSecondary": "Explore Our Services",
+    "diagramLabel": "Connected business ecosystem: brand, website, marketing, e-commerce, automation and sales around your business.",
+    "center": "Your business",
+    "nodes": ["Brand", "Website", "Marketing", "E-commerce", "Automation", "Sales"]
+  },
+  "trust": {
+    "label": "Some of the businesses and projects we've worked with"
+  },
+  "services": {
+    "eyebrow": "Services",
+    "title": "Four pillars for a business that works.",
+    "lede": "We don't sell disconnected deliverables. We start from what your business needs and combine only the pieces that matter.",
+    "details": "See all services",
+    "cta": "Find the Right Solution for Your Business",
+    "categories": [
+      {
+        "id": "branding",
+        "title": "Branding & Digital Identity",
+        "lede": "A clear, professional and consistent image that tells people who you are and why they should choose you.",
+        "items": ["Logo design and brand identity", "Brand strategy and positioning", "Visual identity systems", "Packaging design", "Marketing graphics and promotional materials", "Advertising creatives", "Brand messaging and copywriting"]
+      },
+      {
+        "id": "web",
+        "title": "Websites & E-commerce",
+        "lede": "Websites and online stores built to turn visitors into customers — not just to look good.",
+        "items": ["Professional websites", "WordPress development", "Shopify store setup and optimization", "TikTok Shop setup and optimization", "Amazon seller storefront and product listing support", "Walmart Marketplace setup and optimization", "E-commerce product presentation", "Landing pages and conversion funnels", "Website redesign and optimization"],
+        "note": "We provide setup, optimization and consulting. Account approval, seller eligibility and other platform decisions are controlled by the platforms themselves (Amazon, Walmart, TikTok, Shopify) — we can't guarantee them."
+      },
+      {
+        "id": "marketing",
+        "title": "Marketing & Customer Acquisition",
+        "lede": "Campaigns and content that put your business in front of the right people — and measure what actually works.",
+        "items": ["Meta Ads (Facebook & Instagram)", "Google Ads", "Social media strategy and management", "Advertising campaign creative", "Video ads and promotional videos", "Product and business photography", "Copywriting", "Lead generation", "Campaign tracking and conversion optimization"]
+      },
+      {
+        "id": "automation",
+        "title": "Automation & Business Systems",
+        "lede": "Tools and processes that organize leads, follow-up and operations so no customer gets lost along the way.",
+        "items": ["CRM setup and configuration", "GoHighLevel systems", "Lead capture and routing", "Automated email follow-up", "Appointment booking systems", "Sales pipelines", "Customer follow-up workflows", "Customer service processes", "Business process optimization", "Digital systems consulting"]
+      }
+    ]
+  },
+  "system": {
+    "eyebrow": "The growth system",
+    "title": "When every piece connects, the business moves forward.",
+    "lede": "A beautiful brand can still lose customers when the website, sales process or follow-up is disorganized. Here's how the pieces work together.",
+    "note": "Every business is different. The exact system depends on your business model and goals — not every client needs every service.",
+    "hint": "Select a stage to see its details.",
+    "steps": [
+      { "title": "Brand", "text": "Build credibility and clear differentiation so people remember and trust you." },
+      { "title": "Attract", "text": "Use content, advertising and digital channels to reach the right prospects." },
+      { "title": "Capture", "text": "Turn visitors into leads with well-designed landing pages and forms." },
+      { "title": "Convert", "text": "Qualify leads, present the right offer, book appointments and follow up on sales." },
+      { "title": "Automate", "text": "Organize repetitive tasks and customer communications so nothing falls through the cracks." },
+      { "title": "Optimize", "text": "Measure results and improve the system over time." }
+    ]
+  },
+  "journey": {
+    "eyebrow": "How we work",
+    "title": "A clear process, step by step.",
+    "note": "Deliverables, pricing, timeline and ongoing support depend on the scope you choose. Everything is detailed in the proposal before work begins.",
+    "steps": [
+      { "title": "Discover", "text": "We understand your business, goals, challenges, audience and current systems." },
+      { "title": "Strategize", "text": "We identify the right priorities and recommend the most suitable digital solutions." },
+      { "title": "Build", "text": "We develop the agreed brand assets, website, e-commerce infrastructure, marketing setup or automation workflows." },
+      { "title": "Connect", "text": "Where included in the project, we connect the relevant tools, integrations, CRM, communication channels and analytics." },
+      { "title": "Optimize", "text": "We test the system, review performance data and identify opportunities for improvement." }
+    ]
+  },
+  "cases": {
+    "eyebrow": "Results & case studies",
+    "title": "Real work, told honestly.",
+    "lede": "We only publish verified results, with their measurement period. Where performance data isn't available, we describe the work done and the business problem it addressed.",
+    "labels": { "industry": "Industry", "challenge": "Challenge", "strategy": "Strategy", "services": "Services", "results": "Verified results", "period": "Period", "status": "Status" },
+    "emptyTitle": "Detailed case studies are in preparation.",
+    "emptyText": "While we finish documenting projects with our clients, you can browse a selection of our work in the portfolio.",
+    "portfolioCta": "View the portfolio"
+  },
+  "testimonials": {
+    "eyebrow": "What clients say",
+    "title": "In our clients' words."
+  },
+  "why": {
+    "eyebrow": "Why Mithoo Media Group",
+    "title": "A partner who understands both creative and operations.",
+    "items": [
+      { "title": "Strategy before execution", "text": "We start by understanding your goals before deciding what to build." },
+      { "title": "Brand and technology together", "text": "Design, website and systems are built to work together, not in silos." },
+      { "title": "Tailored solutions", "text": "Every recommendation is based on your business model, not a generic package." },
+      { "title": "Focused on acquisition and conversion", "text": "We measure success in leads, appointments and sales — not just reach." },
+      { "title": "Practical automation", "text": "We automate what wastes your time, without adding needless complexity." },
+      { "title": "Clear communication", "text": "Stages, deliverables and timelines are clearly defined. You always know where the project stands." }
+    ]
+  },
+  "form": {
+    "eyebrow": "Start here",
+    "title": "Build Your Business System",
+    "subtitle": "Tell us a little about your business. We'll help you identify the solutions that best fit your goals.",
+    "duration": "About 3 minutes · No commitment",
+    "required": "required",
+    "optional": "optional",
+    "stepOf": "Step {n} of {total}",
+    "steps": ["Contact", "Business", "Services", "Project", "Confirmation"],
+    "next": "Continue",
+    "back": "Back",
+    "submit": "Send request",
+    "sending": "Sending…",
+    "fields": {
+      "fullName": { "label": "Full name" },
+      "businessName": { "label": "Business name", "hint": "If you already have one." },
+      "email": { "label": "Email address" },
+      "phone": { "label": "Phone number", "hint": "Include the country code if outside the US (e.g. +509…). Required if you choose WhatsApp or phone." },
+      "contactMethod": { "label": "How should we contact you?" },
+      "language": { "label": "Preferred language" },
+      "industry": { "label": "Business industry", "placeholder": "e.g. restaurant, transportation, beauty, online store…" },
+      "website": { "label": "Website or social media", "placeholder": "e.g. yourbusiness.com or @yourbusiness" },
+      "stage": { "label": "Current business stage" },
+      "goal": { "label": "Primary business goal" },
+      "services": { "label": "Which services interest you?", "hint": "Select all that apply." },
+      "challenge": { "label": "What is your biggest challenge right now?", "placeholder": "e.g. people visit my page but don't buy, I lose leads because follow-up doesn't happen…" },
+      "improve": { "label": "What would you like to improve?" },
+      "budget": { "label": "Approximate project budget", "hint": "It helps us recommend the right scale of solution." },
+      "start": { "label": "Preferred start date" },
+      "details": { "label": "Additional details" }
+    },
+    "options": {
+      "contactMethod": { "email": "Email", "whatsapp": "WhatsApp", "phone": "Phone" },
+      "language": { "ht": "Kreyòl", "en": "English", "fr": "Français" },
+      "stage": { "idea": "Still an idea", "new": "Less than 1 year", "growing": "Growing business (1–3 years)", "established": "Established business (3+ years)", "relaunch": "Relaunch or new direction" },
+      "goal": { "more_clients": "Get more customers", "launch_online": "Launch the business online", "sell_online": "Sell more online", "brand": "Improve the brand image", "automate": "Automate follow-up and processes", "organize": "Organize operations", "other": "Something else" },
+      "services": { "branding": "Branding", "website": "Website", "shopify": "Shopify", "tiktok_shop": "TikTok Shop", "amazon": "Amazon", "walmart": "Walmart Marketplace", "funnels": "Funnels and landing pages", "advertising": "Advertising", "social": "Social media", "video_photo": "Video and photography", "crm": "CRM", "automation": "Automation", "consulting": "Business consulting", "other": "Other" },
+      "budget": { "under_1k": "Under $1,000", "1k_3k": "$1,000 – $3,000", "3k_7k": "$3,000 – $7,000", "7k_15k": "$7,000 – $15,000", "15k_plus": "Over $15,000", "unsure": "Not sure yet" },
+      "start": { "asap": "As soon as possible", "one_month": "Within a month", "one_three_months": "In 1–3 months", "exploring": "Just exploring" }
+    },
+    "choose": "Choose…",
+    "consentPrivacy": "I agree that Mithoo Media Group may use this information to respond to my request, as described in the {privacy}.",
+    "privacyLink": "privacy policy",
+    "marketingOptIn": "I'd like to occasionally receive tips and news from Mithoo Media Group by email. (Optional — unsubscribe anytime.)",
+    "honeypot": "Leave this field empty",
+    "errors": {
+      "required": "This field is required.",
+      "too_short": "This answer is too short.",
+      "too_long": "This answer is too long.",
+      "invalid_email": "Enter a valid email address (e.g. name@domain.com).",
+      "invalid_phone": "Enter a valid phone number, with country code if possible.",
+      "phone_required_for_method": "We need your number to reach you on WhatsApp or by phone.",
+      "invalid_url": "Enter a valid website link or a handle (@…).",
+      "invalid_option": "Choose one of the options.",
+      "select_one": "Select at least one service.",
+      "consent_required": "Please accept the privacy policy so we can process your request.",
+      "summary": "Please correct the highlighted fields.",
+      "rate_limited": "Too many requests in a short time. Please try again later or message us on WhatsApp.",
+      "captcha_failed": "We couldn't verify the request. Reload the page and try again.",
+      "network": "The connection dropped. Your answers are still here — try sending again.",
+      "server": "Something went wrong on our side. Your answers are still here — try again, or message us on WhatsApp."
+    },
+    "success": {
+      "title": "Thank you! We received your request.",
+      "text": "We'll review your information and contact you within one business day, in the language and channel you chose.",
+      "ref": "Reference number",
+      "next": "What happens next",
+      "nextSteps": ["We analyze your business needs.", "We contact you for a first conversation.", "We propose tailored priorities and solutions."],
+      "booking": "Book a call now",
+      "whatsapp": "Add details on WhatsApp"
+    }
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Talk to us directly.",
+    "lede": "Prefer to write? Pick the channel that's easiest for you.",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "portfolio": "Portfolio",
+    "booking": "Book a call",
+    "whatsappMessage": "Hello Mithoo Media Group! I'm interested in your services. I'd like more information about how you can help my business.",
+    "whatsappFab": "Message us on WhatsApp"
+  },
+  "final": {
+    "title": "Your business doesn't have to keep running without a system.",
+    "text": "Let's identify what's holding back your growth and build a solution that helps you move forward with more structure.",
+    "cta": "Let's Talk About My Project",
+    "secondary": "Message Us on WhatsApp"
+  },
+  "footer": {
+    "statement": "We connect brand, digital presence, customer acquisition and business systems into one coherent growth strategy.",
+    "servicesTitle": "Services",
+    "contactTitle": "Contact",
+    "legalTitle": "Legal",
+    "privacy": "Privacy policy",
+    "terms": "Terms of service",
+    "cookies": "Cookie preferences",
+    "rights": "All rights reserved."
+  },
+  "cookies": {
+    "text": "We'd like to use anonymous analytics to understand how people use the site. You can accept or decline.",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
+  "notFound": {
+    "title": "This page doesn't exist.",
+    "text": "The link may have changed or may be incorrect.",
+    "cta": "Back to the home page"
+  },
+  "legal": {
+    "updated": "Last updated",
+    "draftNotice": "This document describes how the site actually works. It is not legal advice — have a lawyer review it before launch.",
+    "privacy": [
+      { "h": "Who we are", "p": ["Mithoo Media Group (\"we\") is responsible for the information you send us through this site. For any question, write to {email}."] },
+      { "h": "Information we collect", "p": ["When you complete the inquiry form: your name, business name, email, phone, preferred channel and language, information about your business, services of interest, budget (if provided) and your message.", "Technical information: IP address for spam and abuse protection (rate limiting), and the page you were on when you submitted the form.", "We do not ask for sensitive information such as card numbers or identity documents in the form."] },
+      { "h": "Why we use it", "p": ["To respond to your request, prepare a proposal and follow up on the project.", "We send you a confirmation email and a limited number of follow-up messages directly related to your request. You can ask us to stop at any time.", "We send newsletters or marketing content ONLY if you ticked the optional box. You can unsubscribe from any email."] },
+      { "h": "Who receives it", "p": ["Your information is stored in our CRM (GoHighLevel / LeadConnector) and on the website server. We may use a transactional email provider to send messages. We do not sell your information."] },
+      { "h": "How long we keep it", "p": ["We keep lead records for as long as the business relationship lasts, and for a reasonable period afterwards for legal and accounting obligations. Backup copies on the website server are deleted automatically after they are synced to the CRM.", "You can ask us to delete your information at any time."] },
+      { "h": "Cookies and analytics", "p": ["The site remembers your chosen language in your browser (localStorage). If we enable analytics, it only loads after you accept it in the banner."] },
+      { "h": "Your rights", "p": ["You can ask to access, correct or delete your information, or withdraw your consent, by writing to {email}."] }
+    ],
+    "terms": [
+      { "h": "Use of this site", "p": ["The content of this site is general information about Mithoo Media Group's services. Submitting a request does not create any contract or obligation."] },
+      { "h": "Services and proposals", "p": ["Deliverables, pricing, timelines and support are defined in a written proposal or contract for each project."] },
+      { "h": "Third-party platforms", "p": ["For Shopify, Amazon, Walmart Marketplace, TikTok Shop, Meta, Google and other platforms, we provide setup, optimization and consulting services. Account approval, eligibility, rules and fees are controlled by those platforms."] },
+      { "h": "No guarantee of results", "p": ["Marketing and sales results depend on many factors outside our control. We do not guarantee any level of revenue, traffic or sales."] },
+      { "h": "Intellectual property", "p": ["The brand, text and design of this site belong to Mithoo Media Group. Client names and logos belong to their respective owners."] },
+      { "h": "Contact", "p": ["Questions about these terms: {email}."] }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+# Render Blueprint (https://render.com/docs/blueprint-spec). Review plan names/prices before applying.
+services:
+  - type: web
+    name: mithoo-media-group
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    disk:
+      name: leads-data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SITE_URL
+        value: https://mithoomediagroup.com
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: DATA_DIR
+        value: /app/data
+      - key: GHL_LOCATION_ID
+        value: 7YAqeIgL5dKqfWiT7NUN
+      - key: GHL_PRIVATE_TOKEN
+        sync: false
+      - key: GHL_PIPELINE_ID
+        sync: false
+      - key: GHL_STAGE_NEW_LEAD_ID
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        value: "Mithoo Media Group <info@mithoomediagroup.com>"
+      - key: LEAD_NOTIFY_TO
+        value: info@mithoomediagroup.com
+      - key: CONFIRMATION_SENDER
+        value: crm
+      - key: ADMIN_HEALTH_TOKEN
+        generateValue: true

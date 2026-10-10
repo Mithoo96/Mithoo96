@@ -1,0 +1,21 @@
+{
+  "_comment": "Maps website form fields to custom fields that already exist in the 'Mithoo Media Group' GoHighLevel sub-account (location 7YAqeIgL5dKqfWiT7NUN). IDs were read from the GHL API on 2026-10-10. If you recreate a field in GHL, update its id here.",
+  "customFields": {
+    "businessName":   { "id": "9YWiG0RSAtJwzQrhGUi5", "key": "contact.business_name" },
+    "services":       { "id": "3npsyhUCc67CCmEkphkX", "key": "contact.mmg_services_requested" },
+    "industry":       { "id": "QSOE2HfQH5eC900gab2o", "key": "contact.mmg_industry" },
+    "stage":          { "id": "zJ0sAaqzIcsjtC1gfITT", "key": "contact.mmg_business_stage" },
+    "goal":           { "id": "vLdNNGI4YDgPc8KUdlSB", "key": "contact.mmg_primary_goal" },
+    "contactMethod":  { "id": "9kpAF9Oe7tIBV5ZdhlZW", "key": "contact.mmg_preferred_contact_method" },
+    "challenge":      { "id": "rRWpzCkeCRr9ybpdCQQn", "key": "contact.mmg_biggest_challenge" },
+    "improve":        { "id": "j6xFa6NJhj3bUqjPcFzg", "key": "contact.mmg_wants_to_improve" },
+    "start":          { "id": "muwc6KApJhSqP46eVM9u", "key": "contact.mmg_preferred_start" },
+    "website":        { "id": "bM3PQbGlJ5wKCvuD6oFS", "key": "contact.mmg_website_or_social" },
+    "sourcePage":     { "id": "TOvgCVFFt194XSQDhcRB", "key": "contact.mmg_lead_source_page" },
+    "marketingOptIn": { "id": "B4DOctaTYdg7Jj6nW1W0", "key": "contact.mmg_marketing_consent" },
+    "language":       { "id": "GwcXaFuwANs7NxpWviPX", "key": "contact.ki_lang_ou_prefere" },
+    "budget":         { "id": "xRAW7LFxNKz2oOdan8we", "key": "contact.budget_range" }
+  },
+  "languageValues": { "ht": "Kreyòl", "en": "English", "fr": "Français" },
+  "followUp": { "timeZone": "America/New_York", "hour": 10, "holidays": [] }
+}

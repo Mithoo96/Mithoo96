@@ -1,0 +1,262 @@
+{
+  "langName": "Français",
+  "htmlLang": "fr",
+  "ogLocale": "fr_FR",
+  "meta": {
+    "title": "Mithoo Media Group — Marque, Sites web, E-commerce et Systèmes d'affaires",
+    "description": "Mithoo Media Group aide les entreprises à bâtir une présence numérique solide : identité de marque, sites web, e-commerce, marketing et automatisation qui travaillent ensemble pour la croissance.",
+    "privacyTitle": "Politique de confidentialité — Mithoo Media Group",
+    "termsTitle": "Conditions d'utilisation — Mithoo Media Group",
+    "notFoundTitle": "Page introuvable — Mithoo Media Group"
+  },
+  "a11y": {
+    "skip": "Aller au contenu",
+    "menuOpen": "Ouvrir le menu",
+    "menuClose": "Fermer le menu",
+    "language": "Choisir la langue",
+    "home": "Mithoo Media Group — accueil",
+    "newTab": "(s'ouvre dans un nouvel onglet)"
+  },
+  "nav": {
+    "services": "Services",
+    "ecommerce": "E-commerce",
+    "process": "Notre méthode",
+    "results": "Résultats",
+    "about": "À propos",
+    "contact": "Contact",
+    "cta": "Bâtissons votre système"
+  },
+  "hero": {
+    "eyebrow": "Stratégie numérique · Marque · E-commerce · Automatisation",
+    "titleA": "Votre entreprise a besoin de plus qu'une belle image.",
+    "titleB": "Elle a besoin d'un système qui la fait grandir.",
+    "lede": "Nous vous aidons à bâtir une présence numérique plus solide, à attirer les bons clients, à vendre sur les bonnes plateformes et à mettre en place des systèmes pour que votre entreprise fonctionne mieux.",
+    "audience": "Pour les entrepreneurs, petites entreprises et marques en croissance — en Haïti, dans la diaspora et au-delà.",
+    "ctaPrimary": "Bâtissons votre système",
+    "ctaSecondary": "Découvrir nos services",
+    "diagramLabel": "Écosystème d'affaires connecté : marque, site web, marketing, e-commerce, automatisation et ventes autour de votre entreprise.",
+    "center": "Votre entreprise",
+    "nodes": ["Marque", "Site web", "Marketing", "E-commerce", "Automatisation", "Ventes"]
+  },
+  "trust": {
+    "label": "Quelques entreprises et projets avec lesquels nous avons travaillé"
+  },
+  "services": {
+    "eyebrow": "Services",
+    "title": "Quatre piliers pour une entreprise qui fonctionne.",
+    "lede": "Nous ne vendons pas des livrables isolés. Nous partons des besoins de votre entreprise et combinons uniquement les éléments utiles.",
+    "details": "Voir tous les services",
+    "cta": "Trouver la solution adaptée à votre entreprise",
+    "categories": [
+      {
+        "id": "branding",
+        "title": "Marque et identité numérique",
+        "lede": "Une image claire, professionnelle et cohérente qui dit qui vous êtes et pourquoi on devrait vous choisir.",
+        "items": ["Logo et identité de marque", "Stratégie et positionnement de marque", "Systèmes d'identité visuelle", "Design d'emballage", "Graphisme marketing et supports promotionnels", "Créations publicitaires", "Messages de marque et rédaction"]
+      },
+      {
+        "id": "web",
+        "title": "Sites web et e-commerce",
+        "lede": "Des sites et boutiques en ligne conçus pour transformer les visiteurs en clients — pas seulement pour faire joli.",
+        "items": ["Sites web professionnels", "Développement WordPress", "Configuration et optimisation de boutique Shopify", "Configuration et optimisation TikTok Shop", "Accompagnement vitrine vendeur et fiches produits Amazon", "Configuration et optimisation Walmart Marketplace", "Mise en valeur des produits e-commerce", "Pages d'atterrissage et tunnels de conversion", "Refonte et optimisation de site web"],
+        "note": "Nous assurons la configuration, l'optimisation et le conseil. L'approbation des comptes, l'éligibilité des vendeurs et les autres décisions relèvent des plateformes elles-mêmes (Amazon, Walmart, TikTok, Shopify) — nous ne pouvons pas les garantir."
+      },
+      {
+        "id": "marketing",
+        "title": "Marketing et acquisition de clients",
+        "lede": "Des campagnes et contenus qui placent votre entreprise devant les bonnes personnes — et qui mesurent ce qui fonctionne vraiment.",
+        "items": ["Publicité Meta (Facebook et Instagram)", "Google Ads", "Stratégie et gestion des réseaux sociaux", "Créations pour campagnes publicitaires", "Vidéos publicitaires et promotionnelles", "Photographie de produits et d'entreprise", "Rédaction (copywriting)", "Génération de prospects", "Suivi des campagnes et optimisation des conversions"]
+      },
+      {
+        "id": "automation",
+        "title": "Automatisation et systèmes d'affaires",
+        "lede": "Des outils et processus qui organisent prospects, suivi et opérations pour qu'aucun client ne se perde en chemin.",
+        "items": ["Configuration de CRM", "Systèmes GoHighLevel", "Capture et routage des prospects", "Suivi automatisé par e-mail", "Systèmes de prise de rendez-vous", "Pipelines de vente", "Workflows de suivi client", "Processus de service client", "Optimisation des processus d'affaires", "Conseil en systèmes numériques"]
+      }
+    ]
+  },
+  "system": {
+    "eyebrow": "Le système de croissance",
+    "title": "Quand chaque élément est connecté, l'entreprise avance.",
+    "lede": "Une belle marque peut quand même perdre des clients si le site, le processus de vente ou le suivi sont mal organisés. Voici comment les éléments travaillent ensemble.",
+    "note": "Chaque entreprise est différente. Le système exact dépend de votre modèle d'affaires et de vos objectifs — tous les clients n'ont pas besoin de tous les services.",
+    "hint": "Sélectionnez une étape pour voir ses détails.",
+    "steps": [
+      { "title": "Marque", "text": "Bâtir la crédibilité et une différence claire pour qu'on se souvienne de vous et qu'on vous fasse confiance." },
+      { "title": "Attirer", "text": "Utiliser le contenu, la publicité et les canaux numériques pour atteindre les bons prospects." },
+      { "title": "Capter", "text": "Transformer les visiteurs en prospects grâce à des pages d'atterrissage et des formulaires bien conçus." },
+      { "title": "Convertir", "text": "Qualifier les prospects, présenter la bonne offre, fixer des rendez-vous et assurer le suivi commercial." },
+      { "title": "Automatiser", "text": "Organiser les tâches répétitives et les communications client pour que rien ne passe entre les mailles." },
+      { "title": "Optimiser", "text": "Mesurer les résultats et améliorer le système au fil du temps." }
+    ]
+  },
+  "journey": {
+    "eyebrow": "Notre façon de travailler",
+    "title": "Une méthode claire, étape par étape.",
+    "note": "Les livrables, le prix, les délais et le suivi dépendent du périmètre choisi. Tout est détaillé dans la proposition avant le début des travaux.",
+    "steps": [
+      { "title": "Découvrir", "text": "Nous comprenons votre entreprise, vos objectifs, vos défis, votre public et vos systèmes actuels." },
+      { "title": "Définir la stratégie", "text": "Nous identifions les bonnes priorités et recommandons les solutions numériques les plus adaptées." },
+      { "title": "Construire", "text": "Nous développons les éléments convenus : marque, site web, infrastructure e-commerce, dispositif marketing ou workflows d'automatisation." },
+      { "title": "Connecter", "text": "Lorsque cela fait partie du projet, nous connectons les outils, intégrations, CRM, canaux de communication et outils d'analyse." },
+      { "title": "Optimiser", "text": "Nous testons le système, analysons les données de performance et identifions les pistes d'amélioration." }
+    ]
+  },
+  "cases": {
+    "eyebrow": "Résultats et études de cas",
+    "title": "Du vrai travail, raconté honnêtement.",
+    "lede": "Nous publions uniquement des résultats vérifiés, avec leur période de mesure. Sans données de performance, nous décrivons le travail réalisé et le problème d'affaires traité.",
+    "labels": { "industry": "Secteur", "challenge": "Défi", "strategy": "Stratégie", "services": "Services", "results": "Résultats vérifiés", "period": "Période", "status": "Statut" },
+    "emptyTitle": "Des études de cas détaillées sont en préparation.",
+    "emptyText": "Pendant que nous finalisons la documentation des projets avec nos clients, découvrez une sélection de nos réalisations dans le portfolio.",
+    "portfolioCta": "Voir le portfolio"
+  },
+  "testimonials": {
+    "eyebrow": "Ce que disent nos clients",
+    "title": "Avec les mots de nos clients."
+  },
+  "why": {
+    "eyebrow": "Pourquoi Mithoo Media Group",
+    "title": "Un partenaire qui comprend la création et les opérations.",
+    "items": [
+      { "title": "La stratégie avant l'exécution", "text": "Nous commençons par comprendre vos objectifs avant de décider quoi construire." },
+      { "title": "Marque et technologie ensemble", "text": "Design, site et systèmes sont conçus pour fonctionner ensemble, pas en silos." },
+      { "title": "Des solutions sur mesure", "text": "Chaque recommandation repose sur votre modèle d'affaires, pas sur un forfait générique." },
+      { "title": "Orientés acquisition et conversion", "text": "Nous mesurons le succès en prospects, rendez-vous et ventes — pas seulement en visibilité." },
+      { "title": "Une automatisation pragmatique", "text": "Nous automatisons ce qui vous fait perdre du temps, sans complexité inutile." },
+      { "title": "Une communication claire", "text": "Étapes, livrables et délais sont clairement définis. Vous savez toujours où en est le projet." }
+    ]
+  },
+  "form": {
+    "eyebrow": "Commencez ici",
+    "title": "Bâtissons votre système d'affaires",
+    "subtitle": "Parlez-nous un peu de votre entreprise. Nous vous aiderons à identifier les solutions les mieux adaptées à vos objectifs.",
+    "duration": "Environ 3 minutes · Sans engagement",
+    "required": "obligatoire",
+    "optional": "facultatif",
+    "stepOf": "Étape {n} sur {total}",
+    "steps": ["Contact", "Entreprise", "Services", "Projet", "Confirmation"],
+    "next": "Continuer",
+    "back": "Retour",
+    "submit": "Envoyer la demande",
+    "sending": "Envoi…",
+    "fields": {
+      "fullName": { "label": "Nom complet" },
+      "businessName": { "label": "Nom de l'entreprise", "hint": "Si vous en avez déjà une." },
+      "email": { "label": "Adresse e-mail" },
+      "phone": { "label": "Numéro de téléphone", "hint": "Avec l'indicatif du pays si hors des États-Unis (ex. +509…). Obligatoire si vous choisissez WhatsApp ou le téléphone." },
+      "contactMethod": { "label": "Comment préférez-vous être contacté ?" },
+      "language": { "label": "Langue préférée" },
+      "industry": { "label": "Secteur d'activité", "placeholder": "ex. restaurant, transport, beauté, boutique en ligne…" },
+      "website": { "label": "Site web ou réseau social", "placeholder": "ex. votreentreprise.com ou @votreentreprise" },
+      "stage": { "label": "Stade actuel de l'entreprise" },
+      "goal": { "label": "Objectif principal" },
+      "services": { "label": "Quels services vous intéressent ?", "hint": "Plusieurs choix possibles." },
+      "challenge": { "label": "Quel est votre plus grand défi actuellement ?", "placeholder": "ex. les gens visitent ma page mais n'achètent pas, je perds des prospects faute de suivi…" },
+      "improve": { "label": "Qu'aimeriez-vous améliorer ?" },
+      "budget": { "label": "Budget approximatif", "hint": "Cela nous aide à recommander une solution à la bonne échelle." },
+      "start": { "label": "Date de démarrage souhaitée" },
+      "details": { "label": "Précisions supplémentaires" }
+    },
+    "options": {
+      "contactMethod": { "email": "E-mail", "whatsapp": "WhatsApp", "phone": "Téléphone" },
+      "language": { "ht": "Kreyòl", "en": "English", "fr": "Français" },
+      "stage": { "idea": "Encore une idée", "new": "Moins d'un an", "growing": "En croissance (1 à 3 ans)", "established": "Établie (3 ans et plus)", "relaunch": "Relance ou nouvelle orientation" },
+      "goal": { "more_clients": "Obtenir plus de clients", "launch_online": "Lancer l'entreprise en ligne", "sell_online": "Vendre davantage en ligne", "brand": "Améliorer l'image de marque", "automate": "Automatiser le suivi et les processus", "organize": "Organiser les opérations", "other": "Autre chose" },
+      "services": { "branding": "Image de marque", "website": "Site web", "shopify": "Shopify", "tiktok_shop": "TikTok Shop", "amazon": "Amazon", "walmart": "Walmart Marketplace", "funnels": "Tunnels et pages d'atterrissage", "advertising": "Publicité", "social": "Réseaux sociaux", "video_photo": "Vidéo et photographie", "crm": "CRM", "automation": "Automatisation", "consulting": "Conseil d'affaires", "other": "Autre" },
+      "budget": { "under_1k": "Moins de 1 000 $", "1k_3k": "1 000 $ – 3 000 $", "3k_7k": "3 000 $ – 7 000 $", "7k_15k": "7 000 $ – 15 000 $", "15k_plus": "Plus de 15 000 $", "unsure": "Je ne sais pas encore" },
+      "start": { "asap": "Dès que possible", "one_month": "Dans le mois", "one_three_months": "Dans 1 à 3 mois", "exploring": "Je me renseigne" }
+    },
+    "choose": "Choisir…",
+    "consentPrivacy": "J'accepte que Mithoo Media Group utilise ces informations pour répondre à ma demande, comme décrit dans la {privacy}.",
+    "privacyLink": "politique de confidentialité",
+    "marketingOptIn": "J'aimerais recevoir occasionnellement des conseils et nouvelles de Mithoo Media Group par e-mail. (Facultatif — désabonnement à tout moment.)",
+    "honeypot": "Laissez ce champ vide",
+    "errors": {
+      "required": "Ce champ est obligatoire.",
+      "too_short": "Cette réponse est trop courte.",
+      "too_long": "Cette réponse est trop longue.",
+      "invalid_email": "Saisissez une adresse e-mail valide (ex. nom@domaine.com).",
+      "invalid_phone": "Saisissez un numéro valide, avec l'indicatif du pays si possible.",
+      "phone_required_for_method": "Nous avons besoin de votre numéro pour vous joindre sur WhatsApp ou par téléphone.",
+      "invalid_url": "Saisissez un lien valide ou un identifiant (@…).",
+      "invalid_option": "Choisissez l'une des options.",
+      "select_one": "Sélectionnez au moins un service.",
+      "consent_required": "Veuillez accepter la politique de confidentialité pour que nous puissions traiter votre demande.",
+      "summary": "Veuillez corriger les champs signalés.",
+      "rate_limited": "Trop de demandes en peu de temps. Réessayez plus tard ou écrivez-nous sur WhatsApp.",
+      "captcha_failed": "Nous n'avons pas pu vérifier la demande. Rechargez la page et réessayez.",
+      "network": "La connexion a été interrompue. Vos réponses sont conservées — réessayez l'envoi.",
+      "server": "Un problème technique est survenu de notre côté. Vos réponses sont conservées — réessayez ou écrivez-nous sur WhatsApp."
+    },
+    "success": {
+      "title": "Merci ! Nous avons bien reçu votre demande.",
+      "text": "Nous allons étudier vos informations et vous contacter sous un jour ouvrable, dans la langue et par le canal choisis.",
+      "ref": "Numéro de référence",
+      "next": "La suite",
+      "nextSteps": ["Nous analysons les besoins de votre entreprise.", "Nous vous contactons pour un premier échange.", "Nous vous proposons des priorités et des solutions adaptées."],
+      "booking": "Réserver un appel",
+      "whatsapp": "Ajouter des précisions sur WhatsApp"
+    }
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Parlez-nous directement.",
+    "lede": "Vous préférez écrire ? Choisissez le canal le plus pratique pour vous.",
+    "email": "E-mail",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "portfolio": "Portfolio",
+    "booking": "Prendre rendez-vous",
+    "whatsappMessage": "Bonjour Mithoo Media Group ! Vos services m'intéressent. J'aimerais en savoir plus sur la façon dont vous pouvez aider mon entreprise.",
+    "whatsappFab": "Écrivez-nous sur WhatsApp"
+  },
+  "final": {
+    "title": "Votre entreprise n'a pas à continuer sans système.",
+    "text": "Identifions ce qui freine votre croissance et bâtissons une solution qui vous aide à avancer avec plus de structure.",
+    "cta": "Parlons de mon projet",
+    "secondary": "Écrivez-nous sur WhatsApp"
+  },
+  "footer": {
+    "statement": "Nous relions marque, présence numérique, acquisition de clients et systèmes d'affaires en une seule stratégie de croissance cohérente.",
+    "servicesTitle": "Services",
+    "contactTitle": "Contact",
+    "legalTitle": "Mentions",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "cookies": "Préférences de cookies",
+    "rights": "Tous droits réservés."
+  },
+  "cookies": {
+    "text": "Nous aimerions utiliser des statistiques anonymes pour comprendre l'utilisation du site. Vous pouvez accepter ou refuser.",
+    "accept": "Accepter",
+    "decline": "Refuser"
+  },
+  "notFound": {
+    "title": "Cette page n'existe pas.",
+    "text": "Le lien a peut-être changé ou est incorrect.",
+    "cta": "Retour à l'accueil"
+  },
+  "legal": {
+    "updated": "Dernière mise à jour",
+    "draftNotice": "Ce document décrit le fonctionnement réel du site. Il ne constitue pas un avis juridique — faites-le relire par un avocat avant le lancement.",
+    "privacy": [
+      { "h": "Qui sommes-nous", "p": ["Mithoo Media Group (« nous ») est responsable des informations que vous nous transmettez via ce site. Pour toute question, écrivez à {email}."] },
+      { "h": "Informations collectées", "p": ["Lorsque vous remplissez le formulaire : votre nom, le nom de votre entreprise, e-mail, téléphone, canal et langue préférés, informations sur votre entreprise, services souhaités, budget (si indiqué) et votre message.", "Informations techniques : adresse IP pour la protection contre le spam et les abus (limitation des envois), et la page depuis laquelle vous avez envoyé le formulaire.", "Nous ne demandons pas d'informations sensibles comme des numéros de carte ou des pièces d'identité dans le formulaire."] },
+      { "h": "Pourquoi nous les utilisons", "p": ["Pour répondre à votre demande, préparer une proposition et assurer le suivi du projet.", "Nous vous envoyons un e-mail de confirmation et un nombre limité de messages de suivi directement liés à votre demande. Vous pouvez nous demander d'arrêter à tout moment.", "Nous envoyons des newsletters ou du contenu marketing UNIQUEMENT si vous avez coché la case facultative. Vous pouvez vous désabonner depuis chaque e-mail."] },
+      { "h": "Qui les reçoit", "p": ["Vos informations sont stockées dans notre CRM (GoHighLevel / LeadConnector) et sur le serveur du site. Nous pouvons utiliser un service d'e-mail transactionnel pour l'envoi des messages. Nous ne vendons pas vos informations."] },
+      { "h": "Durée de conservation", "p": ["Nous conservons les dossiers prospects pendant la durée de la relation d'affaires, puis pendant une période raisonnable pour nos obligations légales et comptables. Les copies de secours sur le serveur du site sont supprimées automatiquement après synchronisation avec le CRM.", "Vous pouvez demander la suppression de vos informations à tout moment."] },
+      { "h": "Cookies et statistiques", "p": ["Le site mémorise la langue choisie dans votre navigateur (localStorage). Si nous activons les statistiques, elles ne se chargent qu'après votre accord dans le bandeau."] },
+      { "h": "Vos droits", "p": ["Vous pouvez demander l'accès, la rectification ou la suppression de vos informations, ou retirer votre consentement, en écrivant à {email}."] }
+    ],
+    "terms": [
+      { "h": "Utilisation du site", "p": ["Le contenu de ce site est une information générale sur les services de Mithoo Media Group. L'envoi d'une demande ne crée aucun contrat ni engagement."] },
+      { "h": "Services et propositions", "p": ["Les livrables, prix, délais et le suivi sont définis dans une proposition ou un contrat écrit pour chaque projet."] },
+      { "h": "Plateformes tierces", "p": ["Pour Shopify, Amazon, Walmart Marketplace, TikTok Shop, Meta, Google et d'autres plateformes, nous fournissons des services de configuration, d'optimisation et de conseil. L'approbation des comptes, l'éligibilité, les règles et les frais relèvent de ces plateformes."] },
+      { "h": "Aucune garantie de résultats", "p": ["Les résultats marketing et commerciaux dépendent de nombreux facteurs hors de notre contrôle. Nous ne garantissons aucun niveau de revenus, de trafic ou de ventes."] },
+      { "h": "Propriété intellectuelle", "p": ["La marque, les textes et le design de ce site appartiennent à Mithoo Media Group. Les noms et logos des clients appartiennent à leurs propriétaires respectifs."] },
+      { "h": "Contact", "p": ["Questions sur ces conditions : {email}."] }
+    ]
+  }
+}

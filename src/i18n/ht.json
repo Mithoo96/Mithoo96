@@ -1,0 +1,262 @@
+{
+  "langName": "Kreyòl",
+  "htmlLang": "ht",
+  "ogLocale": "ht_HT",
+  "meta": {
+    "title": "Mithoo Media Group — Mak, Sitwèb, E-commerce ak Sistèm Biznis",
+    "description": "Mithoo Media Group ede biznis bati yon prezans dijital solid: idantite mak, sitwèb, e-commerce, maketing ak otomasyon ki travay ansanm pou fè biznis ou grandi.",
+    "privacyTitle": "Règ Konfidansyalite — Mithoo Media Group",
+    "termsTitle": "Kondisyon Itilizasyon — Mithoo Media Group",
+    "notFoundTitle": "Paj la pa jwenn — Mithoo Media Group"
+  },
+  "a11y": {
+    "skip": "Ale dirèkteman nan kontni an",
+    "menuOpen": "Louvri meni an",
+    "menuClose": "Fèmen meni an",
+    "language": "Chwazi lang",
+    "home": "Mithoo Media Group — paj dakèy",
+    "newTab": "(ap louvri nan yon lòt onglè)"
+  },
+  "nav": {
+    "services": "Sèvis",
+    "ecommerce": "E-commerce",
+    "process": "Pwosesis Nou",
+    "results": "Rezilta",
+    "about": "Konsènan Nou",
+    "contact": "Kontak",
+    "cta": "Ann Bati Sistèm Biznis Ou"
+  },
+  "hero": {
+    "eyebrow": "Estrateji dijital · Mak · E-commerce · Otomasyon",
+    "titleA": "Biznis ou bezwen plis pase yon bèl imaj.",
+    "titleB": "Li bezwen yon sistèm ki fè l grandi.",
+    "lede": "Nou ede w bati yon prezans dijital ki pi solid, atire bon kliyan, vann sou bon platfòm yo epi mete sistèm an plas pou biznis ou mache pi byen.",
+    "audience": "Pou antreprenè, ti biznis ak mak k ap grandi — Ayiti, dyaspora a ak pi lwen.",
+    "ctaPrimary": "Ann Bati Sistèm Biznis Ou",
+    "ctaSecondary": "Dekouvri Sèvis Nou Yo",
+    "diagramLabel": "Ekosistèm biznis konekte: mak, sitwèb, maketing, e-commerce, otomasyon ak vant toutotou biznis ou.",
+    "center": "Biznis ou",
+    "nodes": ["Mak", "Sitwèb", "Maketing", "E-commerce", "Otomasyon", "Vant"]
+  },
+  "trust": {
+    "label": "Kèk biznis ak pwojè nou te travay avèk yo"
+  },
+  "services": {
+    "eyebrow": "Sèvis",
+    "title": "Kat pilye pou yon biznis ki mache.",
+    "lede": "Nou pa vann sèvis an pyès detache. Nou kòmanse ak sa biznis ou bezwen, epi nou konbine sèl eleman ki nesesè yo.",
+    "details": "Wè tout sèvis yo",
+    "cta": "Jwenn Solisyon Ki Adapte Ak Biznis Ou",
+    "categories": [
+      {
+        "id": "branding",
+        "title": "Mak & Idantite Dijital",
+        "lede": "Yon imaj klè, pwofesyonèl e konsistan ki fè moun konprann ki moun ou ye ak poukisa yo ta dwe chwazi w.",
+        "items": ["Logo ak idantite mak", "Estrateji ak pozisyònman mak", "Sistèm idantite vizyèl", "Design anbalaj", "Grafik maketing ak materyèl pwomosyon", "Kreyatif piblisite", "Mesaj mak ak redaksyon (copywriting)"]
+      },
+      {
+        "id": "web",
+        "title": "Sitwèb & E-commerce",
+        "lede": "Sitwèb ak boutik an liy ki konstwi pou konvèti vizitè an kliyan — pa sèlman pou fè bèl.",
+        "items": ["Sitwèb pwofesyonèl", "Devlopman WordPress", "Konfigirasyon ak optimizasyon boutik Shopify", "Konfigirasyon ak optimizasyon TikTok Shop", "Sipò pou boutik ak fich pwodwi sou Amazon", "Konfigirasyon ak optimizasyon Walmart Marketplace", "Prezantasyon pwodwi pou e-commerce", "Landing page ak funnel konvèsyon", "Redesign ak optimizasyon sitwèb"],
+        "note": "Nou ede w ak konfigirasyon, optimizasyon ak konsèy. Apwobasyon kont, kalifikasyon vandè ak lòt desizyon se platfòm yo (Amazon, Walmart, TikTok, Shopify) ki kontwole yo — nou pa ka garanti yo."
+      },
+      {
+        "id": "marketing",
+        "title": "Maketing & Akizisyon Kliyan",
+        "lede": "Kanpay ak kontni ki mete biznis ou devan bon moun yo, epi ki mezire sa k ap travay vre.",
+        "items": ["Piblisite Meta (Facebook & Instagram)", "Google Ads", "Estrateji ak jesyon rezo sosyal", "Kreyatif pou kanpay piblisite", "Videyo piblisite ak videyo pwomosyon", "Fotografi pwodwi ak fotografi biznis", "Redaksyon (copywriting)", "Jenerasyon prospè (leads)", "Swivi kanpay ak optimizasyon konvèsyon"]
+      },
+      {
+        "id": "automation",
+        "title": "Otomasyon & Sistèm Biznis",
+        "lede": "Zouti ak pwosesis ki òganize prospè, swivi ak operasyon yo pou pa gen kliyan ki pèdi nan mitan chemen.",
+        "items": ["Konfigirasyon CRM", "Sistèm GoHighLevel", "Kaptire ak distribisyon prospè", "Swivi otomatik pa imèl", "Sistèm randevou", "Pipeline vant", "Workflow swivi kliyan", "Pwosesis sèvis kliyan", "Optimizasyon pwosesis biznis", "Konsiltasyon sou sistèm dijital"]
+      }
+    ]
+  },
+  "system": {
+    "eyebrow": "Sistèm kwasans lan",
+    "title": "Lè chak pyès konekte, biznis la avanse.",
+    "lede": "Yon bèl mak ka toujou pèdi kliyan si sitwèb la, pwosesis vant lan oswa swivi a pa òganize. Men kijan pyès yo travay ansanm.",
+    "note": "Chak biznis diferan. Sistèm egzak la depann de modèl biznis ou ak objektif ou — se pa tout kliyan ki bezwen tout sèvis.",
+    "hint": "Chwazi yon etap pou w wè detay li.",
+    "steps": [
+      { "title": "Mak", "text": "Bati kredibilite ak yon diferans klè pou moun sonje w epi fè w konfyans." },
+      { "title": "Atire", "text": "Itilize kontni, piblisite ak kanal dijital pou rive jwenn bon prospè yo." },
+      { "title": "Kaptire", "text": "Transfòme vizitè an prospè ak landing page ak fòm ki byen panse." },
+      { "title": "Konvèti", "text": "Kalifye prospè yo, prezante bon òf la, pran randevou epi fè swivi vant." },
+      { "title": "Otomatize", "text": "Òganize travay ki repete ak kominikasyon kliyan pou okenn pa tonbe atè." },
+      { "title": "Optimize", "text": "Mezire rezilta yo epi amelyore sistèm lan avèk tan." }
+    ]
+  },
+  "journey": {
+    "eyebrow": "Kijan nou travay",
+    "title": "Yon pwosesis klè, etap pa etap.",
+    "note": "Livrezon, pri, delè ak sipò kontinyèl depann de pwojè w chwazi a. Tout bagay detaye nan pwopozisyon an anvan travay la kòmanse.",
+    "steps": [
+      { "title": "Dekouvri", "text": "Nou konprann biznis ou, objektif ou, defi ou yo, odyans ou ak sistèm ou genyen deja." },
+      { "title": "Estrateji", "text": "Nou idantifye bon priyorite yo epi nou rekòmande solisyon dijital ki pi adapte yo." },
+      { "title": "Bati", "text": "Nou devlope eleman ki dakò yo: mak, sitwèb, boutik e-commerce, maketing oswa workflow otomasyon." },
+      { "title": "Konekte", "text": "Lè sa fè pati pwojè a, nou konekte zouti yo, entegrasyon yo, CRM nan, kanal kominikasyon yo ak analitik yo." },
+      { "title": "Optimize", "text": "Nou teste sistèm lan, nou revize done pèfòmans yo epi nou idantifye opòtinite pou amelyore." }
+    ]
+  },
+  "cases": {
+    "eyebrow": "Rezilta & etid ka",
+    "title": "Travay reyèl, rakonte avèk onètete.",
+    "lede": "Nou pibliye sèlman rezilta ki verifye, ak peryòd mezi a. Lè pa gen done pèfòmans, nou dekri travay ki fèt la ak pwoblèm biznis li rezoud la.",
+    "labels": { "industry": "Endistri", "challenge": "Defi", "strategy": "Estrateji", "services": "Sèvis", "results": "Rezilta verifye", "period": "Peryòd", "status": "Estati" },
+    "emptyTitle": "Etid ka detaye yo ap prepare.",
+    "emptyText": "Pandan n ap fini dokimante pwojè yo avèk kliyan nou yo, ou ka gade yon seleksyon travay nou nan pòtfolyo a.",
+    "portfolioCta": "Gade pòtfolyo a"
+  },
+  "testimonials": {
+    "eyebrow": "Sa kliyan yo di",
+    "title": "Pawòl kliyan nou yo."
+  },
+  "why": {
+    "eyebrow": "Poukisa Mithoo Media Group",
+    "title": "Yon patnè ki konprann kreyativite ak operasyon.",
+    "items": [
+      { "title": "Estrateji anvan egzekisyon", "text": "Nou kòmanse pa konprann objektif yo anvan nou deside sa pou n fè." },
+      { "title": "Mak ak teknoloji ansanm", "text": "Design, sitwèb ak sistèm yo bati pou travay ansanm, pa chak bò pa li." },
+      { "title": "Solisyon sou mezi", "text": "Chak rekòmandasyon baze sou modèl biznis ou, pa sou yon pake jenerik." },
+      { "title": "Fokis sou kliyan ak konvèsyon", "text": "Nou mezire siksè ak prospè, randevou ak vant — pa sèlman ak lajman." },
+      { "title": "Otomasyon pratik", "text": "Nou otomatize sa k fè w pèdi tan, san nou pa konplike biznis ou pou anyen." },
+      { "title": "Kominikasyon klè", "text": "Etap, livrezon ak delè defini klèman. Ou toujou konnen kote pwojè a ye." }
+    ]
+  },
+  "form": {
+    "eyebrow": "Kòmanse la a",
+    "title": "Ann Bati Sistèm Biznis Ou",
+    "subtitle": "Rakonte nou yon ti kras sou biznis ou. N ap ede w idantifye solisyon ki pi adapte ak objektif ou.",
+    "duration": "Apeprè 3 minit · Pa gen okenn angajman",
+    "required": "obligatwa",
+    "optional": "opsyonèl",
+    "stepOf": "Etap {n} sou {total}",
+    "steps": ["Kontak", "Biznis", "Sèvis", "Pwojè", "Konfimasyon"],
+    "next": "Kontinye",
+    "back": "Retounen",
+    "submit": "Voye demann lan",
+    "sending": "N ap voye…",
+    "fields": {
+      "fullName": { "label": "Non konplè" },
+      "businessName": { "label": "Non biznis lan", "hint": "Si ou genyen youn deja." },
+      "email": { "label": "Adrès imèl" },
+      "phone": { "label": "Nimewo telefòn", "hint": "Ak kòd peyi a si ou pa Ozetazini (egz. +509…). Obligatwa si ou chwazi WhatsApp oswa telefòn." },
+      "contactMethod": { "label": "Kijan ou prefere nou kontakte w?" },
+      "language": { "label": "Ki lang ou prefere?" },
+      "industry": { "label": "Domèn biznis lan", "placeholder": "Egz. restoran, transpò, bote, boutik an liy…" },
+      "website": { "label": "Sitwèb oswa rezo sosyal", "placeholder": "egz. biznisou.com oswa @biznisou" },
+      "stage": { "label": "Nan ki etap biznis lan ye?" },
+      "goal": { "label": "Ki objektif prensipal ou?" },
+      "services": { "label": "Ki sèvis ki enterese w?", "hint": "Ou ka chwazi plizyè." },
+      "challenge": { "label": "Ki pi gwo defi ou ap fè fas kounye a?", "placeholder": "Egz. moun vizite paj mwen men yo pa achte, mwen pèdi prospè paske swivi a pa fèt…" },
+      "improve": { "label": "Kisa ou ta renmen amelyore?" },
+      "budget": { "label": "Bidjè apwoksimatif", "hint": "Li ede nou rekòmande bon pwopòsyon solisyon an." },
+      "start": { "label": "Kilè ou ta renmen kòmanse?" },
+      "details": { "label": "Lòt detay" }
+    },
+    "options": {
+      "contactMethod": { "email": "Imèl", "whatsapp": "WhatsApp", "phone": "Telefòn" },
+      "language": { "ht": "Kreyòl", "en": "English", "fr": "Français" },
+      "stage": { "idea": "Se yon ide toujou", "new": "Mwens pase 1 an", "growing": "Biznis k ap grandi (1–3 an)", "established": "Biznis etabli (3 an +)", "relaunch": "Relansman oswa nouvo direksyon" },
+      "goal": { "more_clients": "Jwenn plis kliyan", "launch_online": "Lanse biznis lan sou entènèt", "sell_online": "Vann plis an liy", "brand": "Amelyore imaj mak la", "automate": "Otomatize swivi ak pwosesis yo", "organize": "Òganize operasyon yo", "other": "Lòt bagay" },
+      "services": { "branding": "Branding", "website": "Sitwèb", "shopify": "Shopify", "tiktok_shop": "TikTok Shop", "amazon": "Amazon", "walmart": "Walmart Marketplace", "funnels": "Funnel ak landing page", "advertising": "Piblisite", "social": "Rezo sosyal", "video_photo": "Videyo ak fotografi", "crm": "CRM", "automation": "Otomasyon", "consulting": "Konsiltasyon biznis", "other": "Lòt" },
+      "budget": { "under_1k": "Mwens pase $1,000", "1k_3k": "$1,000 – $3,000", "3k_7k": "$3,000 – $7,000", "7k_15k": "$7,000 – $15,000", "15k_plus": "Plis pase $15,000", "unsure": "Mwen poko konnen" },
+      "start": { "asap": "Pi vit posib", "one_month": "Nan mwa a", "one_three_months": "Nan 1 a 3 mwa", "exploring": "M ap eksplore toujou" }
+    },
+    "choose": "Chwazi…",
+    "consentPrivacy": "Mwen dakò pou Mithoo Media Group itilize enfòmasyon sa yo pou reponn demann mwen, jan sa eksplike nan {privacy}.",
+    "privacyLink": "règ konfidansyalite a",
+    "marketingOptIn": "Mwen ta renmen resevwa konsèy ak nouvèl Mithoo Media Group pa imèl detanzantan. (Opsyonèl — ou ka dezabòne nenpòt ki lè.)",
+    "honeypot": "Pa ranpli chan sa a",
+    "errors": {
+      "required": "Chan sa a obligatwa.",
+      "too_short": "Repons lan twò kout.",
+      "too_long": "Repons lan twò long.",
+      "invalid_email": "Antre yon adrès imèl ki valid (egz. non@domèn.com).",
+      "invalid_phone": "Antre yon nimewo telefòn valid, ak kòd peyi a si posib.",
+      "phone_required_for_method": "Nou bezwen nimewo w pou nou kontakte w sou WhatsApp oswa pa telefòn.",
+      "invalid_url": "Antre yon lyen sitwèb valid oswa yon non itilizatè (@…).",
+      "invalid_option": "Chwazi youn nan opsyon yo.",
+      "select_one": "Chwazi omwen yon sèvis.",
+      "consent_required": "Ou dwe aksepte règ konfidansyalite a pou nou ka trete demann ou.",
+      "summary": "Tanpri korije chan ki make yo.",
+      "rate_limited": "Ou voye twòp demann nan yon ti tan. Eseye ankò pita oswa ekri nou sou WhatsApp.",
+      "captcha_failed": "Nou pa t ka verifye demann lan. Rechaje paj la epi eseye ankò.",
+      "network": "Koneksyon an koupe. Enfòmasyon ou yo toujou la — eseye voye ankò.",
+      "server": "Gen yon pwoblèm teknik sou bò pa nou. Enfòmasyon ou yo toujou la — eseye ankò, oswa ekri nou sou WhatsApp."
+    },
+    "success": {
+      "title": "Mèsi! Nou resevwa demann ou an.",
+      "text": "N ap revize enfòmasyon ou yo epi n ap kontakte w nan yon jou ouvrab, nan lang ak kanal ou te chwazi a.",
+      "ref": "Nimewo referans",
+      "next": "Sa k ap pase kounye a",
+      "nextSteps": ["Nou analize bezwen biznis ou.", "Nou kontakte w pou yon premye konvèsasyon.", "Nou pwopoze w priyorite ak solisyon ki adapte."],
+      "booking": "Pran yon randevou kounye a",
+      "whatsapp": "Ajoute detay sou WhatsApp"
+    }
+  },
+  "contact": {
+    "eyebrow": "Kontak",
+    "title": "Pale ak nou dirèkteman.",
+    "lede": "Prefere ekri nou? Chwazi kanal ki pi pratik pou ou.",
+    "email": "Imèl",
+    "whatsapp": "WhatsApp",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "portfolio": "Pòtfolyo",
+    "booking": "Pran randevou",
+    "whatsappMessage": "Bonjou Mithoo Media Group! Mwen enterese nan sèvis nou yo. Mwen ta renmen jwenn plis enfòmasyon sou kijan nou ka ede biznis mwen.",
+    "whatsappFab": "Ekri nou sou WhatsApp"
+  },
+  "final": {
+    "title": "Biznis ou pa oblije kontinye mache san yon sistèm.",
+    "text": "Ann idantifye sa k ap bloke kwasans ou epi bati yon solisyon ki ede w avanse ak plis estrikti.",
+    "cta": "Ann Pale Sou Pwojè Mwen",
+    "secondary": "Ekri Nou Sou WhatsApp"
+  },
+  "footer": {
+    "statement": "Nou konekte mak, prezans dijital, akizisyon kliyan ak sistèm biznis nan yon sèl estrateji kwasans.",
+    "servicesTitle": "Sèvis",
+    "contactTitle": "Kontak",
+    "legalTitle": "Legal",
+    "privacy": "Règ konfidansyalite",
+    "terms": "Kondisyon itilizasyon",
+    "cookies": "Preferans cookies",
+    "rights": "Tout dwa rezève."
+  },
+  "cookies": {
+    "text": "Nou ta renmen itilize analitik anonim pou konprann kijan moun itilize sit la. Ou ka aksepte oswa refize.",
+    "accept": "Aksepte",
+    "decline": "Refize"
+  },
+  "notFound": {
+    "title": "Paj sa a pa egziste.",
+    "text": "Lyen an ka chanje oswa li pa kòrèk.",
+    "cta": "Retounen nan paj dakèy la"
+  },
+  "legal": {
+    "updated": "Dènye mizajou",
+    "draftNotice": "Dokiman sa a dekri jan sit la fonksyone vre. Li pa yon konsèy jiridik — fè yon avoka revize l anvan lansman an.",
+    "privacy": [
+      { "h": "Ki moun nou ye", "p": ["Mithoo Media Group (\"nou\") se responsab enfòmasyon ou voye ba nou atravè sit sa a. Pou nenpòt kesyon, ekri nou nan {email}."] },
+      { "h": "Enfòmasyon nou kolekte", "p": ["Lè ou ranpli fòm demann lan: non w, non biznis ou, imèl, telefòn, kanal ak lang ou prefere, enfòmasyon sou biznis ou, sèvis ki enterese w, bidjè (si ou bay li) ak mesaj ou.", "Enfòmasyon teknik: adrès IP pou pwoteksyon kont spam ak abi (limit demann), ak paj ou te ye a lè ou voye fòm lan.", "Nou pa mande enfòmasyon sansib tankou nimewo kat kredi oswa dokiman idantite nan fòm lan."] },
+      { "h": "Poukisa nou itilize yo", "p": ["Pou reponn demann ou, prepare yon pwopozisyon epi fè swivi sou pwojè a.", "Nou voye w yon imèl konfimasyon ak kèk mesaj swivi ki gen rapò dirèkteman ak demann ou. Ou ka mande nou sispann nenpòt ki lè.", "Nou voye w nouvèl oswa kontni maketing SÈLMAN si ou te koche bwat opsyonèl la. Ou ka dezabòne nan nenpòt imèl."] },
+      { "h": "Ki moun ki resevwa enfòmasyon yo", "p": ["Enfòmasyon yo estoke nan CRM nou (GoHighLevel / LeadConnector) ak sou sèvè sit la. Nou ka itilize yon founisè imèl tranzaksyonèl pou voye mesaj yo. Nou pa vann enfòmasyon ou."] },
+      { "h": "Konbyen tan nou kenbe yo", "p": ["Nou kenbe dosye prospè yo pandan relasyon biznis la dire, epi pou yon peryòd rezonab apre sa pou obligasyon legal ak kontab. Kopi sekou sou sèvè sit la efase otomatikman apre yo fin senkronize ak CRM nan.", "Ou ka mande pou nou efase enfòmasyon ou nenpòt ki lè."] },
+      { "h": "Cookies ak analitik", "p": ["Sit la sonje lang ou chwazi nan navigatè w (localStorage). Si nou aktive analitik, li chaje sèlman apre ou aksepte l nan bandwòl la."] },
+      { "h": "Dwa ou", "p": ["Ou ka mande pou wè, korije oswa efase enfòmasyon ou, oswa retire konsantman ou, lè w ekri nou nan {email}."] }
+    ],
+    "terms": [
+      { "h": "Itilizasyon sit la", "p": ["Kontni sit sa a se pou enfòmasyon jeneral sou sèvis Mithoo Media Group. Voye yon demann pa kreye okenn kontra oswa angajman."] },
+      { "h": "Sèvis ak pwopozisyon", "p": ["Livrezon, pri, delè ak sipò defini nan yon pwopozisyon oswa kontra ekri pou chak pwojè."] },
+      { "h": "Platfòm twazyèm pati", "p": ["Pou Shopify, Amazon, Walmart Marketplace, TikTok Shop, Meta, Google ak lòt platfòm, nou bay sèvis konfigirasyon, optimizasyon ak konsèy. Apwobasyon kont, kalifikasyon, règ ak frè yo se platfòm sa yo ki kontwole yo."] },
+      { "h": "Pa gen garanti rezilta", "p": ["Rezilta maketing ak vant depann de anpil faktè deyò kontwòl nou. Nou pa garanti okenn nivo revni, trafik oswa vant."] },
+      { "h": "Pwopriyete entelektyèl", "p": ["Mak, tèks ak design sit sa a se pou Mithoo Media Group. Non ak logo kliyan yo se pou pwopriyetè respektif yo."] },
+      { "h": "Kontak", "p": ["Kesyon sou kondisyon sa yo: {email}."] }
+    ]
+  }
+}
