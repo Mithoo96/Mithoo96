@@ -14,43 +14,43 @@
         "type": "color",
         "id": "color_background",
         "label": "t:settings_schema.colors.settings.background.label",
-        "default": "#F6F3EC"
+        "default": "#FFFFFF"
       },
       {
         "type": "color",
         "id": "color_foreground",
         "label": "t:settings_schema.colors.settings.foreground.label",
-        "default": "#1F2A1C"
+        "default": "#1F1B16"
       },
       {
         "type": "color",
         "id": "color_accent",
         "label": "t:settings_schema.colors.settings.accent.label",
-        "default": "#3F4B2E"
+        "default": "#FCF2D0"
       },
       {
         "type": "color",
         "id": "color_accent_contrast",
         "label": "t:settings_schema.colors.settings.accent_contrast.label",
-        "default": "#FFFFFF"
+        "default": "#1F1B16"
       },
       {
         "type": "color",
         "id": "color_highlight",
         "label": "t:settings_schema.colors.settings.highlight.label",
-        "default": "#C9D3B4"
+        "default": "#E8CF86"
       },
       {
         "type": "color",
         "id": "color_surface_alt",
         "label": "t:settings_schema.colors.settings.surface_alt.label",
-        "default": "#ECEFE3"
+        "default": "#FEF8E7"
       },
       {
         "type": "color",
         "id": "color_sale",
         "label": "t:settings_schema.colors.settings.sale.label",
-        "default": "#9E4B3C"
+        "default": "#B5483A"
       }
     ]
   },

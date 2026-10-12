@@ -121,7 +121,7 @@ p {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-foreground);
   outline-offset: 3px;
 }
 
@@ -147,7 +147,7 @@ p {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-foreground);
 }
 
 .eyebrow--light {
@@ -173,9 +173,9 @@ p {
    -------------------------------------------------------------------------- */
 
 .button {
-  --btn-bg: var(--color-accent);
-  --btn-fg: var(--color-accent-contrast);
-  --btn-border: var(--color-accent);
+  --btn-bg: var(--color-foreground);
+  --btn-fg: var(--color-background);
+  --btn-border: var(--color-foreground);
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -203,7 +203,7 @@ p {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--btn-hover-bg, var(--color-foreground));
+  background: var(--btn-hover-bg, var(--color-accent));
   transform: translateY(101%);
   border-radius: inherit;
   transition: transform 0.5s var(--ease-out);
@@ -214,8 +214,8 @@ p {
 }
 
 .button:hover {
-  color: var(--btn-hover-fg, var(--color-background));
-  border-color: var(--btn-hover-bg, var(--color-foreground));
+  color: var(--btn-hover-fg, var(--color-accent-contrast));
+  border-color: var(--btn-hover-border, var(--btn-hover-bg, var(--color-foreground)));
   transform: translateY(-2px);
   box-shadow: 0 12px 30px -12px color-mix(in srgb, var(--color-foreground) 45%, transparent);
 }
@@ -238,21 +238,22 @@ p {
   --btn-bg: transparent;
   --btn-fg: var(--color-foreground);
   --btn-border: var(--color-foreground);
+  --btn-hover-border: var(--color-foreground);
 }
 
 .button--ghost {
   --btn-bg: transparent;
-  --btn-fg: #fff;
-  --btn-border: rgba(255, 255, 255, 0.7);
-  --btn-hover-bg: #fff;
-  --btn-hover-fg: var(--color-foreground);
+  --btn-fg: var(--color-accent-contrast);
+  --btn-border: color-mix(in srgb, var(--color-accent-contrast) 60%, transparent);
+  --btn-hover-bg: var(--color-accent-contrast);
+  --btn-hover-fg: var(--color-accent);
 }
 
 .button--light {
-  --btn-bg: var(--color-highlight);
-  --btn-fg: var(--color-foreground);
-  --btn-border: var(--color-highlight);
-  --btn-hover-bg: #fff;
+  --btn-bg: var(--color-foreground);
+  --btn-fg: var(--color-background);
+  --btn-border: var(--color-foreground);
+  --btn-hover-bg: var(--color-background);
   --btn-hover-fg: var(--color-foreground);
 }
 
@@ -290,7 +291,7 @@ p {
 
 .input:focus,
 .select:focus {
-  border-color: var(--color-accent);
+  border-color: var(--color-foreground);
   outline: none;
 }
 
@@ -314,7 +315,7 @@ textarea.input {
 }
 
 .form-message--error { color: var(--color-sale); }
-.form-message--success { color: var(--color-accent); }
+.form-message--success { color: var(--color-foreground); }
 
 /* --------------------------------------------------------------------------
    Scroll-reveal animations
@@ -522,7 +523,7 @@ textarea.input {
 }
 
 .header__dropdown-link:hover {
-  color: var(--color-accent);
+  color: var(--color-foreground);
   transform: translateX(4px);
 }
 
@@ -556,8 +557,8 @@ textarea.input {
   height: 1.15rem;
   padding: 0 0.25rem;
   border-radius: 999px;
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
+  background: var(--color-foreground);
+  color: var(--color-background);
   font-size: 0.65rem;
   line-height: 1.15rem;
   text-align: center;
@@ -669,14 +670,14 @@ textarea.input {
 }
 
 .section--accent .eyebrow {
-  color: var(--color-highlight);
+  color: var(--color-accent-contrast);
 }
 
 .section--accent .button {
   --btn-bg: var(--color-accent-contrast);
   --btn-fg: var(--color-accent);
   --btn-border: var(--color-accent-contrast);
-  --btn-hover-bg: var(--color-highlight);
+  --btn-hover-bg: var(--color-background);
   --btn-hover-fg: var(--color-foreground);
 }
 
@@ -721,7 +722,7 @@ textarea.input {
   height: 3rem;
   border-radius: 50%;
   background: var(--color-surface-alt);
-  color: var(--color-accent);
+  color: var(--color-foreground);
   transition: transform 0.5s var(--ease-out), background-color 0.4s;
 }
 
@@ -730,9 +731,9 @@ textarea.input {
 }
 
 .icon-circle--glass {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: color-mix(in srgb, var(--color-background) 45%, transparent);
+  color: var(--color-accent-contrast);
+  border: 1px solid color-mix(in srgb, var(--color-accent-contrast) 14%, transparent);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -744,7 +745,7 @@ textarea.input {
   display: flex;
   align-items: center;
   overflow: hidden;
-  color: #fff;
+  color: var(--color-accent-contrast);
   background: var(--color-accent);
 }
 
@@ -800,7 +801,7 @@ textarea.input {
 .banner--light .icon-circle--glass {
   background: color-mix(in srgb, var(--color-background) 55%, transparent);
   border-color: color-mix(in srgb, var(--color-foreground) 12%, transparent);
-  color: var(--color-accent);
+  color: var(--color-foreground);
 }
 
 @media (max-width: 749px) {
@@ -914,7 +915,7 @@ textarea.input {
 }
 
 .trust-bar__item .icon {
-  color: var(--color-highlight);
+  color: var(--color-accent-contrast);
 }
 
 @media (max-width: 749px) {
@@ -1027,7 +1028,7 @@ textarea.input {
 }
 
 .card__link:hover .card__title {
-  color: var(--color-accent);
+  color: var(--color-foreground);
 }
 
 /* Price ------------------------------------------------------------------- */
@@ -1174,7 +1175,7 @@ textarea.input {
   width: 28px;
   height: 28px;
   margin-bottom: 0.5rem;
-  color: var(--color-accent);
+  color: var(--color-foreground);
   transition: transform 0.5s var(--ease-out);
 }
 
@@ -1209,7 +1210,7 @@ textarea.input {
   padding: clamp(2.5rem, 6vw, 5rem);
   border-radius: calc(var(--radius) * 2);
   overflow: hidden;
-  background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--color-accent) 80%, #fff) 0%, var(--color-accent) 45%, color-mix(in srgb, var(--color-accent) 70%, #000) 100%);
+  background: radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--color-accent) 45%, var(--color-background)) 0%, var(--color-accent) 50%, color-mix(in srgb, var(--color-accent) 80%, var(--color-highlight)) 100%);
   color: var(--color-accent-contrast);
   isolation: isolate;
 }
@@ -1232,7 +1233,7 @@ textarea.input {
 }
 
 .values__heading {
-  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-size: clamp(1.9rem, 2.6vw, 2.3rem);
 }
 
 .values__intro .rte {
@@ -1259,7 +1260,7 @@ textarea.input {
   aspect-ratio: 3 / 4;
   border-radius: calc(var(--radius) * 1.25);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid color-mix(in srgb, var(--color-foreground) 10%, transparent);
   transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out);
 }
 
@@ -1325,7 +1326,7 @@ textarea.input {
   margin-bottom: 1rem;
   font-family: var(--font-heading-family);
   font-size: 2.5rem;
-  color: var(--color-highlight);
+  color: color-mix(in srgb, var(--color-highlight) 70%, var(--color-foreground));
 }
 
 .benefit__icon {
@@ -1365,7 +1366,7 @@ textarea.input {
 
 .testimonial__stars {
   margin-bottom: 1.25rem;
-  color: var(--color-accent);
+  color: color-mix(in srgb, var(--color-highlight) 75%, var(--color-foreground));
   letter-spacing: 0.15em;
 }
 
@@ -1610,7 +1611,7 @@ textarea.input {
 }
 
 .variant-picker__values input:focus-visible + .variant-picker__pill {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-foreground);
   outline-offset: 2px;
 }
 
@@ -2139,8 +2140,8 @@ a.pagination__item:hover {
 
 .footer {
   padding: clamp(3.5rem, 7vw, 5.5rem) 0 2rem;
-  background: var(--color-foreground);
-  color: var(--color-background);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
 }
 
 .footer__grid {
@@ -2148,7 +2149,7 @@ a.pagination__item:hover {
   gap: 2.5rem;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   padding-bottom: 3rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-background) 15%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-accent-contrast) 15%, transparent);
 }
 
 @media (min-width: 990px) {
@@ -2189,9 +2190,9 @@ a.pagination__item:hover {
 }
 
 .footer .input {
-  background: transparent;
+  background: var(--color-background);
   color: inherit;
-  border-color: color-mix(in srgb, var(--color-background) 30%, transparent);
+  border-color: color-mix(in srgb, var(--color-accent-contrast) 30%, transparent);
 }
 
 .footer .newsletter-form__field {
@@ -2199,9 +2200,9 @@ a.pagination__item:hover {
 }
 
 .footer .button {
-  --btn-bg: var(--color-highlight);
-  --btn-fg: var(--color-foreground);
-  --btn-border: var(--color-highlight);
+  --btn-bg: var(--color-accent-contrast);
+  --btn-fg: var(--color-accent);
+  --btn-border: var(--color-accent-contrast);
   --btn-hover-bg: var(--color-background);
   --btn-hover-fg: var(--color-foreground);
 }
@@ -2242,14 +2243,14 @@ a.pagination__item:hover {
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  border: 1px solid color-mix(in srgb, var(--color-background) 25%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent-contrast) 25%, transparent);
   border-radius: 50%;
   transition: background-color 0.3s, color 0.3s, transform 0.4s var(--ease-out);
 }
 
 .social-icons__link:hover {
-  background: var(--color-background);
-  color: var(--color-foreground);
+  background: var(--color-accent-contrast);
+  color: var(--color-accent);
   transform: translateY(-3px);
 }
 
