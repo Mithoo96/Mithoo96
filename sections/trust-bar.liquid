@@ -1,0 +1,59 @@
+<section class="trust-bar">
+  <div class="page-width">
+    <ul class="trust-bar__list" role="list">
+      {%- for block in section.blocks -%}
+        <li class="trust-bar__item" data-reveal style="--reveal-delay: {{ forloop.index0 }};" {{ block.shopify_attributes }}>
+          {% render 'icon', name: block.settings.icon %}
+          <span>{{ block.settings.text | escape }}</span>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.trust_bar.name",
+  "class": "section-trust-bar",
+  "max_blocks": 5,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:sections.trust_bar.blocks.item.name",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:sections.common.icon",
+          "options": [
+            { "value": "leaf", "label": "t:sections.common.icon_options.leaf" },
+            { "value": "drop", "label": "t:sections.common.icon_options.drop" },
+            { "value": "sun", "label": "t:sections.common.icon_options.sun" },
+            { "value": "shield", "label": "t:sections.common.icon_options.shield" },
+            { "value": "sparkle", "label": "t:sections.common.icon_options.sparkle" },
+            { "value": "heart", "label": "t:sections.common.icon_options.heart" },
+            { "value": "recycle", "label": "t:sections.common.icon_options.recycle" },
+            { "value": "flask", "label": "t:sections.common.icon_options.flask" },
+            { "value": "hand", "label": "t:sections.common.icon_options.hand" },
+            { "value": "flower", "label": "t:sections.common.icon_options.flower" },
+            { "value": "star", "label": "t:sections.common.icon_options.star" }
+          ],
+          "default": "shield"
+        },
+        { "type": "text", "id": "text", "label": "t:sections.common.text", "default": "Dermatologist tested" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.trust_bar.name",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "shield", "text": "Dermatologist tested" } },
+        { "type": "item", "settings": { "icon": "sun", "text": "For all skin types" } },
+        { "type": "item", "settings": { "icon": "heart", "text": "Vegan & cruelty-free" } },
+        { "type": "item", "settings": { "icon": "leaf", "text": "Sustainably made" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

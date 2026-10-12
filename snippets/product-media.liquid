@@ -1,0 +1,28 @@
+{%- comment -%}
+  Renders a single product media item.
+  Accepts:
+  - media: {Object} product media (required)
+  - loading: {String} 'eager' or 'lazy'
+{%- endcomment -%}
+{%- case media.media_type -%}
+  {%- when 'image' -%}
+    {{
+      media
+      | image_url: width: 1800
+      | image_tag:
+        widths: '550, 750, 1100, 1500, 1800',
+        sizes: '(min-width: 990px) 55vw, 100vw',
+        loading: loading,
+        class: 'product__image'
+    }}
+  {%- when 'video', 'external_video' -%}
+    <div class="product__video">
+      {{ media | media_tag: image_size: '1500x', autoplay: false, loop: true, controls: true, preload: 'none' }}
+    </div>
+  {%- when 'model' -%}
+    <div class="product__model">
+      {{ media | media_tag: image_size: '1500x' }}
+    </div>
+  {%- else -%}
+    {{ media | media_tag }}
+{%- endcase -%}

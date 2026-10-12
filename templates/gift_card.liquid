@@ -1,0 +1,62 @@
+{%- layout none -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    {%- assign formatted_initial_value = gift_card.initial_value | money -%}
+    <title>{{ 'gift_cards.issued.title' | t: value: formatted_initial_value, shop: shop.name }}</title>
+    {{ settings.type_body_font | font_face: font_display: 'swap' }}
+    {% style %}
+      :root {
+        --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+        --font-heading-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+        --color-background: {{ settings.color_background }};
+        --color-foreground: {{ settings.color_foreground }};
+        --color-accent: {{ settings.color_accent }};
+        --color-accent-contrast: {{ settings.color_accent_contrast }};
+        --color-highlight: {{ settings.color_highlight }};
+        --color-surface-alt: {{ settings.color_surface_alt }};
+        --color-border: {{ settings.color_foreground | color_modify: 'alpha', 0.12 }};
+        --color-muted: {{ settings.color_foreground | color_modify: 'alpha', 0.65 }};
+        --radius: {{ settings.corner_radius }}px;
+      }
+    {% endstyle %}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
+    {{ content_for_header }}
+  </head>
+  <body>
+    <main class="password">
+      <div class="password__box gift-card">
+        <p class="eyebrow">{{ shop.name }}</p>
+        <h1 class="password__title">{{ 'gift_cards.issued.subtext' | t }}</h1>
+        <p class="gift-card__value">{{ gift_card.initial_value | money }}</p>
+        {%- if gift_card.balance != gift_card.initial_value -%}
+          {%- assign formatted_balance = gift_card.balance | money -%}
+          <p>{{ 'gift_cards.issued.remaining_html' | t: balance: formatted_balance }}</p>
+        {%- endif -%}
+        {%- if gift_card.expired or gift_card.enabled == false -%}
+          <p class="form-message form-message--error">{{ 'gift_cards.issued.disabled' | t }}</p>
+        {%- endif -%}
+        <p class="gift-card__code">{{ gift_card.code | format_code }}</p>
+        <div id="QrCode" class="gift-card__qr" data-identifier="{{ gift_card.qr_identifier }}"></div>
+        {%- if gift_card.pass_url -%}
+          <a href="{{ gift_card.pass_url }}" class="gift-card__wallet">
+            <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" width="120" height="40" alt="{{ 'gift_cards.issued.add_to_apple_wallet' | t }}" loading="lazy">
+          </a>
+        {%- endif -%}
+        <div class="banner__buttons">
+          <a href="{{ shop.url }}" class="button">{{ 'gift_cards.issued.shop_link' | t }}</a>
+          <button type="button" class="button button--outline" onclick="window.print();">{{ 'gift_cards.issued.print' | t }}</button>
+        </div>
+      </div>
+    </main>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var el = document.getElementById('QrCode');
+        if (el && window.QRCode) new QRCode(el, { text: el.dataset.identifier, width: 120, height: 120 });
+      });
+    </script>
+  </body>
+</html>

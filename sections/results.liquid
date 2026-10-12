@@ -1,0 +1,146 @@
+<section class="section section--{{ section.settings.background }}">
+  <div class="page-width results">
+    <div class="results__intro" data-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="results__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="results__body">
+      {%- assign stats = section.blocks | where: 'type', 'stat' -%}
+      {%- assign features = section.blocks | where: 'type', 'feature' -%}
+
+      {%- if stats.size > 0 -%}
+        <ul class="results__stats" role="list">
+          {%- for block in stats -%}
+            <li class="stat" data-reveal style="--reveal-delay: {{ forloop.index0 }};" {{ block.shopify_attributes }}>
+              <span class="icon-circle">{% render 'icon', name: block.settings.icon %}</span>
+              <span>
+                <span class="stat__value"><span data-count-to="{{ block.settings.value }}">{{ block.settings.value }}</span>{{ block.settings.suffix | escape }}</span>
+                <span class="stat__label">{{ block.settings.label | escape }}</span>
+              </span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if features.size > 0 -%}
+        <ul class="results__features" role="list">
+          {%- for block in features -%}
+            <li class="results__feature" data-reveal style="--reveal-delay: {{ forloop.index0 }};" {{ block.shopify_attributes }}>
+              {% render 'icon', name: block.settings.icon %}
+              <strong>{{ block.settings.title | escape }}</strong>
+              <span>{{ block.settings.text | escape }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.footnote != blank -%}
+        <p class="results__footnote">{{ section.settings.footnote | escape }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.results.name",
+  "class": "section-results",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:sections.common.eyebrow", "default": "Visible results" },
+    { "type": "textarea", "id": "heading", "label": "t:sections.common.heading", "default": "Real results.\nReal confidence." },
+    { "type": "richtext", "id": "text", "label": "t:sections.common.text", "default": "<p>Our formulas are designed to deliver visible improvements, gently and effectively.</p>" },
+    { "type": "text", "id": "footnote", "label": "t:sections.results.settings.footnote.label", "default": "*Based on a consumer study. Replace with your own results." },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "t:sections.common.background",
+      "options": [
+        { "value": "default", "label": "t:sections.common.background_options.default" },
+        { "value": "alt", "label": "t:sections.common.background_options.alt" },
+        { "value": "accent", "label": "t:sections.common.background_options.accent" }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "t:sections.results.blocks.stat.name",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:sections.common.icon",
+          "options": [
+            { "value": "leaf", "label": "t:sections.common.icon_options.leaf" },
+            { "value": "drop", "label": "t:sections.common.icon_options.drop" },
+            { "value": "sun", "label": "t:sections.common.icon_options.sun" },
+            { "value": "shield", "label": "t:sections.common.icon_options.shield" },
+            { "value": "sparkle", "label": "t:sections.common.icon_options.sparkle" },
+            { "value": "heart", "label": "t:sections.common.icon_options.heart" },
+            { "value": "recycle", "label": "t:sections.common.icon_options.recycle" },
+            { "value": "flask", "label": "t:sections.common.icon_options.flask" },
+            { "value": "hand", "label": "t:sections.common.icon_options.hand" },
+            { "value": "flower", "label": "t:sections.common.icon_options.flower" },
+            { "value": "star", "label": "t:sections.common.icon_options.star" }
+          ],
+          "default": "sparkle"
+        },
+        { "type": "number", "id": "value", "label": "t:sections.results.blocks.stat.settings.value.label", "default": 95 },
+        { "type": "text", "id": "suffix", "label": "t:sections.results.blocks.stat.settings.suffix.label", "default": "%" },
+        { "type": "text", "id": "label", "label": "t:sections.common.text", "default": "noticed softer hands*" }
+      ]
+    },
+    {
+      "type": "feature",
+      "name": "t:sections.results.blocks.feature.name",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:sections.common.icon",
+          "options": [
+            { "value": "leaf", "label": "t:sections.common.icon_options.leaf" },
+            { "value": "drop", "label": "t:sections.common.icon_options.drop" },
+            { "value": "sun", "label": "t:sections.common.icon_options.sun" },
+            { "value": "shield", "label": "t:sections.common.icon_options.shield" },
+            { "value": "sparkle", "label": "t:sections.common.icon_options.sparkle" },
+            { "value": "heart", "label": "t:sections.common.icon_options.heart" },
+            { "value": "recycle", "label": "t:sections.common.icon_options.recycle" },
+            { "value": "flask", "label": "t:sections.common.icon_options.flask" },
+            { "value": "hand", "label": "t:sections.common.icon_options.hand" },
+            { "value": "flower", "label": "t:sections.common.icon_options.flower" },
+            { "value": "star", "label": "t:sections.common.icon_options.star" }
+          ],
+          "default": "drop"
+        },
+        { "type": "text", "id": "title", "label": "t:sections.common.heading", "default": "Hydrating" },
+        { "type": "text", "id": "text", "label": "t:sections.common.text", "default": "Deep moisture for lasting comfort" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.results.name",
+      "blocks": [
+        { "type": "stat", "settings": { "icon": "sparkle", "value": 95, "suffix": "%", "label": "noticed softer hands*" } },
+        { "type": "stat", "settings": { "icon": "hand", "value": 89, "suffix": "%", "label": "saw stronger nails*" } },
+        { "type": "stat", "settings": { "icon": "drop", "value": 92, "suffix": "%", "label": "felt more hydrated*" } },
+        { "type": "feature", "settings": { "icon": "drop", "title": "Hydrating", "text": "Deep moisture for lasting comfort" } },
+        { "type": "feature", "settings": { "icon": "sun", "title": "Brightening", "text": "Even tone and natural glow" } },
+        { "type": "feature", "settings": { "icon": "leaf", "title": "Soothing", "text": "Calms dry, irritated skin" } },
+        { "type": "feature", "settings": { "icon": "shield", "title": "Protecting", "text": "Strengthens the skin barrier" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

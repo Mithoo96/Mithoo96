@@ -1,0 +1,66 @@
+{%- comment -%}
+  Renders a product card.
+  Accepts:
+  - product: {Object} product (optional; a placeholder renders when blank)
+  - loading: {String} image loading strategy, defaults to 'lazy'
+{%- endcomment -%}
+{%- liquid
+  assign loading = loading | default: 'lazy'
+  assign sizes = '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
+-%}
+
+<div class="card">
+  {%- if product != blank -%}
+    <a href="{{ product.url }}" class="card__link">
+      <div class="card__media">
+        {%- if product.featured_media -%}
+          {{
+            product.featured_media
+            | image_url: width: 900
+            | image_tag:
+              widths: '300, 450, 600, 900',
+              sizes: sizes,
+              loading: loading,
+              class: 'card__image card__image--primary'
+          }}
+          {%- if settings.card_show_second_image and product.media[1] -%}
+            {{
+              product.media[1]
+              | image_url: width: 900
+              | image_tag:
+                widths: '300, 450, 600, 900',
+                sizes: sizes,
+                loading: 'lazy',
+                class: 'card__image card__image--secondary',
+                alt: ''
+            }}
+          {%- endif -%}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+        {%- endif -%}
+
+        {%- if product.available == false -%}
+          <span class="badge">{{ 'products.product.sold_out' | t }}</span>
+        {%- elsif product.compare_at_price > product.price -%}
+          <span class="badge badge--sale">{{ 'products.product.on_sale' | t }}</span>
+        {%- endif -%}
+      </div>
+
+      <div class="card__info">
+        {%- if settings.card_show_vendor -%}
+          <p class="card__vendor">{{ product.vendor }}</p>
+        {%- endif -%}
+        <h3 class="card__title">{{ product.title }}</h3>
+        {% render 'price', product: product, show_range: true %}
+      </div>
+    </a>
+  {%- else -%}
+    <div class="card__media">
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+    </div>
+    <div class="card__info">
+      <h3 class="card__title">{{ 'products.product.placeholder_title' | t }}</h3>
+      <div class="price"><span class="price__regular">{{ 1999 | money }}</span></div>
+    </div>
+  {%- endif -%}
+</div>

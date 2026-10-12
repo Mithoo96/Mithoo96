@@ -1,0 +1,72 @@
+<section class="section section--{{ section.settings.background }}">
+  <div class="page-width">
+    <div class="section-heading section-heading--center" data-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="section-heading__title">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+    </div>
+
+    <ul class="benefits" role="list">
+      {%- for block in section.blocks -%}
+        <li class="benefit" data-reveal style="--reveal-delay: {{ forloop.index0 }};" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <div class="benefit__icon">
+              {{ block.settings.image | image_url: width: 160 | image_tag: loading: 'lazy', width: 64, height: 64 }}
+            </div>
+          {%- else -%}
+            <span class="benefit__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          {%- endif -%}
+          <h3 class="benefit__title">{{ block.settings.title | escape }}</h3>
+          <div class="benefit__text rte">{{ block.settings.text }}</div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.benefits.name",
+  "class": "section-benefits",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:sections.common.eyebrow", "default": "Why Faroo" },
+    { "type": "text", "id": "heading", "label": "t:sections.common.heading", "default": "Luxury you can feel" },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "t:sections.common.background",
+      "options": [
+        { "value": "default", "label": "t:sections.common.background_options.default" },
+        { "value": "alt", "label": "t:sections.common.background_options.alt" },
+        { "value": "accent", "label": "t:sections.common.background_options.accent" }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "t:sections.benefits.blocks.benefit.name",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:sections.benefits.blocks.benefit.settings.image.label" },
+        { "type": "text", "id": "title", "label": "t:sections.common.heading", "default": "Clean ingredients" },
+        { "type": "richtext", "id": "text", "label": "t:sections.common.text", "default": "<p>Plant-powered formulas, free from parabens and harsh sulfates.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.benefits.name",
+      "blocks": [
+        { "type": "benefit", "settings": { "title": "Clean ingredients", "text": "<p>Plant-powered formulas, free from parabens and harsh sulfates.</p>" } },
+        { "type": "benefit", "settings": { "title": "Visible results", "text": "<p>Softer, smoother hands and stronger nails in as little as 7 days.</p>" } },
+        { "type": "benefit", "settings": { "title": "Cruelty free", "text": "<p>Never tested on animals. Always kind to your skin.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

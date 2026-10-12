@@ -1,0 +1,15 @@
+<section class="section">
+  <div class="page-width page-width--narrow empty-state">
+    <p class="eyebrow">404</p>
+    <h1 class="page__title">{{ 'templates.404.title' | t }}</h1>
+    <p>{{ 'templates.404.subtext' | t }}</p>
+    <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'templates.cart.continue_shopping' | t }}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main_404.name",
+  "class": "section-main-404"
+}
+{% endschema %}

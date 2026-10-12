@@ -1,0 +1,128 @@
+{%- assign menu = section.settings.menu -%}
+
+<header class="header{% if section.settings.sticky %} header--sticky{% endif %}" {{ section.shopify_attributes }}>
+  <div class="page-width header__inner">
+    {%- if menu != blank -%}
+      <details class="menu-drawer" data-menu-drawer>
+        <summary class="header__icon menu-drawer__toggle" aria-label="{{ 'sections.header.menu' | t }}">
+          <span class="menu-drawer__open">{% render 'icon', name: 'menu' %}</span>
+          <span class="menu-drawer__close">{% render 'icon', name: 'close' %}</span>
+        </summary>
+        <nav class="menu-drawer__panel" aria-label="{{ 'sections.header.menu' | t }}">
+          <ul class="menu-drawer__list" role="list">
+            {%- for link in menu.links -%}
+              <li>
+                <a href="{{ link.url }}" class="menu-drawer__link{% if link.active %} is-active{% endif %}">{{ link.title | escape }}</a>
+                {%- if link.links != blank -%}
+                  <ul class="menu-drawer__sublist" role="list">
+                    {%- for child in link.links -%}
+                      <li><a href="{{ child.url }}" class="menu-drawer__sublink">{{ child.title | escape }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      </details>
+    {%- endif -%}
+
+    {%- if request.page_type == 'index' -%}<h1 class="header__heading">{%- endif -%}
+    <a href="{{ routes.root_url }}" class="header__logo">
+      {%- if section.settings.logo != blank -%}
+        {%- assign logo_height = section.settings.logo_width | times: section.settings.logo.height | divided_by: section.settings.logo.width -%}
+        {{
+          section.settings.logo
+          | image_url: width: 600
+          | image_tag:
+            width: section.settings.logo_width,
+            height: logo_height,
+            widths: '150, 300, 600',
+            alt: shop.name,
+            loading: 'eager'
+        }}
+      {%- else -%}
+        <span class="header__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+    {%- if request.page_type == 'index' -%}</h1>{%- endif -%}
+
+    {%- if menu != blank -%}
+      <nav class="header__nav" aria-label="{{ 'sections.header.menu' | t }}">
+        <ul class="header__menu" role="list">
+          {%- for link in menu.links -%}
+            <li class="header__menu-item{% if link.links != blank %} has-dropdown{% endif %}">
+              <a href="{{ link.url }}" class="header__menu-link{% if link.active or link.child_active %} is-active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>
+                {{ link.title | escape }}
+              </a>
+              {%- if link.links != blank -%}
+                <ul class="header__dropdown" role="list">
+                  {%- for child in link.links -%}
+                    <li><a href="{{ child.url }}" class="header__dropdown-link">{{ child.title | escape }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <div class="header__icons">
+      <a href="{{ routes.search_url }}" class="header__icon">
+        {% render 'icon', name: 'search' %}
+        <span class="visually-hidden">{{ 'general.search.search' | t }}</span>
+      </a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}" class="header__icon header__icon--account">
+          {% render 'icon', name: 'account' %}
+          <span class="visually-hidden">{{ 'customer.account' | t }}</span>
+        </a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart" id="cart-icon-bubble">
+        {% render 'icon', name: 'cart' %}
+        <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+        <span class="cart-count{% if cart.item_count == 0 %} is-empty{% endif %}" data-cart-count aria-hidden="true">
+          {{- cart.item_count -}}
+        </span>
+      </a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "t:sections.header.settings.logo.label"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "t:sections.header.settings.logo_width.label",
+      "default": 120
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:sections.header.settings.menu.label",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "t:sections.header.settings.sticky.label",
+      "default": true
+    }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

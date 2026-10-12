@@ -1,0 +1,22 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "settings": {
+        "text": "Complimentary shipping on orders over $50",
+        "link": ""
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_width": 120,
+        "menu": "main-menu",
+        "sticky": true
+      }
+    }
+  },
+  "order": ["announcement-bar", "header"]
+}

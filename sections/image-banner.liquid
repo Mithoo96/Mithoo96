@@ -1,0 +1,179 @@
+{%- liquid
+  assign image = section.settings.image
+  assign mobile_image = section.settings.image_mobile | default: image
+  assign overlay = section.settings.overlay_opacity | divided_by: 100.0
+  assign focal_desktop = image.presentation.focal_point | default: '70% 30%' | prepend: 'object-position: '
+  assign focal_mobile = mobile_image.presentation.focal_point | default: '60% 25%' | prepend: 'object-position: '
+-%}
+
+<section
+  class="banner banner--{{ section.settings.height }} banner--{{ section.settings.overlay_style }}"
+  style="--overlay-opacity: {{ overlay }};"
+>
+  <div class="banner__media">
+    {%- if image != blank -%}
+      {{
+        image
+        | image_url: width: 3000
+        | image_tag:
+          widths: '750, 1100, 1500, 2000, 2500, 3000',
+          sizes: '100vw',
+          loading: 'eager',
+          fetchpriority: 'high',
+          class: 'banner__image banner__image--desktop',
+          style: focal_desktop
+      }}
+      {{
+        mobile_image
+        | image_url: width: 1500
+        | image_tag:
+          widths: '375, 750, 1100, 1500',
+          sizes: '100vw',
+          loading: 'eager',
+          class: 'banner__image banner__image--mobile',
+          style: focal_mobile
+      }}
+    {%- else -%}
+      {{ 'lifestyle-2' | placeholder_svg_tag: 'banner__image placeholder' }}
+    {%- endif -%}
+  </div>
+
+  <div class="banner__content page-width">
+    <div class="banner__box">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--light" data-reveal>{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="banner__heading display" data-reveal style="--reveal-delay: 1;">
+          {{- section.settings.heading | escape | newline_to_br -}}
+        </h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="banner__text rte" data-reveal style="--reveal-delay: 2;">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank or section.settings.button_label_2 != blank -%}
+        <div class="banner__buttons" data-reveal style="--reveal-delay: 3;">
+          {%- if section.settings.button_label != blank -%}
+            <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="button button--dark">
+              {{- section.settings.button_label | escape -}}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.button_label_2 != blank -%}
+            <a href="{{ section.settings.button_link_2 | default: routes.all_products_collection_url }}" class="button button--ghost">
+              {{- section.settings.button_label_2 | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="banner__features" role="list">
+        {%- for block in section.blocks -%}
+          <li class="banner__feature" data-reveal style="--reveal-delay: {{ forloop.index | plus: 2 }};" {{ block.shopify_attributes }}>
+            <span class="icon-circle icon-circle--glass">{% render 'icon', name: block.settings.icon %}</span>
+            <span>
+              <strong class="banner__feature-title">{{ block.settings.title | escape }}</strong>
+              <span class="banner__feature-text">{{ block.settings.text | escape }}</span>
+            </span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.image_banner.name",
+  "class": "section-image-banner",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "t:sections.image_banner.settings.image.label" },
+    { "type": "image_picker", "id": "image_mobile", "label": "t:sections.image_banner.settings.image_mobile.label" },
+    {
+      "type": "select",
+      "id": "overlay_style",
+      "label": "t:sections.image_banner.settings.overlay_style.label",
+      "options": [
+        { "value": "accent", "label": "t:sections.image_banner.settings.overlay_style.options.accent" },
+        { "value": "light", "label": "t:sections.image_banner.settings.overlay_style.options.light" }
+      ],
+      "default": "accent"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "t:sections.image_banner.settings.overlay_opacity.label",
+      "default": 85
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "t:sections.image_banner.settings.height.label",
+      "options": [
+        { "value": "medium", "label": "t:sections.image_banner.settings.height.options.medium" },
+        { "value": "large", "label": "t:sections.image_banner.settings.height.options.large" },
+        { "value": "full", "label": "t:sections.image_banner.settings.height.options.full" }
+      ],
+      "default": "large"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:sections.common.eyebrow" },
+    { "type": "textarea", "id": "heading", "label": "t:sections.common.heading", "default": "Beautiful hands.\nConfident you." },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:sections.common.text",
+      "default": "<p>Luxurious hand and nail care powered by nature and backed by science.</p>"
+    },
+    { "type": "text", "id": "button_label", "label": "t:sections.image_banner.settings.button_label.label", "default": "Shop now" },
+    { "type": "url", "id": "button_link", "label": "t:sections.image_banner.settings.button_link.label" },
+    { "type": "text", "id": "button_label_2", "label": "t:sections.image_banner.settings.button_label_2.label", "default": "Explore ingredients" },
+    { "type": "url", "id": "button_link_2", "label": "t:sections.image_banner.settings.button_link_2.label" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "t:sections.image_banner.blocks.feature.name",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:sections.common.icon",
+          "options": [
+            { "value": "leaf", "label": "t:sections.common.icon_options.leaf" },
+            { "value": "drop", "label": "t:sections.common.icon_options.drop" },
+            { "value": "sun", "label": "t:sections.common.icon_options.sun" },
+            { "value": "shield", "label": "t:sections.common.icon_options.shield" },
+            { "value": "sparkle", "label": "t:sections.common.icon_options.sparkle" },
+            { "value": "heart", "label": "t:sections.common.icon_options.heart" },
+            { "value": "recycle", "label": "t:sections.common.icon_options.recycle" },
+            { "value": "flask", "label": "t:sections.common.icon_options.flask" },
+            { "value": "hand", "label": "t:sections.common.icon_options.hand" },
+            { "value": "flower", "label": "t:sections.common.icon_options.flower" },
+            { "value": "star", "label": "t:sections.common.icon_options.star" }
+          ],
+          "default": "leaf"
+        },
+        { "type": "text", "id": "title", "label": "t:sections.common.heading", "default": "Clean & safe" },
+        { "type": "text", "id": "text", "label": "t:sections.common.text", "default": "Gentle on skin, kind to nature" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.image_banner.name",
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "leaf", "title": "Clean & safe", "text": "Gentle on skin, kind to nature" } },
+        { "type": "feature", "settings": { "icon": "flask", "title": "Clinically tested", "text": "Proven results you can trust" } },
+        { "type": "feature", "settings": { "icon": "flower", "title": "Natural ingredients", "text": "Plant-powered formulas" } },
+        { "type": "feature", "settings": { "icon": "recycle", "title": "Sustainable", "text": "Better for you, better for Earth" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

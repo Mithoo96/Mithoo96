@@ -1,0 +1,28 @@
+<section class="section">
+  <div class="page-width">
+    <h1 class="page__title">{{ 'templates.list_collections.title' | t }}</h1>
+    <ul class="collection-grid collection-grid--3" role="list">
+      {%- for collection in collections -%}
+        <li data-reveal>
+          <a href="{{ collection.url }}" class="collection-tile">
+            <div class="collection-tile__media">
+              {%- if collection.featured_image -%}
+                {{ collection.featured_image | image_url: width: 1100 | image_tag: widths: '375, 550, 750, 1100', sizes: '(min-width: 750px) 33vw, 100vw', loading: 'lazy' }}
+              {%- else -%}
+                {{ 'collection-1' | placeholder_svg_tag: 'placeholder' }}
+              {%- endif -%}
+            </div>
+            <span class="collection-tile__title">{{ collection.title | escape }} {% render 'icon', name: 'arrow' %}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main_list_collections.name",
+  "class": "section-main-list-collections"
+}
+{% endschema %}

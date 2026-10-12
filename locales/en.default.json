@@ -1,0 +1,125 @@
+{
+  "accessibility": {
+    "skip_to_content": "Skip to content"
+  },
+  "general": {
+    "page": "Page {{ page }}",
+    "pagination": {
+      "label": "Pagination",
+      "next": "Next",
+      "previous": "Previous"
+    },
+    "password_page": {
+      "coming_soon": "Opening soon",
+      "enter": "Enter",
+      "login_link": "Enter using password",
+      "password": "Password"
+    },
+    "search": {
+      "placeholder": "Search our products",
+      "results_count": {
+        "one": "{{ count }} result for “{{ terms }}”",
+        "other": "{{ count }} results for “{{ terms }}”"
+      },
+      "search": "Search",
+      "title": "Search"
+    },
+    "share": {
+      "link_copied": "Link copied"
+    }
+  },
+  "blogs": {
+    "article": {
+      "back_to_blog": "Back to {{ title }}"
+    }
+  },
+  "customer": {
+    "account": "Account"
+  },
+  "gift_cards": {
+    "issued": {
+      "add_to_apple_wallet": "Add to Apple Wallet",
+      "disabled": "This gift card is no longer active",
+      "print": "Print",
+      "remaining_html": "{{ balance }} remaining",
+      "shop_link": "Visit the store",
+      "subtext": "Your gift card",
+      "title": "Here's your {{ value }} gift card for {{ shop }}!"
+    }
+  },
+  "newsletter": {
+    "button": "Subscribe",
+    "label": "Email address",
+    "success": "Thank you for subscribing."
+  },
+  "products": {
+    "price": {
+      "from_price": "From {{ price }}",
+      "regular_price": "Regular price",
+      "sale_price": "Sale price"
+    },
+    "product": {
+      "add_to_cart": "Add to cart",
+      "added": "Added to cart",
+      "include_taxes": "Taxes included. ",
+      "on_sale": "Sale",
+      "placeholder_title": "Product name",
+      "quantity": "Quantity",
+      "quantity_decrease": "Decrease quantity",
+      "quantity_increase": "Increase quantity",
+      "share": "Share",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Shipping</a> calculated at checkout.",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable"
+    }
+  },
+  "sections": {
+    "collection_list": {
+      "placeholder": "Collection"
+    },
+    "featured_collection": {
+      "view_all": "View all"
+    },
+    "header": {
+      "menu": "Menu"
+    },
+    "testimonials": {
+      "rating": "Rated {{ rating }} out of 5"
+    }
+  },
+  "templates": {
+    "404": {
+      "title": "Page not found",
+      "subtext": "The page you were looking for doesn't exist."
+    },
+    "cart": {
+      "cart": "Cart",
+      "checkout": "Check out",
+      "continue_shopping": "Continue shopping",
+      "empty": "Your cart is empty.",
+      "note": "Order special instructions",
+      "remove": "Remove",
+      "subtotal": "Subtotal",
+      "taxes_and_shipping_at_checkout": "Taxes, discounts and shipping calculated at checkout.",
+      "taxes_included_shipping_at_checkout": "Taxes included. Discounts and shipping calculated at checkout.",
+      "title": "Your cart",
+      "update": "Update"
+    },
+    "collection": {
+      "apply": "Apply",
+      "clear": "Clear all",
+      "empty": "No products found.",
+      "eyebrow": "Collection",
+      "from": "From",
+      "product_count": {
+        "one": "{{ count }} product",
+        "other": "{{ count }} products"
+      },
+      "sort_by": "Sort by",
+      "to": "To"
+    },
+    "list_collections": {
+      "title": "Collections"
+    }
+  }
+}

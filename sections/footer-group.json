@@ -1,0 +1,32 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "footer"
+          }
+        },
+        "about": {
+          "type": "text",
+          "settings": {
+            "heading": "About us",
+            "text": "<p>Luxurious hand care, crafted to restore softness, strength and radiance.</p>"
+          }
+        }
+      },
+      "block_order": ["menu", "about"],
+      "settings": {
+        "show_newsletter": true,
+        "newsletter_heading": "Join the Faroo circle",
+        "show_payment_icons": true
+      }
+    }
+  },
+  "order": ["footer"]
+}

@@ -1,0 +1,111 @@
+{
+  "sections": {
+    "hero": {
+      "type": "image-banner",
+      "blocks": {
+        "feature-1": { "type": "feature", "settings": { "icon": "leaf", "title": "Clean & safe", "text": "Gentle on skin, kind to nature" } },
+        "feature-2": { "type": "feature", "settings": { "icon": "flask", "title": "Clinically tested", "text": "Proven results you can trust" } },
+        "feature-3": { "type": "feature", "settings": { "icon": "flower", "title": "Natural ingredients", "text": "Plant-powered formulas" } },
+        "feature-4": { "type": "feature", "settings": { "icon": "recycle", "title": "Sustainable", "text": "Better for you, better for Earth" } }
+      },
+      "block_order": ["feature-1", "feature-2", "feature-3", "feature-4"],
+      "settings": {
+        "height": "large",
+        "overlay_style": "accent",
+        "overlay_opacity": 85,
+        "eyebrow": "",
+        "heading": "Beautiful hands.\nConfident you.",
+        "text": "<p>Luxurious hand and nail care powered by nature and backed by science.</p>",
+        "button_label": "Shop now",
+        "button_label_2": "Explore ingredients"
+      }
+    },
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "item-1": { "type": "item", "settings": { "icon": "shield", "text": "Dermatologist tested" } },
+        "item-2": { "type": "item", "settings": { "icon": "sun", "text": "For all skin types" } },
+        "item-3": { "type": "item", "settings": { "icon": "heart", "text": "Vegan & cruelty-free" } },
+        "item-4": { "type": "item", "settings": { "icon": "leaf", "text": "Sustainably made" } }
+      },
+      "block_order": ["item-1", "item-2", "item-3", "item-4"],
+      "settings": {}
+    },
+    "spotlight": {
+      "type": "image-with-text",
+      "settings": {
+        "image_position": "right",
+        "eyebrow": "Our bestsellers",
+        "heading": "Glow naturally. Every day.",
+        "text": "<p>Thoughtfully formulated products that hydrate, protect and reveal your hands' natural radiance.</p>",
+        "button_label": "Shop bestsellers",
+        "background": "alt"
+      }
+    },
+    "bestsellers": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Shop the ritual",
+        "heading": "Loved by hands everywhere",
+        "center": true,
+        "products_to_show": 4,
+        "columns": 4,
+        "show_view_all": true,
+        "background": "default"
+      }
+    },
+    "results": {
+      "type": "results",
+      "blocks": {
+        "stat-1": { "type": "stat", "settings": { "icon": "sparkle", "value": 95, "suffix": "%", "label": "noticed softer hands*" } },
+        "stat-2": { "type": "stat", "settings": { "icon": "hand", "value": 89, "suffix": "%", "label": "saw stronger nails*" } },
+        "stat-3": { "type": "stat", "settings": { "icon": "drop", "value": 92, "suffix": "%", "label": "felt more hydrated*" } },
+        "feature-1": { "type": "feature", "settings": { "icon": "drop", "title": "Hydrating", "text": "Deep moisture for lasting comfort" } },
+        "feature-2": { "type": "feature", "settings": { "icon": "sun", "title": "Brightening", "text": "Even tone and natural glow" } },
+        "feature-3": { "type": "feature", "settings": { "icon": "leaf", "title": "Soothing", "text": "Calms dry, irritated skin" } },
+        "feature-4": { "type": "feature", "settings": { "icon": "shield", "title": "Protecting", "text": "Strengthens the skin barrier" } }
+      },
+      "block_order": ["stat-1", "stat-2", "stat-3", "feature-1", "feature-2", "feature-3", "feature-4"],
+      "settings": {
+        "eyebrow": "Visible results",
+        "heading": "Real results.\nReal confidence.",
+        "text": "<p>Our formulas are designed to deliver visible improvements, gently and effectively.</p>",
+        "footnote": "*Based on a consumer study. Replace with your own results.",
+        "background": "default"
+      }
+    },
+    "values": {
+      "type": "values-cards",
+      "blocks": {
+        "card-1": { "type": "card", "settings": { "title": "Clean\ningredients" } },
+        "card-2": { "type": "card", "settings": { "title": "Eco-friendly\npackaging" } },
+        "card-3": { "type": "card", "settings": { "title": "Conscious\nbeauty" } }
+      },
+      "block_order": ["card-1", "card-2", "card-3"],
+      "settings": {
+        "heading": "Care that's kind to you\nand to the planet.",
+        "text": "<p>Sustainable by nature. Responsible by choice.</p>",
+        "button_label": "Learn our story"
+      }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "blocks": {
+        "review-1": { "type": "testimonial", "settings": { "quote": "<p>My hands have never felt this soft. It absorbs instantly and the scent is divine.</p>", "author": "Customer name", "rating": 5 } },
+        "review-2": { "type": "testimonial", "settings": { "quote": "<p>My nails finally stopped breaking. This is now part of my daily ritual.</p>", "author": "Customer name", "rating": 5 } },
+        "review-3": { "type": "testimonial", "settings": { "quote": "<p>Feels like a spa treatment at home. Beautiful packaging, too.</p>", "author": "Customer name", "rating": 5 } }
+      },
+      "block_order": ["review-1", "review-2", "review-3"],
+      "settings": { "eyebrow": "Reviews", "heading": "What our customers say", "background": "alt" }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Receive 10% off your first order",
+        "text": "<p>Be the first to know about new rituals, exclusive offers and hand care tips.</p>",
+        "background": "accent"
+      }
+    }
+  },
+  "order": ["hero", "trust", "spotlight", "bestsellers", "results", "values", "reviews", "newsletter"]
+}

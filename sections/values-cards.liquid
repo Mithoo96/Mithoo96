@@ -1,0 +1,84 @@
+<section class="values">
+  <div class="page-width">
+    <div class="values__panel">
+      {%- if section.settings.background_image != blank -%}
+        <div class="values__bg" aria-hidden="true">
+          {{
+            section.settings.background_image
+            | image_url: width: 2400
+            | image_tag: widths: '750, 1100, 1500, 2000, 2400', sizes: '100vw', loading: 'lazy', alt: ''
+          }}
+        </div>
+      {%- endif -%}
+
+      <div class="values__intro" data-reveal>
+        {%- if section.settings.heading != blank -%}
+          <h2 class="values__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <div class="rte">{{ section.settings.text }}</div>
+        {%- endif -%}
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link | default: '#' }}" class="button button--light">{{ section.settings.button_label | escape }}</a>
+        {%- endif -%}
+      </div>
+
+      <ul class="values__cards" role="list">
+        {%- for block in section.blocks -%}
+          <li class="value-card" data-reveal style="--reveal-delay: {{ forloop.index }};" {{ block.shopify_attributes }}>
+            {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}" class="value-card__link">{%- endif -%}
+            <div class="value-card__media">
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 800
+                  | image_tag: widths: '300, 500, 800', sizes: '(min-width: 990px) 20vw, 60vw', loading: 'lazy'
+                }}
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'placeholder' }}
+              {%- endif -%}
+            </div>
+            <span class="value-card__title">{{ block.settings.title | escape | newline_to_br }}</span>
+            {%- if block.settings.link != blank -%}</a>{%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.values_cards.name",
+  "class": "section-values-cards",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "image_picker", "id": "background_image", "label": "t:sections.values_cards.settings.background_image.label" },
+    { "type": "textarea", "id": "heading", "label": "t:sections.common.heading", "default": "Care that's kind to you\nand to the planet." },
+    { "type": "richtext", "id": "text", "label": "t:sections.common.text", "default": "<p>Sustainable by nature. Responsible by choice.</p>" },
+    { "type": "text", "id": "button_label", "label": "t:sections.common.button_label", "default": "Learn our story" },
+    { "type": "url", "id": "button_link", "label": "t:sections.common.button_link" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "t:sections.values_cards.blocks.card.name",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:sections.common.image" },
+        { "type": "textarea", "id": "title", "label": "t:sections.common.heading", "default": "Clean\ningredients" },
+        { "type": "url", "id": "link", "label": "t:sections.common.button_link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.values_cards.name",
+      "blocks": [
+        { "type": "card", "settings": { "title": "Clean\ningredients" } },
+        { "type": "card", "settings": { "title": "Eco-friendly\npackaging" } },
+        { "type": "card", "settings": { "title": "Conscious\nbeauty" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

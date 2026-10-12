@@ -1,0 +1,185 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Faroo Luxe",
+    "theme_version": "1.0.0",
+    "theme_author": "Faroo Miracle Hand Beauty",
+    "theme_documentation_url": "https://github.com/mithoo96/mithoo96",
+    "theme_support_url": "https://github.com/mithoo96/mithoo96"
+  },
+  {
+    "name": "t:settings_schema.colors.name",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "t:settings_schema.colors.settings.background.label",
+        "default": "#F6F3EC"
+      },
+      {
+        "type": "color",
+        "id": "color_foreground",
+        "label": "t:settings_schema.colors.settings.foreground.label",
+        "default": "#1F2A1C"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "t:settings_schema.colors.settings.accent.label",
+        "default": "#3F4B2E"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_contrast",
+        "label": "t:settings_schema.colors.settings.accent_contrast.label",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_highlight",
+        "label": "t:settings_schema.colors.settings.highlight.label",
+        "default": "#C9D3B4"
+      },
+      {
+        "type": "color",
+        "id": "color_surface_alt",
+        "label": "t:settings_schema.colors.settings.surface_alt.label",
+        "default": "#ECEFE3"
+      },
+      {
+        "type": "color",
+        "id": "color_sale",
+        "label": "t:settings_schema.colors.settings.sale.label",
+        "default": "#9E4B3C"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.typography.name",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "label": "t:settings_schema.typography.settings.heading_font.label",
+        "default": "jost_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "t:settings_schema.typography.settings.body_font.label",
+        "default": "jost_n4"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.layout.name",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1000,
+        "max": 1600,
+        "step": 100,
+        "unit": "px",
+        "label": "t:settings_schema.layout.settings.page_width.label",
+        "default": 1300
+      },
+      {
+        "type": "range",
+        "id": "corner_radius",
+        "min": 0,
+        "max": 24,
+        "step": 2,
+        "unit": "px",
+        "label": "t:settings_schema.layout.settings.corner_radius.label",
+        "default": 16
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_animations",
+        "label": "t:settings_schema.layout.settings.enable_animations.label",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.cards.name",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_image_ratio",
+        "label": "t:settings_schema.cards.settings.image_ratio.label",
+        "options": [
+          {
+            "value": "1 / 1",
+            "label": "t:settings_schema.cards.settings.image_ratio.options.square"
+          },
+          {
+            "value": "4 / 5",
+            "label": "t:settings_schema.cards.settings.image_ratio.options.portrait_soft"
+          },
+          {
+            "value": "3 / 4",
+            "label": "t:settings_schema.cards.settings.image_ratio.options.portrait"
+          },
+          {
+            "value": "2 / 3",
+            "label": "t:settings_schema.cards.settings.image_ratio.options.tall"
+          }
+        ],
+        "default": "1 / 1"
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_second_image",
+        "label": "t:settings_schema.cards.settings.show_second_image.label",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_vendor",
+        "label": "t:settings_schema.cards.settings.show_vendor.label",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.favicon.name",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "t:settings_schema.favicon.settings.favicon.label"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.social.name",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "placeholder": "https://instagram.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "TikTok",
+        "placeholder": "https://tiktok.com/@shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook",
+        "placeholder": "https://facebook.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube",
+        "placeholder": "https://youtube.com/shopify"
+      }
+    ]
+  }
+]
