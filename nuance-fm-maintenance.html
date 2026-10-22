@@ -1,0 +1,47 @@
+<!-- =====================================================================
+  NUANCE FM — MODE MAINTENANCE (site indisponible)
+  Collez ce bloc TOUT EN HAUT du widget "Custom HTML" (avant <link rel="preconnect"...>).
+  S'il y a aussi un header avec le NUANCE RADIO CORE, collez-le aussi en haut du header.
+  Pour remettre le site en ligne : supprimez simplement ce bloc.
+====================================================================== -->
+<style>
+#nf-maintenance{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(900px 600px at 15% -10%,rgba(242,118,35,.25),transparent 60%),radial-gradient(900px 700px at 100% 110%,rgba(233,49,37,.25),transparent 60%),#0B0B0D;
+  font-family:'Manrope',system-ui,sans-serif;color:#F6F6F6;text-align:center}
+#nf-maintenance .nf-m-box{max-width:520px;padding:40px 28px;border-radius:28px;background:rgba(18,18,22,.75);border:1px solid rgba(255,255,255,.12);box-shadow:0 40px 80px -20px rgba(0,0,0,.8)}
+#nf-maintenance .nf-m-ico{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;font-size:30px;font-weight:700;color:#fff;background:linear-gradient(135deg,#F27623,#E93125)}
+#nf-maintenance h1{margin:0 0 12px;font-family:'Space Grotesk','Manrope',system-ui,sans-serif;font-size:clamp(24px,4vw,34px);line-height:1.15;color:#fff}
+#nf-maintenance p{margin:0;font-size:16px;line-height:1.6;color:rgba(246,246,246,.75)}
+html.nf-maint-on,html.nf-maint-on body{overflow:hidden!important}
+</style>
+<script>
+(function(){
+  /* 1. Désactive le lecteur radio : le NUANCE RADIO CORE voit "NuanceRadio" déjà défini et ne crée pas l'audio */
+  var noop=function(){};
+  if(window.NuanceRadio&&window.NuanceRadio.pause){ try{ window.NuanceRadio.pause(); }catch(e){} }
+  window.NuanceRadio={version:2,audio:null,ART_URL:'',canVolume:false,
+    play:noop,pause:noop,toggle:noop,on:noop,setShow:noop,setVolume:noop,setMuted:noop,
+    state:function(){return 'error';},volume:function(){return 0;},muted:function(){return true;}};
+
+  /* 2. Affiche l'alerte plein écran et bloque tout le reste du site (clic, clavier, défilement) */
+  function lock(){
+    Array.prototype.forEach.call(document.body.children,function(el){ if(el.id!=='nf-maintenance'){ el.setAttribute('inert',''); el.setAttribute('aria-hidden','true'); } });
+    document.querySelectorAll('audio,video').forEach(function(m){ try{ m.pause(); m.removeAttribute('src'); m.load(); }catch(e){} });
+  }
+  function show(){
+    if(document.getElementById('nf-maintenance')){ lock(); return; }
+    var o=document.createElement('div');
+    o.id='nf-maintenance'; o.setAttribute('role','alertdialog'); o.setAttribute('aria-modal','true'); o.setAttribute('aria-labelledby','nf-m-title');
+    o.innerHTML='<div class="nf-m-box"><div class="nf-m-ico" aria-hidden="true">!</div>'+
+      '<h1 id="nf-m-title">Site temporairement indisponible</h1>'+
+      '<p>Le site de Nuance FM n’est pas disponible pour le moment. Merci de votre patience, nous revenons très bientôt.</p></div>';
+    document.body.appendChild(o);
+    document.documentElement.classList.add('nf-maint-on');
+    lock();
+  }
+  if(document.body) show();
+  document.addEventListener('DOMContentLoaded',show);
+  window.addEventListener('load',show);
+})();
+</script>
+<!-- ===================== FIN MODE MAINTENANCE ===================== -->
