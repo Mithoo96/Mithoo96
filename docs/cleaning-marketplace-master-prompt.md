@@ -1,13 +1,13 @@
 # MASTER PRODUCT BUILD PROMPT — CLEANING JOB MARKETPLACE SaaS
 
 > Version 2 — reorganized, de-duplicated, and extended with a catalog of job-data and cleaning-platform APIs (Section 7).
-> Replace every `{{PLACEHOLDER}}` before use.
+> Replace `{{BRAND_NAME}}` when the final brand name is chosen.
 
 ---
 
 ## 0. HOW TO USE THIS PROMPT
 
-- `{{BUILD_PLATFORM}}` = the development platform (currently **Codunk.com**). A web search did not find public documentation for "Codunk.com". **Before anything else, confirm the platform's exact name and URL.** If it can't be identified or its documentation can't be reached, say so and fall back to the default stack in Section 3. Do not invent its capabilities.
+- Development platform: **Codunk.com**. I am building this app inside Codunk. Inspect its real capabilities first (Section 3). If a capability is missing or unclear, say so and use the fallback stack or an external service — do not invent Codunk features.
 - `{{BRAND_NAME}}` = the product name. Until I give a final name, keep it in one config value.
 - Launch market: **United States → South Florida** (Miami-Dade, Broward, Palm Beach).
 
@@ -48,7 +48,7 @@ Design for multi-market expansion (city → state → country) without rebuildin
 
 ## 3. TECHNICAL DISCOVERY (DO THIS FIRST)
 
-Inspect `{{BUILD_PLATFORM}}` and report on:
+Inspect Codunk.com and report on:
 
 | Area | What to find out |
 |---|---|
@@ -63,7 +63,7 @@ Inspect `{{BUILD_PLATFORM}}` and report on:
 | Payments | Native Stripe support or custom integration |
 | Hosting | Custom domain, SSL, regions, logs, backups |
 
-**Default stack if the platform is unknown or limited:** Next.js (TypeScript) + PostgreSQL (Supabase or Neon) with row-level security + Supabase Auth or Auth.js + Stripe Billing/Connect + Resend or Postmark for email + Mapbox or Google Maps + an external scheduler (Vercel Cron, Supabase pg_cron, or GitHub Actions) for sync jobs.
+**Fallback stack where Codunk is limited:** Next.js (TypeScript) + PostgreSQL (Supabase or Neon) with row-level security + Supabase Auth or Auth.js + Stripe Billing/Connect + Resend or Postmark for email + Mapbox or Google Maps + an external scheduler (Vercel Cron, Supabase pg_cron, or GitHub Actions) for sync jobs.
 
 Then report:
 1. What the platform actually supports.
@@ -376,7 +376,7 @@ Automate wherever possible; give me a repeatable manual checklist for the rest.
    - 🚧 Known limitations
    - ➡️ Next steps
 
-If you can edit and deploy directly in `{{BUILD_PLATFORM}}`, work there. Otherwise, produce implementation-ready code plus explicit setup instructions.
+If you can edit and deploy directly in Codunk.com, work there. Otherwise, produce implementation-ready code plus explicit setup instructions.
 
 ---
 
@@ -384,4 +384,4 @@ If you can edit and deploy directly in `{{BUILD_PLATFORM}}`, work there. Otherwi
 
 A credible, secure, commercially viable cleaning marketplace that attracts workers, helps companies fill jobs they can't staff, and earns recurring SaaS revenue. Built around a real business workflow, prioritizing **liquidity, job quality, trust, repeat usage, low operating cost, and a clear path to profitability**.
 
-**Start now:** confirm `{{BUILD_PLATFORM}}` and assess its real capabilities, then propose the architecture and begin Phase 1.
+**Start now:** assess Codunk.com's real capabilities, then propose the architecture and begin Phase 1.
