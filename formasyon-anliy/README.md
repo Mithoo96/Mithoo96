@@ -7,7 +7,7 @@
 | `kreye-kou-anliy` | Konstwi kou konplè: objektif, modil, leson, aktivite, evalyasyon |
 | `kiz-ak-evalyasyon` | Kiz, egzamen, kle korije, grij evalyasyon |
 
-Zip yo pare nan `zip/`.
+Tout PDF yo sòti an **fòma prezantasyon Canva 1920 x 1280 px** (3:2). Zip yo pare nan `zip/`.
 
 ## 2. Skills Anthropic ki deja egziste (aktive yo nan Settings → Capabilities → Skills)
 - **pdf** – li/kreye/modifye PDF

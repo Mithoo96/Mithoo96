@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Zouti PDF paj pa paj: info | text | split | images."""
+"""Zouti PDF paj pa paj: info | text | split | images | resize.
+
+Fòma prezantasyon Canva: 1920 x 1280 px (3:2) = 1440 x 960 pt nan PDF.
+"""
 import sys
 from pathlib import Path
 
@@ -40,11 +43,11 @@ def images(pdf, out, zoom=2):
     print(f"{len(doc)} imaj nan {out}")
 
 
-CMDS = {"info": (info, 1), "text": (text, 2), "split": (split, 2), "images": (images, 2)}
+CMDS = {"info": (info, 1), "text": (text, 2), "split": (split, 2), "images": (images, 2), "resize": (resize, 2)}
 
 if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[1] not in CMDS:
-        sys.exit("Itilizasyon: pdf_pages.py info|text|split|images <fichye.pdf> [dosye_sòti]")
+        sys.exit("Itilizasyon: pdf_pages.py info|text|split|images|resize <fichye.pdf> <sòti>")
     fn, n = CMDS[sys.argv[1]]
     if len(sys.argv) - 2 != n:
         sys.exit(f"{sys.argv[1]} bezwen {n} agiman")
