@@ -65,12 +65,12 @@ export function Hero() {
             image={images.hero}
             priority
             sizes="100vw"
-            position="40% 55%"
+            position="50% 58%"
             className="absolute inset-0 md:hidden"
           />
         </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/45 to-navy/35" />
-        <div className="absolute inset-0 hidden bg-gradient-to-r from-navy/85 via-navy/30 to-transparent md:block" />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/25 to-navy/30" />
+        <div className="absolute inset-0 hidden bg-gradient-to-r from-navy/80 via-navy/15 to-transparent md:block" />
       </motion.div>
 
       {/* Top meta row */}

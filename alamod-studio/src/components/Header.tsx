@@ -46,7 +46,7 @@ export function Header() {
       >
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:h-20 md:px-10">
           <a href="#top" aria-label="ALAMOD Studio home" className="relative z-10 block" onClick={() => setMenuOpen(false)}>
-            <Logo className="h-7 w-auto md:h-9" />
+            <Logo className="h-7 w-auto md:h-9" sizes="140px" priority />
           </a>
 
           <nav aria-label="Primary" className="hidden lg:block">

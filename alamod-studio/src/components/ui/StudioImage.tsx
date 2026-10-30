@@ -26,7 +26,8 @@ export function StudioImage({ image, sizes, priority, className = "", imgClassNa
         src={image.src}
         alt={image.alt}
         fill
-        sizes={sizes}
+        // Zoomed detail crops need a larger source file to stay sharp.
+        sizes={zoom > 1.15 ? "100vw" : sizes}
         priority={priority}
         quality={80}
         className={`object-cover ${imgClassName}`}

@@ -19,7 +19,7 @@ export function FinalCta() {
     <section ref={ref} data-hide-bookbar aria-labelledby="final-title" className="grain relative isolate overflow-hidden bg-navy">
       <motion.div className="absolute -inset-y-[12%] inset-x-0 -z-10" style={{ y }}>
         <StudioImage image={images.studioWide} sizes="100vw" className="absolute inset-0" />
-        <div className="absolute inset-0 bg-navy/60" />
+        <div className="absolute inset-0 bg-navy/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/30 to-navy/70" />
       </motion.div>
 

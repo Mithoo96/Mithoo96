@@ -1,10 +1,9 @@
 /**
  * Every photo on the site is referenced from here.
  *
- * The site is art-directed around four real ALAMOD Studio photos. Drop them
- * into /public/images/alamod/ with these exact names (overwriting the
- * placeholders) and the whole site switches to real photography — no
- * component changes needed:
+ * The site is art-directed around four real ALAMOD Studio photos, installed in
+ * /public/images/alamod/. To swap one, replace the file with the same name;
+ * no component changes are needed:
  *
  *  alamod-hero.jpg   Wide room shot with the lit "ALAMOD MUSIC LLC" sign,
  *                    blue LED ceiling, bass rig on the left, drums center.
@@ -66,13 +65,13 @@ export const images = {
   ),
 
   // Detail crops from the same photos
-  sign: shot("equipment", "Illuminated ALAMOD Music LLC sign on the studio wall", "40% 18%", 1.35),
-  drums: shot("studio-wide", "PDP drum kit with cymbals on the ALAMOD stage", "44% 62%", 1.9),
-  congas: shot("studio-wide", "Red congas and mic stands in the ALAMOD rehearsal room", "56% 50%", 2.1),
-  mixer: shot("studio-wide", "Digital mixing console and outboard rack at ALAMOD Studio", "92% 66%", 2.2),
-  amps: shot("equipment", "Ampeg and Hartke bass heads ready to plug in", "66% 82%", 1.5),
-  pa: shot("band-area", "JBL PA speakers on subwoofers flanking the lounge area", "30% 30%", 1.8),
-  lounge: shot("band-area", "Red tufted lounge sofa inside the ALAMOD rehearsal room", "50% 50%", 1.6),
+  sign: shot("equipment", "Illuminated ALAMOD Music LLC sign on the studio wall", "40% 18%", 1.25),
+  drums: shot("studio-wide", "PDP drum kit with cymbals on the ALAMOD stage", "42% 60%", 1.6),
+  congas: shot("studio-wide", "Red congas and mic stands in the ALAMOD rehearsal room", "57% 52%", 1.7),
+  mixer: shot("studio-wide", "Digital mixing console and outboard rack at ALAMOD Studio", "93% 64%", 1.9),
+  amps: shot("equipment", "Ampeg and Hartke bass heads ready to plug in", "66% 82%", 1.4),
+  pa: shot("band-area", "JBL PA speakers on subwoofers flanking the lounge area", "30% 30%", 1.6),
+  lounge: shot("band-area", "Red tufted lounge sofa inside the ALAMOD rehearsal room", "50% 55%", 1.4),
   ceiling: shot("alamod-hero", "Blue LED-lit ceiling and track lighting above the ALAMOD stage", "50% 18%", 1.4),
 } satisfies Record<string, StudioImage>;
 

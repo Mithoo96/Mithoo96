@@ -11,7 +11,7 @@ npm run build && npm start
 
 ## Before launch checklist
 
-1. **Add the real photos** (see below). The site currently shows labeled placeholders.
+1. **Photos**: the four studio photos are installed (see below). Swap or add more any time.
 2. **Fill in `src/content/site.ts`**: phone, email, address, maps link, hours and social URLs.
    Anything left `null` is hidden or phrased generically. Nothing is invented.
 3. **Connect booking** (see below). In production, the built-in form refuses requests
@@ -23,7 +23,7 @@ npm run build && npm start
 ## Photos
 
 The site is art-directed around four studio photos. Save them as JPGs with these exact names in
-`public/images/alamod/`, overwriting the placeholders:
+`public/images/alamod/` (currently installed). To swap one, replace the file with the same name:
 
 | File | Photo |
 | --- | --- |
@@ -67,11 +67,11 @@ src/
     sections/     Hero, Intro, WhyAlamod, Equipment, Showcase, WhoFor, Rates,
                   HowItWorks, Testimonials, Faq, FinalCta
     booking/      BookingProvider + BookingModal
-    ui/           Logo (vector wordmark), StudioImage, Reveal, BookButton, Waveform
+    ui/           Logo, StudioImage, Reveal, BookButton, Waveform
 ```
 
-The logo in `components/ui/Logo.tsx` is a vector recreation of the ALAMOD wordmark. If you have the
-original vector file, you can swap it in there.
+The logo lives in `public/brand/`: `alamod-logo.png` is the original and `alamod-logo-light.png` has the
+navy letters switched to white for dark backgrounds. `components/ui/Logo.tsx` picks the right one.
 
 Animations respect `prefers-reduced-motion`. The equipment list in `Equipment.tsx` only names brands
 visible in the studio photos; keep it in sync with what's actually in the room.
