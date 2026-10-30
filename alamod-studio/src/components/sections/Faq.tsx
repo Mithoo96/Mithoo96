@@ -8,7 +8,7 @@ export function Faq() {
         <div className="md:col-span-4">
           <div className="md:sticky md:top-28">
             <Reveal>
-              <p className="eyebrow flex items-center gap-3 text-ink/60">
+              <p className="eyebrow flex items-center gap-3 text-ink/70">
                 <span className="h-px w-10 bg-red" /> FAQ
               </p>
             </Reveal>
@@ -31,7 +31,7 @@ export function Faq() {
               <li key={item.q} className="border-b border-ink/15">
                 <details className="group">
                   <summary className="flex cursor-pointer list-none items-start gap-4 py-6 md:gap-8 md:py-8 [&::-webkit-details-marker]:hidden">
-                    <span className="mt-1.5 font-mono text-xs text-ink/40 group-open:text-red">
+                    <span className="mt-1.5 font-mono text-xs text-ink/65 group-open:text-red">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span className="display-wide flex-1 text-lg leading-snug md:text-2xl">{item.q}</span>

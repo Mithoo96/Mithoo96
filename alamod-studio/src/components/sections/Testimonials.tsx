@@ -18,7 +18,7 @@ export function Testimonials() {
             <LineReveal id="voices-title" className="display mt-6 text-[clamp(3rem,11vw,7.5rem)]" lines={["Heard at", "ALAMOD."]} />
           </div>
           {isPlaceholder && (
-            <p className="eyebrow max-w-xs border border-dashed border-paper/30 p-3 text-[0.62rem] leading-relaxed text-paper/60">
+            <p className="eyebrow max-w-xs border border-dashed border-paper/30 p-3 text-[0.62rem] leading-relaxed text-paper/70">
               Developer note: placeholder layout. Replace with real client testimonials in src/content/testimonials.ts.
             </p>
           )}
@@ -29,12 +29,12 @@ export function Testimonials() {
             <li key={i} className={`bg-navy p-7 md:p-10 ${isPlaceholder ? "outline-1 -outline-offset-8 outline-dashed outline-paper/20" : ""}`}>
               <Reveal delay={i * 0.08}>
                 <span aria-hidden className="font-serif text-7xl leading-none text-red">&ldquo;</span>
-                <blockquote className={`mt-2 text-xl leading-snug md:text-2xl ${isPlaceholder ? "font-mono text-base text-paper/50 md:text-lg" : "text-paper/90"}`}>
+                <blockquote className={`mt-2 text-xl leading-snug md:text-2xl ${isPlaceholder ? "font-mono text-base text-paper/65 md:text-lg" : "text-paper/90"}`}>
                   {t.quote}
                 </blockquote>
-                <p className="mt-8 font-mono text-xs uppercase tracking-[0.2em] text-paper/60">
+                <p className="mt-8 font-mono text-xs uppercase tracking-[0.2em] text-paper/70">
                   {t.name}
-                  {t.role && <span className="block pt-1 text-paper/35">{t.role}</span>}
+                  {t.role && <span className="block pt-1 text-paper/60">{t.role}</span>}
                 </p>
               </Reveal>
             </li>

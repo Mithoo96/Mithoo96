@@ -120,14 +120,14 @@ export function Header() {
                       className="flex items-baseline justify-between py-4"
                     >
                       <span className="display text-[13vw] leading-none sm:text-7xl">{item.label}</span>
-                      <span className="font-mono text-xs text-paper/40">{String(i + 1).padStart(2, "0")}</span>
+                      <span className="font-mono text-xs text-paper/60">{String(i + 1).padStart(2, "0")}</span>
                     </a>
                   </motion.li>
                 ))}
               </ul>
             </nav>
             <div className="border-t border-paper/10 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-5">
-              <p className="eyebrow mb-4 text-paper/50">
+              <p className="eyebrow mb-4 text-paper/65">
                 {site.city}, {site.regionName} · Sessions from ${site.startingRate}/hr
               </p>
               <button
@@ -136,7 +136,7 @@ export function Header() {
                   setMenuOpen(false);
                   open("mobile-menu");
                 }}
-                className="flex h-16 w-full items-center justify-center gap-3 bg-red font-mono text-sm font-semibold uppercase tracking-[0.2em] text-white"
+                className="flex h-16 w-full items-center justify-center gap-3 bg-red-600 font-mono text-sm font-semibold uppercase tracking-[0.2em] text-white"
               >
                 Book a session <span aria-hidden>→</span>
               </button>

@@ -9,7 +9,7 @@ export function Intro() {
         {/* Copy column */}
         <div className="relative z-10 md:col-span-7">
           <Reveal>
-            <p className="eyebrow flex items-center gap-3 text-ink/60">
+            <p className="eyebrow flex items-center gap-3 text-ink/70">
               <span className="h-px w-10 bg-red" /> ALAMOD Studio — Miami
             </p>
           </Reveal>
@@ -43,7 +43,7 @@ export function Intro() {
                 ["Location", "Miami, FL"],
               ].map(([k, v]) => (
                 <div key={k} className="border-r border-ink/15 py-5 pr-3 last:border-r-0 [&:not(:first-child)]:pl-4 md:pl-0 md:[&:not(:first-child)]:pl-6">
-                  <dt className="eyebrow text-[0.62rem] text-ink/50">{k}</dt>
+                  <dt className="eyebrow text-[0.62rem] text-ink/65">{k}</dt>
                   <dd className="display-wide mt-2 text-base md:text-2xl">{v}</dd>
                 </div>
               ))}
@@ -65,7 +65,7 @@ export function Intro() {
               <StudioImage image={images.sign} sizes="(min-width: 768px) 20vw, 45vw" className="absolute inset-0" />
             </div>
           </ImageReveal>
-          <p className="eyebrow absolute -right-1 top-6 hidden origin-top-right -rotate-90 text-ink/40 md:right-12 md:block md:top-24">
+          <p className="eyebrow absolute -right-1 top-6 hidden origin-top-right -rotate-90 text-ink/65 md:right-12 md:block md:top-24">
             The room — Live rehearsal
           </p>
         </div>

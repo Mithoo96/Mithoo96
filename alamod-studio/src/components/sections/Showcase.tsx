@@ -55,7 +55,7 @@ export function Showcase() {
               lines={["Step inside", <span key="a">ALAMOD<span className="text-red">.</span></span>]}
             />
           </div>
-          <Reveal delay={0.1} className="max-w-xs text-paper/65 md:pb-4">
+          <Reveal delay={0.1} className="max-w-xs text-paper/75 md:pb-4">
             <p>Blue light overhead, red carpet underfoot, and a full backline set up on stage.</p>
           </Reveal>
         </div>
@@ -113,7 +113,7 @@ function HorizontalStrip({ onOpen }: { onOpen: (i: number) => void }) {
         sizes="(min-width: 900px) 44vw, 86vw"
         className={i % 3 === 1 ? "aspect-[4/5]" : "aspect-[3/2]"}
       />
-      <figcaption className="mt-3 flex justify-between gap-4 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-paper/45">
+      <figcaption className="mt-3 flex justify-between gap-4 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-paper/65">
         <span>{String(i + 1).padStart(2, "0")}</span>
         <span className="truncate text-right">{img.alt.split(/[:,]/)[0]}</span>
       </figcaption>
@@ -128,7 +128,7 @@ function HorizontalStrip({ onOpen }: { onOpen: (i: number) => void }) {
         {strip}
         <span aria-hidden className="w-2 shrink-0" />
       </div>
-      <p className="eyebrow mt-6 px-5 text-paper/40 md:px-10">Swipe →</p>
+      <p className="eyebrow mt-6 px-5 text-paper/60 md:px-10">Swipe →</p>
     </div>
   );
 }
@@ -170,11 +170,11 @@ function PinnedStrip({ children }: { children: ReactNode }) {
           </div>
         </motion.div>
         <div className="absolute inset-x-10 bottom-10 flex items-center gap-6">
-          <span className="eyebrow text-paper/40">Scroll</span>
+          <span className="eyebrow text-paper/60">Scroll</span>
           <div className="relative h-px flex-1 bg-paper/15">
             <motion.span style={{ width: progress }} className="absolute inset-y-0 left-0 bg-red" />
           </div>
-          <span className="eyebrow text-paper/40">{String(gallery.length).padStart(2, "0")} frames</span>
+          <span className="eyebrow text-paper/60">{String(gallery.length).padStart(2, "0")} frames</span>
         </div>
       </div>
     </div>
@@ -218,7 +218,7 @@ function Lightbox({ index, onChange, onClose }: { index: number; onChange: (i: n
       transition={{ duration: 0.35 }}
     >
       <div className="flex items-center justify-between px-5 py-4 md:px-10 md:py-6">
-        <p className="font-mono text-xs tracking-[0.2em] text-paper/60">
+        <p className="font-mono text-xs tracking-[0.2em] text-paper/70">
           <span className="text-paper">{String(index + 1).padStart(2, "0")}</span> / {String(total).padStart(2, "0")}
         </p>
         <button

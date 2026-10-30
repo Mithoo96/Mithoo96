@@ -84,7 +84,7 @@ export function Hero() {
           <LiveDot /> {site.tagline}
         </motion.p>
         <motion.p
-          className="eyebrow hidden items-center gap-3 text-paper/60 md:flex"
+          className="eyebrow hidden items-center gap-3 text-paper/70 md:flex"
           initial={reduce ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 1 }}
@@ -142,11 +142,11 @@ export function Hero() {
       <div className="relative border-t border-paper/15">
         <div className="mx-auto flex h-14 max-w-[1600px] items-center justify-between gap-6 px-5 md:h-16 md:px-10">
           <p className="flex items-center gap-3 font-mono text-[0.7rem] uppercase tracking-[0.2em]">
-            <span className="bg-red px-2 py-1 font-semibold text-white">Sessions from ${site.startingRate}/hr</span>
-            <span className="hidden text-paper/55 sm:inline">Hourly · Fully equipped</span>
+            <span className="bg-red-600 px-2 py-1 font-semibold text-white">Sessions from ${site.startingRate}/hr</span>
+            <span className="hidden text-paper/70 sm:inline">Hourly · Fully equipped</span>
           </p>
-          <Waveform bars={40} className="hidden h-6 flex-1 text-paper/35 md:flex md:max-w-md" />
-          <a href="#studio" className="eyebrow flex items-center gap-2 text-paper/60 transition hover:text-paper">
+          <Waveform bars={40} className="hidden h-6 flex-1 text-paper/60 md:flex md:max-w-md" />
+          <a href="#studio" className="eyebrow flex items-center gap-2 text-paper/70 transition hover:text-paper">
             Scroll
             <span aria-hidden className="relative block h-5 w-px overflow-hidden bg-paper/20">
               <span className="absolute inset-x-0 top-0 h-2 animate-[scrollcue_1.8s_ease-in-out_infinite] bg-red" />

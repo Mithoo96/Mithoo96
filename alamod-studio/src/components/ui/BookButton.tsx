@@ -6,7 +6,7 @@ import { useBooking } from "@/components/booking/BookingProvider";
 type Variant = "solid" | "ghost" | "ink";
 
 const styles: Record<Variant, string> = {
-  solid: "bg-red text-white hover:bg-red-600",
+  solid: "bg-red-600 text-white hover:bg-red-700",
   ghost: "border border-paper/35 text-paper hover:border-paper hover:bg-paper hover:text-navy",
   ink: "border border-ink text-ink hover:bg-ink hover:text-paper",
 };

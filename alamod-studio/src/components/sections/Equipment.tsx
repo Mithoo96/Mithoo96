@@ -40,7 +40,7 @@ export function Equipment() {
                   <StudioImage image={images.drums} sizes="(min-width: 768px) 18vw, 45vw" className="absolute inset-0" />
                 </div>
               </ImageReveal>
-              <p className="eyebrow mt-14 hidden text-paper/45 md:block">Fig. 01 — Bass rig · Fig. 02 — Kit</p>
+              <p className="eyebrow mt-14 hidden text-paper/65 md:block">Fig. 01 — Bass rig · Fig. 02 — Kit</p>
             </div>
           </div>
 
@@ -58,7 +58,7 @@ export function Equipment() {
             />
 
             <div className="mt-12 md:mt-16" role="table" aria-label="Studio equipment">
-              <div role="row" className="eyebrow hidden grid-cols-[3.5rem_1fr_1.4fr_5rem] gap-4 border-b border-paper/15 pb-3 text-[0.62rem] text-paper/40 md:grid">
+              <div role="row" className="eyebrow hidden grid-cols-[3.5rem_1fr_1.4fr_5rem] gap-4 border-b border-paper/15 pb-3 text-[0.62rem] text-paper/60 md:grid">
                 <span role="columnheader">Ch.</span>
                 <span role="columnheader">Category</span>
                 <span role="columnheader">In the room</span>
@@ -70,13 +70,13 @@ export function Equipment() {
                     role="row"
                     className="group grid grid-cols-[2.5rem_1fr] gap-x-4 gap-y-1 border-b border-paper/10 py-5 transition-colors hover:bg-paper/[0.03] md:grid-cols-[3.5rem_1fr_1.4fr_5rem] md:items-center md:py-6"
                   >
-                    <span role="cell" className="row-span-2 font-mono text-xs text-paper/40 group-hover:text-red md:row-span-1">
+                    <span role="cell" className="row-span-2 font-mono text-xs text-paper/60 group-hover:text-red md:row-span-1">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span role="cell" className="display-wide text-lg md:text-xl">
                       {row.category}
                     </span>
-                    <span role="cell" className="text-sm text-paper/65 md:text-[0.95rem]">
+                    <span role="cell" className="text-sm text-paper/75 md:text-[0.95rem]">
                       {row.detail}
                     </span>
                     <span role="cell" aria-hidden className="hidden items-end justify-end gap-[3px] md:flex">
@@ -105,7 +105,7 @@ export function Equipment() {
                   Ask about gear →
                 </a>
               </div>
-              <p className="mt-4 text-xs text-paper/40">
+              <p className="mt-4 text-xs text-paper/60">
                 Equipment shown reflects the current room setup and may change. Confirm specific gear with ALAMOD.
               </p>
             </Reveal>

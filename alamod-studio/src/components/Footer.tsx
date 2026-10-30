@@ -42,7 +42,7 @@ export function Footer() {
               <br />
               you in the room.
             </h2>
-            <p className="mt-6 max-w-sm text-paper/65">
+            <p className="mt-6 max-w-sm text-paper/75">
               Questions about gear, availability or larger groups? Send a session request and ALAMOD will get back to
               you.
             </p>
@@ -51,7 +51,7 @@ export function Footer() {
 
           <div className="grid grid-cols-2 gap-10 md:col-span-6 md:col-start-7 md:grid-cols-3">
             <div>
-              <p className="eyebrow text-paper/40">Studio</p>
+              <p className="eyebrow text-paper/60">Studio</p>
               <address className="mt-4 not-italic leading-relaxed text-paper/85">
                 {site.name}
                 <br />
@@ -65,7 +65,7 @@ export function Footer() {
                 {contact.postalCode ? ` ${contact.postalCode}` : ""}
               </address>
               {contact.mapsUrl && (
-                <a href={contact.mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm text-paper/60 underline decoration-red underline-offset-4 hover:text-paper">
+                <a href={contact.mapsUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm text-paper/70 underline decoration-red underline-offset-4 hover:text-paper">
                   Get directions
                 </a>
               )}
@@ -83,11 +83,11 @@ export function Footer() {
                   )}
                 </ul>
               )}
-              {contact.hours && <p className="mt-4 text-sm text-paper/60">{contact.hours}</p>}
+              {contact.hours && <p className="mt-4 text-sm text-paper/70">{contact.hours}</p>}
             </div>
 
             <nav aria-label="Footer">
-              <p className="eyebrow text-paper/40">Navigate</p>
+              <p className="eyebrow text-paper/60">Navigate</p>
               <ul className="mt-4 space-y-2">
                 {footerNav.map((n) => (
                   <li key={n.href}>
@@ -98,7 +98,7 @@ export function Footer() {
             </nav>
 
             <div className="col-span-2 md:col-span-1">
-              <p className="eyebrow text-paper/40">Follow</p>
+              <p className="eyebrow text-paper/60">Follow</p>
               <ul className="mt-4 flex gap-2">
                 {(Object.keys(icons) as (keyof typeof icons)[]).map((key) => {
                   const url = site.social[key];
@@ -141,7 +141,7 @@ export function Footer() {
           <Logo className="h-auto w-full opacity-95" title="ALAMOD Studio" />
         </div>
 
-        <div className="mt-10 flex flex-col justify-between gap-3 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-paper/40 md:flex-row">
+        <div className="mt-10 flex flex-col justify-between gap-3 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-paper/60 md:flex-row">
           <p>© {new Date().getFullYear()} ALAMOD Studio. All Rights Reserved.</p>
           <p>Music &amp; band rehearsal studio · Miami, Florida</p>
         </div>

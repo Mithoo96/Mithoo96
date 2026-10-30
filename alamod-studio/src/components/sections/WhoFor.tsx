@@ -51,7 +51,7 @@ export function WhoFor() {
         <div className="display -rotate-[1.5deg] bg-red py-3 text-[clamp(3rem,10vw,8rem)] text-white md:py-5" aria-hidden>
           <Marquee items={audiences} duration={50} className="[&_.outline-text]:[-webkit-text-stroke-color:#fff]" />
         </div>
-        <div className="display-wide py-3 text-[clamp(1.4rem,3.6vw,2.6rem)] text-paper/45" aria-hidden>
+        <div className="display-wide py-3 text-[clamp(1.4rem,3.6vw,2.6rem)] text-paper/65" aria-hidden>
           <Marquee items={ticker} reverse duration={60} />
         </div>
       </div>

@@ -40,10 +40,10 @@ export function HowItWorks() {
                 <Reveal delay={i * 0.12}>
                   <div className="flex items-baseline justify-between gap-4">
                     <span className="display text-7xl text-paper md:text-8xl">{String(i + 1).padStart(2, "0")}</span>
-                    <span className="font-mono text-xs text-paper/40">{s.mark}</span>
+                    <span className="font-mono text-xs text-paper/60">{s.mark}</span>
                   </div>
                   <h3 className="display-wide mt-5 text-2xl md:text-3xl">{s.title}</h3>
-                  <p className="mt-3 max-w-xs text-paper/65">{s.body}</p>
+                  <p className="mt-3 max-w-xs text-paper/75">{s.body}</p>
                 </Reveal>
               </li>
             ))}

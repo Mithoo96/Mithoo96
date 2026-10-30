@@ -76,7 +76,7 @@ export function WhyAlamod() {
               </AnimatePresence>
               <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-navy/80 to-transparent p-6">
                 <span className="display text-8xl text-paper/90">{String(active + 1).padStart(2, "0")}</span>
-                <span className="eyebrow text-paper/60">/ 05</span>
+                <span className="eyebrow text-paper/70">/ 05</span>
               </div>
             </div>
           </div>
@@ -97,7 +97,7 @@ export function WhyAlamod() {
                   >
                     <span
                       className={`font-mono text-sm transition-colors duration-300 ${
-                        active === i ? "text-red" : "text-paper/40"
+                        active === i ? "text-red" : "text-paper/60"
                       }`}
                     >
                       {String(i + 1).padStart(2, "0")}
@@ -105,7 +105,7 @@ export function WhyAlamod() {
                     <div>
                       <h3
                         className={`display text-[clamp(2.6rem,10vw,5.5rem)] transition-colors duration-300 ${
-                          active === i ? "text-paper" : "text-paper/55 md:text-paper/35"
+                          active === i ? "text-paper" : "text-paper/75 md:text-paper/65"
                         } group-hover:text-paper`}
                       >
                         {r.title}

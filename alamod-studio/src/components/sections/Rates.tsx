@@ -11,7 +11,7 @@ export function Rates() {
       <div className="mx-auto grid max-w-[1600px] gap-14 px-5 py-24 md:grid-cols-12 md:gap-8 md:px-10 md:py-36">
         <div className="md:col-span-6">
           <Reveal>
-            <p className="eyebrow flex items-center gap-3 text-ink/60">
+            <p className="eyebrow flex items-center gap-3 text-ink/70">
               <span className="h-px w-10 bg-red" /> Rates & booking
             </p>
           </Reveal>
@@ -39,11 +39,11 @@ export function Rates() {
             <StudioImage image={images.ceiling} sizes="(min-width: 768px) 50vw, 100vw" className="absolute inset-0 -z-10 opacity-35" />
             <div className="absolute inset-0 -z-10 bg-gradient-to-br from-navy/70 via-navy/85 to-navy" />
             <div className="flex items-center justify-between border-b border-paper/15 px-6 py-4 md:px-10">
-              <span className="eyebrow text-paper/60">Rehearsal session</span>
+              <span className="eyebrow text-paper/70">Rehearsal session</span>
               <span className="eyebrow text-red">Per hour</span>
             </div>
             <div className="px-6 pb-10 pt-10 md:px-10 md:pt-14">
-              <p className="eyebrow text-paper/60">Starting at</p>
+              <p className="eyebrow text-paper/70">Starting at</p>
               <p className="mt-3 flex items-start leading-none" aria-label={`Starting at $${site.startingRate} per hour`}>
                 <span className="display mt-[0.12em] text-[clamp(3rem,9vw,6rem)] text-red">$</span>
                 <span className="display text-[clamp(9rem,34vw,19rem)]">{site.startingRate}</span>
@@ -59,7 +59,7 @@ export function Rates() {
               </ul>
             </div>
           </div>
-          <p className="mt-4 text-sm text-ink/55">
+          <p className="mt-4 text-sm text-ink/70">
             Rates and availability may vary. Contact ALAMOD Studio for current booking details.
           </p>
         </Reveal>

@@ -215,11 +215,11 @@ export function BookingModal({ onClose, source }: { onClose: () => void; source:
                 )}
 
                 <div className="col-span-2 mt-1 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs text-ink/55">Rates and availability may vary.</p>
+                  <p className="text-xs text-ink/70">Rates and availability may vary.</p>
                   <button
                     type="submit"
                     disabled={status === "sending"}
-                    className="group inline-flex h-14 items-center justify-center gap-3 bg-red px-8 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-red-600 disabled:opacity-60"
+                    className="group inline-flex h-14 items-center justify-center gap-3 bg-red-600 px-8 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-red-700 disabled:opacity-60"
                   >
                     {status === "sending" ? "Sending…" : "Request session"}
                     <span aria-hidden className="transition-transform group-hover:translate-x-1">
@@ -237,7 +237,7 @@ export function BookingModal({ onClose, source }: { onClose: () => void; source:
 }
 
 const input =
-  "w-full h-12 border-0 border-b border-ink/20 bg-transparent px-0 text-base text-ink placeholder:text-ink/35 focus:border-red focus:outline-none focus:ring-0 [&:is(textarea)]:h-auto [&:is(textarea)]:py-2";
+  "w-full h-12 border-0 border-b border-ink/20 bg-transparent px-0 text-base text-ink placeholder:text-ink/60 focus:border-red focus:outline-none focus:ring-0 [&:is(textarea)]:h-auto [&:is(textarea)]:py-2";
 
 function Field({
   label,
@@ -252,9 +252,9 @@ function Field({
 }) {
   return (
     <label className={`block ${className}`}>
-      <span className="eyebrow flex justify-between text-ink/60">
+      <span className="eyebrow flex justify-between text-ink/70">
         {label}
-        {optional && <span className="text-ink/35">Optional</span>}
+        {optional && <span className="text-ink/60">Optional</span>}
       </span>
       {children}
     </label>

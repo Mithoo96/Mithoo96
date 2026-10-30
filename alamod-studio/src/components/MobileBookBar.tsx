@@ -44,14 +44,14 @@ export function MobileBookBar() {
     >
       <div className="flex items-stretch overflow-hidden border border-paper/10 bg-navy/90 shadow-[0_-10px_40px_rgba(0,0,0,.35)] backdrop-blur-xl">
         <div className="flex flex-1 flex-col justify-center px-4">
-          <span className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-paper/55">Sessions from</span>
+          <span className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-paper/70">Sessions from</span>
           <span className="display-wide text-lg leading-tight">${site.startingRate}/hr</span>
         </div>
         <button
           type="button"
           tabIndex={show ? 0 : -1}
           onClick={() => open("mobile-bar")}
-          className="flex h-14 items-center gap-2 bg-red px-6 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-white"
+          className="flex h-14 items-center gap-2 bg-red-600 px-6 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-white"
         >
           Book now <span aria-hidden>→</span>
         </button>
