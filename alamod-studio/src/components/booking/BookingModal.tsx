@@ -9,6 +9,9 @@ import { LiveDot } from "@/components/ui/Waveform";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
+/** Static previews have no booking backend; the form explains that instead of sending. */
+const isPreview = process.env.NEXT_PUBLIC_BOOKING_PREVIEW === "1";
+
 const ease = [0.16, 1, 0.3, 1] as const;
 
 export function BookingModal({ onClose, source }: { onClose: () => void; source: string }) {
@@ -53,6 +56,11 @@ export function BookingModal({ onClose, source }: { onClose: () => void; source:
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (isPreview) {
+      setError("Preview mode: booking isn't connected yet, so nothing was sent.");
+      setStatus("error");
+      return;
+    }
     setStatus("sending");
     setError(null);
     const data = Object.fromEntries(new FormData(e.currentTarget).entries());
@@ -201,7 +209,8 @@ export function BookingModal({ onClose, source }: { onClose: () => void; source:
 
                 {status === "error" && (
                   <p role="alert" className="col-span-2 border-l-2 border-red bg-red/5 px-4 py-3 text-sm">
-                    {error} Please try again in a moment.
+                    {error}
+                    {!isPreview && " Please try again in a moment."}
                   </p>
                 )}
 
