@@ -99,7 +99,7 @@ export function BookingModal({ onClose, source }: { onClose: () => void; source:
         aria-modal="true"
         aria-labelledby="booking-title"
         className="relative flex max-h-[94dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-paper text-ink md:max-h-none md:w-[min(1080px,94vw)] md:flex-row md:rounded-none"
-        initial={reduce ? false : { y: "100%" }}
+        initial={{ y: "100%" }}
         animate={{ y: 0 }}
         transition={{ duration: 0.7, ease }}
       >

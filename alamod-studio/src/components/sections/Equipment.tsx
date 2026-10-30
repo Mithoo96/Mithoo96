@@ -23,7 +23,7 @@ const rider: { category: string; detail: string; level: number }[] = [
 export function Equipment() {
   return (
     <section id="equipment" aria-labelledby="equipment-title" className="relative overflow-hidden bg-navy-800">
-      <div className="mx-auto max-w-[1600px] px-5 py-24 md:px-10 md:py-36">
+      <div className="mx-auto max-w-[1600px] px-5 py-16 md:px-10 md:py-24">
         <div className="grid gap-14 md:grid-cols-12 md:gap-8">
           {/* Images */}
           <div className="relative md:col-span-5">
@@ -57,7 +57,7 @@ export function Equipment() {
               lines={["Everything", "you need to", <span key="g" className="text-red">get loud.</span>]}
             />
 
-            <div className="mt-12 md:mt-16" role="table" aria-label="Studio equipment">
+            <div className="mt-10 md:mt-12" role="table" aria-label="Studio equipment">
               <div role="row" className="eyebrow hidden grid-cols-[3.5rem_1fr_1.4fr_5rem] gap-4 border-b border-paper/15 pb-3 text-[0.62rem] text-paper/60 md:grid">
                 <span role="columnheader">Ch.</span>
                 <span role="columnheader">Category</span>

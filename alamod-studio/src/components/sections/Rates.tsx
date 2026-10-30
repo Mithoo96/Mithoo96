@@ -8,7 +8,7 @@ import { Waveform } from "@/components/ui/Waveform";
 export function Rates() {
   return (
     <section id="rates" data-hide-bookbar aria-labelledby="rates-title" className="relative overflow-hidden bg-paper text-ink">
-      <div className="mx-auto grid max-w-[1600px] gap-14 px-5 py-24 md:grid-cols-12 md:gap-8 md:px-10 md:py-36">
+      <div className="mx-auto grid max-w-[1600px] gap-14 px-5 py-16 md:grid-cols-12 md:gap-8 md:px-10 md:py-24">
         <div className="md:col-span-6">
           <Reveal>
             <p className="eyebrow flex items-center gap-3 text-ink/70">

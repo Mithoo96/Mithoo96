@@ -24,7 +24,7 @@ function Marquee({ items, reverse = false, duration = 45, className = "" }: { it
 
 export function WhoFor() {
   return (
-    <section aria-labelledby="who-title" className="relative overflow-hidden bg-navy py-24 md:py-36">
+    <section aria-labelledby="who-title" className="relative overflow-hidden bg-navy pb-10 pt-16 md:pb-14 md:pt-24">
       <div className="mx-auto max-w-[1600px] px-5 md:px-10">
         <div className="grid gap-8 md:grid-cols-12 md:items-end">
           <div className="md:col-span-8">

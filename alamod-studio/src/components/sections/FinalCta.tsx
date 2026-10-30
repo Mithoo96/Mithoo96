@@ -29,7 +29,7 @@ export function FinalCta() {
         <span className="h-full w-px bg-red/60" />
       </div>
 
-      <div className="mx-auto flex min-h-[88svh] max-w-[1600px] flex-col justify-center px-5 py-28 md:px-10">
+      <div className="mx-auto flex min-h-[64svh] max-w-[1600px] flex-col justify-center px-5 py-20 md:px-10">
         <Reveal>
           <p className="eyebrow flex items-center gap-2.5 text-paper/80">
             <LiveDot /> Now booking · {site.city}, {site.region}
@@ -48,7 +48,7 @@ export function FinalCta() {
             <BookButton source="final-cta" className="w-full md:w-auto" />
           </Reveal>
         </div>
-        <Waveform bars={64} className="mt-16 hidden h-10 text-red/70 md:flex" barClassName="bg-current" />
+        <Waveform bars={64} className="mt-10 hidden h-10 text-red/70 md:flex" barClassName="bg-current" />
       </div>
     </section>
   );

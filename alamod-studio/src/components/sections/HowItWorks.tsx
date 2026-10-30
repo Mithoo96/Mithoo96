@@ -17,7 +17,7 @@ export function HowItWorks() {
 
   return (
     <section aria-labelledby="how-title" className="relative bg-navy-800">
-      <div className="mx-auto max-w-[1600px] px-5 py-24 md:px-10 md:py-32">
+      <div className="mx-auto max-w-[1600px] px-5 py-16 md:px-10 md:py-24">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
             <Reveal>
@@ -27,7 +27,7 @@ export function HowItWorks() {
           </div>
         </div>
 
-        <div ref={ref} className="relative mt-16 md:mt-24">
+        <div ref={ref} className="relative mt-10 md:mt-14">
           {/* Timeline: vertical on mobile, horizontal on desktop */}
           <div aria-hidden className="absolute bottom-0 left-[7px] top-0 w-px bg-paper/15 md:bottom-auto md:left-0 md:right-0 md:top-[7px] md:h-px md:w-auto">
             <motion.span style={{ height: fill }} className="absolute left-0 top-0 w-px bg-red md:hidden" />

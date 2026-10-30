@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
+import { MotionConfig } from "framer-motion";
 import { site } from "@/content/site";
 
 const BookingModal = dynamic(() => import("./BookingModal").then((m) => m.BookingModal), { ssr: false });
@@ -31,10 +32,12 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   const close = useCallback(() => setOpen(false), []);
 
   return (
-    <BookingContext.Provider value={{ open, close, isOpen }}>
-      {children}
-      {isOpen && <BookingModal onClose={close} source={source} />}
-    </BookingContext.Provider>
+    <MotionConfig reducedMotion="user">
+      <BookingContext.Provider value={{ open, close, isOpen }}>
+        {children}
+        {isOpen && <BookingModal onClose={close} source={source} />}
+      </BookingContext.Provider>
+    </MotionConfig>
   );
 }
 

@@ -43,7 +43,7 @@ export function Showcase() {
 
   return (
     <section id="gallery" aria-labelledby="gallery-title" className="relative bg-navy">
-      <div className="mx-auto max-w-[1600px] px-5 pt-24 md:px-10 md:pt-36">
+      <div className="mx-auto max-w-[1600px] px-5 pt-16 md:px-10 md:pt-24">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
             <Reveal>
@@ -104,13 +104,17 @@ function HorizontalStrip({ onOpen }: { onOpen: (i: number) => void }) {
     <figure
       key={i}
       className={`relative shrink-0 snap-start ${
-        i % 3 === 1 ? "w-[78vw] md:w-[30vw]" : "w-[86vw] md:w-[44vw]"
-      } ${pinned && i % 2 ? "mt-24" : ""}`}
+        pinned
+          ? `${i % 3 === 1 ? "w-[52vh]" : "w-[96vh]"} ${i % 2 ? "self-end" : "self-start"}`
+          : i % 3 === 1
+            ? "w-[78vw] md:w-[30vw]"
+            : "w-[86vw] md:w-[44vw]"
+      }`}
     >
       <Tile
         image={img}
         onOpen={() => onOpen(i)}
-        sizes="(min-width: 900px) 44vw, 86vw"
+        sizes="(min-width: 900px) 66vw, 86vw"
         className={i % 3 === 1 ? "aspect-[4/5]" : "aspect-[3/2]"}
       />
       <figcaption className="mt-3 flex justify-between gap-4 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-paper/65">
@@ -123,7 +127,7 @@ function HorizontalStrip({ onOpen }: { onOpen: (i: number) => void }) {
   if (pinned) return <PinnedStrip>{strip}</PinnedStrip>;
 
   return (
-    <div className="pb-24 pt-14 md:pb-36">
+    <div className="pb-16 pt-14 md:pb-24">
       <div className="no-scrollbar flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 md:gap-6 md:px-10">
         {strip}
         <span aria-hidden className="w-2 shrink-0" />
@@ -157,9 +161,9 @@ function PinnedStrip({ children }: { children: ReactNode }) {
   const progress = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <div ref={outer} style={{ height: `calc(100vh + ${distance}px)` }} className="relative mt-16">
-      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
-        <motion.div ref={track} style={{ x }} className="flex w-max items-start gap-6 pl-10 pr-[8vw]">
+    <div ref={outer} style={{ height: `calc(100vh + ${distance}px)` }} className="relative mt-6">
+      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden pb-16 pt-24">
+        <motion.div ref={track} style={{ x }} className="flex h-full max-h-[78vh] w-max items-stretch gap-6 pl-10 pr-[8vw]">
           {children}
           <div className="flex w-[30vw] shrink-0 flex-col justify-center self-center pl-10">
             <p className="display text-7xl">

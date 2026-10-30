@@ -49,8 +49,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        <BookingProvider>{children}</BookingProvider>
+      <body className="bg-navy text-paper font-sans antialiased">
+        {/* Colors and type are set on this wrapper too, so text never falls back to a host
+            page's default (e.g. black) when the site is embedded or previewed. */}
+        <div className="min-h-screen bg-navy font-sans text-base leading-normal text-paper antialiased">
+          <BookingProvider>{children}</BookingProvider>
+        </div>
       </body>
     </html>
   );

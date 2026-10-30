@@ -49,7 +49,7 @@ export function Hero() {
       <motion.div className="absolute inset-0 -z-10" style={{ y }}>
         <motion.div
           className="absolute inset-0"
-          initial={reduce ? false : { scale: 1.18 }}
+          initial={{ scale: 1.18 }}
           animate={{ scale: 1.04 }}
           transition={{ duration: 2.8, ease }}
         >
@@ -77,7 +77,7 @@ export function Hero() {
       <div className="mx-auto mt-24 flex w-full max-w-[1600px] items-center justify-between px-5 md:mt-32 md:px-10">
         <motion.p
           className="eyebrow flex items-center gap-2.5 text-paper/80"
-          initial={reduce ? false : { opacity: 0 }}
+          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 1 }}
         >
@@ -85,7 +85,7 @@ export function Hero() {
         </motion.p>
         <motion.p
           className="eyebrow hidden items-center gap-3 text-paper/70 md:flex"
-          initial={reduce ? false : { opacity: 0 }}
+          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 1 }}
         >
@@ -116,7 +116,7 @@ export function Hero() {
         <div className="mt-7 grid gap-7 md:mt-10 md:grid-cols-12 md:items-end">
           <motion.p
             className="max-w-md text-[1.05rem] leading-relaxed text-paper/85 md:col-span-5 md:text-lg"
-            initial={reduce ? false : { opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 1, ease }}
           >
@@ -126,7 +126,7 @@ export function Hero() {
 
           <motion.div
             className="flex flex-col gap-3 sm:flex-row md:col-span-7 md:justify-end"
-            initial={reduce ? false : { opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.05, duration: 1, ease }}
           >

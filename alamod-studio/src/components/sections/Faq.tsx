@@ -4,7 +4,7 @@ import { LineReveal, Reveal } from "@/components/ui/Reveal";
 export function Faq() {
   return (
     <section id="faq" aria-labelledby="faq-title" className="relative bg-paper text-ink">
-      <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-24 md:grid-cols-12 md:gap-8 md:px-10 md:py-36">
+      <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-16 md:grid-cols-12 md:gap-8 md:px-10 md:py-24">
         <div className="md:col-span-4">
           <div className="md:sticky md:top-28">
             <Reveal>

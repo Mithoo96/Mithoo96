@@ -41,7 +41,7 @@ export function WhyAlamod() {
 
   return (
     <section aria-labelledby="why-title" className="relative bg-navy">
-      <div className="mx-auto max-w-[1600px] px-5 py-24 md:px-10 md:py-36">
+      <div className="mx-auto max-w-[1600px] px-5 py-16 md:px-10 md:py-24">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <div>
             <Reveal>

@@ -5,7 +5,7 @@ import { ImageReveal, LineReveal, Reveal } from "@/components/ui/Reveal";
 export function Intro() {
   return (
     <section id="studio" className="relative overflow-hidden bg-paper text-ink">
-      <div className="mx-auto grid max-w-[1600px] gap-y-14 px-5 py-24 md:grid-cols-12 md:gap-x-8 md:px-10 md:py-36">
+      <div className="mx-auto grid max-w-[1600px] gap-y-14 px-5 py-16 md:grid-cols-12 md:gap-x-8 md:px-10 md:py-24">
         {/* Copy column */}
         <div className="relative z-10 md:col-span-7">
           <Reveal>
