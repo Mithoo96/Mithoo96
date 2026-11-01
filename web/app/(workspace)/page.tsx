@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { Hero } from "@/components/hero";
 import { TodayCard, AiActivity, QuickActions, Approvals, NeedsAttention } from "@/components/sections";
 import { Page } from "@/components/ui/primitives";
@@ -10,6 +11,7 @@ import { isOrgRole, resolvePermissions } from "@/core/tenancy/permissions";
 export default async function Home() {
   const { client, workspace } = await getWorkspace();
   const role = workspace.profile.viewer.role;
+  if (role === "EMPLOYEE") redirect("/work");
   if (!isOrgRole(role) || !resolvePermissions(role, workspace.extraPermissions).has("dashboard.read")) {
     return <Page><Hero /><p className="glass rounded-[28px] p-8">{role === "EMPLOYEE" ? "Your employee workspace is active. Guided task integration is coming next; owner dashboard access is restricted." : "No active organization workspace is available. Contact your organization administrator."}</p></Page>;
   }
@@ -18,11 +20,11 @@ export default async function Home() {
   catch { return <Page><Hero /><p role="alert" className="glass rounded-[28px] p-8">Dashboard data could not be loaded. Refresh to try again. No sample values are shown.</p></Page>; }
   const data = toPrototypeDashboard(summary, []);
   data.attention.unshift(...[
-    { title: `${summary.orders.needAttention} orders need attention`, detail: "Open order exceptions", href: "/work", tone: "rose" as const },
-    { title: `${summary.orders.atRisk} orders at risk`, detail: "High or critical risk and at-risk exceptions", href: "/work", tone: "amber" as const },
+    { title: `${summary.orders.needAttention} orders need attention`, detail: "Open order exceptions", href: "/orders", tone: "rose" as const },
+    { title: `${summary.orders.atRisk} orders at risk`, detail: "High or critical risk and at-risk exceptions", href: "/orders", tone: "amber" as const },
   ].filter((_, index) => index === 0 ? summary.orders.needAttention > 0 : summary.orders.atRisk > 0));
-  data.stats = data.stats.map((stat) => ({ ...stat, href: stat.label === "Pending Approvals" ? "/approvals" : "/work" }));
-  data.attention = data.attention.map((item) => ({ ...item, href: item.href === "/approvals" ? "/approvals" : "/work" }));
+  data.stats = data.stats.map((stat) => ({ ...stat, href: stat.label === "Pending Approvals" ? "/approvals" : stat.label === "Employee Tasks" ? "/work" : "/orders" }));
+  data.attention = data.attention.map((item) => ({ ...item, href: item.href === "/approvals" ? "/approvals" : "/orders" }));
   return (
     <Page>
       <Hero />

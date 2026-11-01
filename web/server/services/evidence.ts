@@ -63,6 +63,12 @@ export async function createEvidenceUpload(
     const visible = await ctx.db.maybeOne(`select 1 from public.orders where id = $1 and organization_id = $2`, [input.orderId, ctx.organizationId]);
     if (!visible) throw notFound("Order");
   }
+  if (input.taskId) {
+    const task = await ctx.db.maybeOne<{ assigned_to: string | null; status: string; order_id: string | null }>(`select assigned_to, status, order_id from public.tasks where id = $1 and organization_id = $2`, [input.taskId, ctx.organizationId]);
+    if (!task) throw notFound("Task");
+    if (task.assigned_to !== requireUser(ctx).actor.userId || task.status !== "IN_PROGRESS") throw new DomainError("FORBIDDEN", "Upload evidence only for your current assigned task");
+    if (input.orderId && input.orderId !== task.order_id) throw new DomainError("VALIDATION_FAILED", "Evidence order does not match the task");
+  }
   const storagePath = buildEvidencePath(ctx.organizationId, { orderId: input.orderId, taskId: input.taskId }, input.fileName);
   const g = gateway ?? (await supabaseStorageGateway());
   const signed = await g.createSignedUploadUrl("evidence", storagePath);
@@ -185,4 +191,31 @@ export async function getEvidenceDownloadUrl(ctx: ServiceContext, evidenceId: st
   if (!ev) throw notFound("Evidence");
   const g = gateway ?? (await supabaseStorageGateway());
   return g.createSignedDownloadUrl(ev.storage_bucket, ev.storage_path, 300);
+}
+
+/** Public-action boundary: a file must actually exist before its evidence record is accepted. */
+export async function submitUploadedEvidence(
+  ctx: ServiceContext,
+  raw: SubmitEvidenceInput,
+  verifyObject?: (path: string) => Promise<boolean>,
+): Promise<{ evidenceId: string }> {
+  const user = requireUser(ctx);
+  requirePermission(ctx, "evidence.submit");
+  const input = submitEvidenceSchema.parse(raw);
+  if (!isValidEvidencePath(ctx.organizationId, input.storagePath)) throw new DomainError("VALIDATION_FAILED", "Invalid evidence storage path");
+  if (!input.taskId) throw new DomainError("VALIDATION_FAILED", "Fulfillment evidence must belong to your assigned task");
+  const task = await ctx.db.maybeOne<{ assigned_to: string | null; status: string; order_id: string | null; shipment_id: string | null }>(`select assigned_to, status, order_id, shipment_id from public.tasks where id = $1 and organization_id = $2`, [input.taskId, ctx.organizationId]);
+  if (!task) throw notFound("Task");
+  if (task.assigned_to !== user.actor.userId || task.status !== "IN_PROGRESS") throw new DomainError("FORBIDDEN", "Evidence is limited to your current assigned task");
+  if (input.orderId && input.orderId !== task.order_id || input.shipmentId && input.shipmentId !== task.shipment_id) throw new DomainError("VALIDATION_FAILED", "Evidence context does not match your task");
+  if (!input.storagePath.startsWith(`${ctx.organizationId}/tasks/${input.taskId}/`)) throw new DomainError("VALIDATION_FAILED", "Use the upload path issued for this task");
+  const exists = verifyObject ?? (async (path: string) => {
+    // Storage has no browser INSERT grant. This existing server-only gateway is
+    // used only after task ownership checks; database writes still run with RLS.
+    const { getSupabaseAdmin } = await import("@/lib/supabase/admin");
+    const { data, error } = await getSupabaseAdmin().storage.from("evidence").info(path);
+    return !error && !!data;
+  });
+  if (!await exists(input.storagePath)) throw new DomainError("GUARD_FAILED", "Upload the actual evidence file before registering it");
+  return submitEvidence(ctx, input);
 }

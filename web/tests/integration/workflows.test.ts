@@ -21,7 +21,12 @@ async function countAllItems(taskId: string) {
 }
 
 describeDb("operations workflows", () => {
-  beforeAll(freshDatabase);
+  beforeAll(async () => {
+    await freshDatabase();
+    // The legacy seed intentionally contains two IN_PROGRESS examples for this employee.
+    // These ordered workflow tests start at task 7; adjust only this disposable fixture.
+    await runAsSystem(ids.org, "test:queue-fixture", (ctx) => ctx.db.query(`update public.tasks set status = 'OPEN', started_at = null where assigned_to = $1 and status = 'IN_PROGRESS'`, [ids.emp1]));
+  });
   afterAll(closeDatabase);
 
   it("employee packs an order end to end; completion requires evidence; carrier scan ships it", async () => {

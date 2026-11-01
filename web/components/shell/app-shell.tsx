@@ -16,6 +16,7 @@ import { HeroGlow } from "@/components/hero";
 export function AppShell({ children }: { children: ReactNode }) {
   const path = usePathname();
   const { profile } = useWorkspace();
+  const fulfillmentRoute = path === "/work" || path.startsWith("/work/") || path === "/orders" || path.startsWith("/orders/");
   const operational = profile.viewer.role === "OWNER" || profile.viewer.role === "MANAGER";
   const [assistant, setAssistant] = useState<{ open: boolean; prompt?: string }>({ open: false });
   const [search, setSearch] = useState(false);
@@ -45,8 +46,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Topbar />
           <HeroGlow />
           <div key={pageKey} className="relative flex-1">
-            {path !== "/" && <p role="status" className="mx-6 mt-20 rounded-2xl bg-[#f7f7fa] p-4 text-[13px] text-mute">Prototype preview · this module is not connected to your organization. Changes here are local demonstrations.</p>}
-            {operational || path === "/" ? children : <p className="p-8 text-mute">This module is not available for your role. Contact your organization administrator.</p>}
+            {path !== "/" && !fulfillmentRoute && <p role="status" className="mx-6 mt-20 rounded-2xl bg-[#f7f7fa] p-4 text-[13px] text-mute">Prototype preview · this module is not connected to your organization. Changes here are local demonstrations.</p>}
+            {operational || path === "/" || (profile.viewer.role === "EMPLOYEE" && fulfillmentRoute) ? children : <p className="p-8 text-mute">This module is not available for your role. Contact your organization administrator.</p>}
           </div>
           {showCommandBar && <CommandBar onOpen={ui.openAssistant} />}
         </main>

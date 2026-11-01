@@ -1,7 +1,7 @@
 /**
  * Task Engine rules (pure): start/complete preconditions and next-task selection.
  */
-import { LIVE_TASK_STATUSES, PRIORITY_RANK, type TaskCheck, type TaskPriority, type TaskStatus } from "./catalog";
+import { LIVE_TASK_STATUSES, PRIORITY_RANK, type TaskCheck, type TaskPriority, type TaskStatus, type InstructionStep } from "./catalog";
 
 export interface CheckState {
   readonly passed: boolean;
@@ -82,4 +82,14 @@ export function priorityForDeadline(minutesRemaining: number | null, base: TaskP
   if (minutesRemaining === null) return base;
   const escalated: TaskPriority = minutesRemaining <= 120 ? "URGENT" : minutesRemaining <= 480 ? "HIGH" : base;
   return PRIORITY_RANK[escalated] < PRIORITY_RANK[base] ? escalated : base;
+}
+
+/** One step-progression mapping shared by SQL services and the HTTPS UI adapter. */
+export function taskStepProgress(instructions: readonly InstructionStep[], checks: Partial<Record<TaskCheck, { passed: boolean }>> | null) {
+  const steps = instructions.map((step) => ({ ...step, done: !!step.check && checks?.[step.check]?.passed === true, failed: !!step.check && checks?.[step.check]?.passed === false }));
+  for (let i = steps.length - 1, laterDone = false; i >= 0; i--) {
+    if (!steps[i].check && laterDone) steps[i].done = true;
+    if (steps[i].done) laterDone = true;
+  }
+  return steps;
 }

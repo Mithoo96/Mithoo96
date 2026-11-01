@@ -4,8 +4,8 @@
  */
 import { DomainError, notFound } from "@/core/errors";
 import { TASK_CATALOG, type TaskCheck, type TaskPriority, type TaskStatus, type TaskType } from "@/core/tasks/catalog";
-import type { ChecksState, TaskLike } from "@/core/tasks/rules";
-import { actorUserId, requirePermission, type ServiceContext } from "../context";
+import { rankTasksForEmployee, type ChecksState, type TaskLike } from "@/core/tasks/rules";
+import { actorUserId, requireUser, requirePermission, type ServiceContext } from "../context";
 import { logActivity } from "./activity";
 import { notify } from "./notifications";
 
@@ -194,4 +194,12 @@ export async function recordCheck(
   await ctx.db.query(`update public.tasks set checks_state = $2 where id = $1`, [task.id, JSON.stringify(next)]);
   task.checks_state = next;
   return next;
+}
+
+/** One canonical working task per employee, serialized across browser tabs and requests. */
+export async function lockEmployeeQueue(ctx: ServiceContext): Promise<string | null> {
+  const user = requireUser(ctx);
+  await ctx.db.query(`select pg_advisory_xact_lock(hashtextextended($1, 0))`, [`task-start:${ctx.organizationId}:${user.actor.userId}`]);
+  const active = await ctx.db.query<TaskRow>(`select * from public.tasks where organization_id = $1 and assigned_to = $2 and status = 'IN_PROGRESS'`, [ctx.organizationId, user.actor.userId]);
+  return rankTasksForEmployee(active.map(toTaskLike), user.actor.userId, { includePool: false })[0]?.id ?? null;
 }

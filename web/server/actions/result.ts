@@ -28,6 +28,6 @@ export function toActionError(err: unknown): ActionResult<never> {
   if (err instanceof ZodError) {
     return { ok: false, error: { code: "VALIDATION_FAILED", message: "Invalid input", details: err.issues.map((i) => ({ path: i.path.join("."), message: i.message })) } };
   }
-  console.error("[action] unexpected error", err);
+  console.error("[action] unexpected error", { name: err instanceof Error ? err.name : "UnknownError" });
   return { ok: false, error: { code: "INTERNAL", message: "Something went wrong. Please try again." } };
 }

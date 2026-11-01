@@ -39,6 +39,7 @@ export function getPool(): Pool {
       globalForPool.__mbosPool = new Pool({
         connectionString: env.DATABASE_URL,
         max: env.DATABASE_POOL_MAX,
+        connectionTimeoutMillis: 10_000,
         ssl: env.DATABASE_SSL === "require" ? { rejectUnauthorized: true } : undefined,
         statement_timeout: 15_000,
         idle_in_transaction_session_timeout: 30_000,

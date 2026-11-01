@@ -1,22 +1,13 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 
 // Opt-in live tests: no seed/reset, no server key, no persisted session artifacts.
 const configured = !!process.env.DEMO_ACCOUNT_PASSWORD && !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 test.skip(!configured, "Live staging credentials are required");
-async function login(page: Page, password: string) {
-  await page.getByLabel("Email", { exact: true }).fill("owner@zileboutik.demo");
-  // Keep the secret out of Playwright action logs and failure artifacts.
-  await page.evaluate((password) => {
-    const input = document.querySelector<HTMLInputElement>('input[name="password"]')!;
-    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(input, password);
-    input.dispatchEvent(new Event("input", { bubbles: true }));
-  }, password);
-  await page.getByRole("button", { name: "Sign in", exact: true }).click();
-}
+import { login } from "./login-helper";
 
 test("all actual application routes redirect without a session", async ({ request }) => {
-  for (const route of ["/", "/work", "/approvals", "/clients", "/clients/example", "/documents", "/inbox", "/appointments", "/create", "/create/campaign", "/insights", "/insights/revenue", "/apps", "/settings"]) {
+  for (const route of ["/", "/orders", "/orders/example", "/work", "/work/tasks/example", "/approvals", "/clients", "/clients/example", "/documents", "/inbox", "/appointments", "/create", "/create/campaign", "/insights", "/insights/revenue", "/apps", "/settings"]) {
     const response = await request.get(route, { maxRedirects: 0 });
     expect(response.status()).toBe(307);
     expect(new URL(response.headers().location, "http://127.0.0.1:3000").pathname).toBe("/login");

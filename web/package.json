@@ -15,7 +15,8 @@
     "db:reset:local": "tsx scripts/db/reset-local.ts --seed",
     "db:seed:generate": "tsx scripts/db/generate-seed.ts",
     "db:demo-passwords": "tsx scripts/db/set-demo-passwords.ts",
-    "test:auth": "NODE_USE_ENV_PROXY=1 playwright test"
+    "test:auth": "NODE_USE_ENV_PROXY=1 playwright test",
+    "test:fulfillment:live": "NODE_USE_ENV_PROXY=1 RUN_LIVE_FULFILLMENT_READS=1 vitest run tests/live"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -31,12 +32,14 @@
   "devDependencies": {
     "@playwright/test": "1.64.1",
     "@tailwindcss/postcss": "^4.3.3",
+    "@testing-library/react": "16.3.3",
     "@types/node": "^26.6.6",
     "@types/pg": "^8.23.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.3",
+    "jsdom": "30.1.3",
     "postcss": "^8.5.32",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",

@@ -21,13 +21,15 @@ import { logActivity, recordEmployeeAction } from "./activity";
 import { notify } from "./notifications";
 import { transitionOrder } from "./orders";
 import { runShipmentVerification } from "./shipping";
-import { loadTask, recordCheck, toTaskLike, type TaskRow } from "./tasks-core";
+import { lockEmployeeQueue, loadTask, recordCheck, toTaskLike, type TaskRow } from "./tasks-core";
 
 async function loadWorkingTask(ctx: ServiceContext, taskId: string): Promise<TaskRow & { order_id: string; shipment_id: string }> {
   const user = requireUser(ctx);
   requirePermission(ctx, "tasks.work");
+  const currentTaskId = await lockEmployeeQueue(ctx);
   const task = await loadTask(ctx, z.string().uuid().parse(taskId), { forUpdate: true });
   if (task.assigned_to !== user.actor.userId) throw new DomainError("FORBIDDEN", "This task is not assigned to you");
+  if (currentTaskId !== task.id) throw new DomainError("CONFLICT", "Resume your current task before working on another package");
   if (task.status !== "IN_PROGRESS") throw new DomainError("CONFLICT", `Start the task first (status is ${task.status})`);
   if (!task.order_id || !task.shipment_id) throw new DomainError("VALIDATION_FAILED", "Task is not linked to an order shipment");
   return task as TaskRow & { order_id: string; shipment_id: string };

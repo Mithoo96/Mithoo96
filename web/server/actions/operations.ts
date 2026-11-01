@@ -19,7 +19,7 @@ import {
   getEvidenceDownloadUrl as getEvidenceDownloadUrlSvc,
   listEvidence as listEvidenceSvc,
   reviewEvidence as reviewEvidenceSvc,
-  submitEvidence as submitEvidenceSvc,
+  submitUploadedEvidence as submitEvidenceSvc,
 } from "../services/evidence";
 import {
   acknowledgeException as acknowledgeExceptionSvc,
@@ -199,4 +199,71 @@ export async function getMyOrganizationsAction() {
   } catch (err) {
     return toActionError(err);
   }
+}
+
+// Fulfillment UI entry points derive the active tenant on the server.
+export async function lookupPackageAction(input: unknown) {
+  try {
+    const { getWorkspace } = await import("../auth/workspace");
+    const { lookupSessionPackages } = await import("../adapters/fulfillment");
+    const { client, workspace } = await getWorkspace();
+    return { ok: true as const, data: await lookupSessionPackages(client, workspace, input) };
+  } catch (error) { return toActionError(error); }
+}
+export async function fulfillmentAction(input: unknown) {
+  try {
+    const schema = z.discriminatedUnion("action", [
+      z.object({ action: z.literal("startNext") }).strict(),
+      z.object({ action: z.literal("start"), taskId: uuid }).strict(),
+      z.object({ action: z.literal("items"), taskId: uuid, items: z.array(z.object({ orderItemId: uuid, quantity: z.number().int().min(0).max(10000) }).strict()).min(1) }).strict(),
+      z.object({ action: z.literal("label"), taskId: uuid }).strict(),
+      z.object({ action: z.literal("scan"), taskId: uuid, scannedValue: z.string().trim().min(1).max(200) }).strict(),
+      z.object({ action: z.literal("package"), taskId: uuid }).strict(),
+      z.object({ action: z.literal("complete"), taskId: uuid }).strict(),
+      z.object({ action: z.literal("assign"), taskId: uuid, assigneeId: uuid.nullable() }).strict(),
+    ]);
+    const command = schema.parse(input);
+    const { getWorkspace } = await import("../auth/workspace");
+    const { workspace } = await getWorkspace();
+    return memberAction(workspace.profile.organization.id, async (ctx) => {
+      switch (command.action) {
+        case "startNext": return { task: await startNextTaskSvc(ctx) };
+        case "start": await startTaskSvc(ctx, command.taskId); return { message: "Packing started." };
+        case "items": {
+          const result = await confirmItemsSvc(ctx, { taskId: command.taskId, items: command.items });
+          return { passed: result.passed, message: result.passed ? "Products and quantities verified." : result.problems.join("; ") };
+        }
+        case "label": await retrieveLabelSvc(ctx, command.taskId); return { message: "Assigned label retrieved. Attach it to this package, then scan it." };
+        case "scan": {
+          const result = await verifyLabelSvc(ctx, { taskId: command.taskId, scannedValue: command.scannedValue });
+          return { passed: result.passed, message: result.instruction };
+        }
+        case "package": await confirmPackageSvc(ctx, command.taskId); return { message: "Package confirmed. Submit for final verification." };
+        case "complete": return completeTaskSvc(ctx, command.taskId);
+        case "assign": await assignTaskSvc(ctx, command.taskId, command.assigneeId, "Assigned through order fulfillment"); return { message: "Employee responsibility updated." };
+      }
+    });
+  } catch (error) { return toActionError(error); }
+}
+
+/** Actual photo upload, scoped to the working employee's task before using Storage. */
+export async function uploadPackingEvidence(form: FormData) {
+  try {
+    const taskId = uuid.parse(form.get("taskId"));
+    const file = form.get("file");
+    if (!(file instanceof File) || file.size === 0 || file.size > 15 * 1024 * 1024 || !["image/jpeg", "image/png", "image/webp", "image/heic"].includes(file.type)) {
+      return { ok: false as const, error: { code: "VALIDATION_FAILED" as const, message: "Choose a package photo (JPEG, PNG, WEBP or HEIC), up to 15 MB." } };
+    }
+    const { getWorkspace } = await import("../auth/workspace");
+    const { workspace } = await getWorkspace();
+    return memberAction(workspace.profile.organization.id, async (ctx) => {
+      const task = await getTaskDetailSvc(ctx, taskId);
+      // getTaskDetail is RLS-scoped; the upload service also validates assignment.
+      const uploaded = await createEvidenceUploadSvc(ctx, { taskId, fileName: file.name, contentType: file.type as "image/jpeg" });
+      const response = await fetch(uploaded.signedUrl, { method: "PUT", headers: { "Content-Type": file.type }, body: file, cache: "no-store" });
+      if (!response.ok) throw new Error("Evidence upload failed");
+      await submitEvidenceSvc(ctx, { taskId: task.id, evidenceType: "PACKAGING_PHOTO", storagePath: uploaded.storagePath, contentType: file.type as "image/jpeg", sizeBytes: file.size });
+      return { message: "Package photo uploaded. Evidence awaits human review." };
+    });
+  } catch (error) { return toActionError(error); }
 }

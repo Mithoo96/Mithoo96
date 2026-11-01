@@ -486,3 +486,24 @@ export async function getOrderDetails(ctx: ServiceContext, orderId: string): Pro
 export function assertCanReadAllOrders(ctx: ServiceContext): void {
   if (ctx.actor.kind === "USER" && !ctx.permissions.has("orders.read_all")) throw forbidden();
 }
+
+/** Lookup convenience only: RLS, membership and the task context still authorize the result. */
+export async function lookupPackages(ctx: ServiceContext, input: unknown) {
+  const { packageLookupKey, classifyPackageMatches } = await import("@/core/shipping/lookup");
+  const { maskTracking } = await import("@/core/shipping/verification");
+  const key = packageLookupKey(input);
+  const rows = await ctx.db.query<{ id: string; order_id: string; order_number: string; carrier: string | null; tracking_number: string | null; status: string; ship_by_at: Date | null }>(
+    `select s.id, s.order_id, o.order_number, s.carrier, s.tracking_number, o.status, o.ship_by_at
+       from public.shipments s join public.orders o on o.id = s.order_id and o.organization_id = s.organization_id
+      where s.organization_id = $1 and s.status <> 'CANCELLED'
+        and (lower(o.order_number) = lower($3) or
+          (case when $4 then right(s.tracking_number_normalized, 4) = $2 else s.tracking_number_normalized = $2 end)
+          or exists (select 1 from public.shipping_labels l where l.shipment_id = s.id and l.organization_id = $1
+            and l.status in ('READY','PRINTED') and
+            ((case when $4 then right(l.tracking_number_normalized,4) = $2 else l.tracking_number_normalized = $2 end)
+             or (not $4 and (l.barcode_value = $3 or app.normalize_tracking(l.barcode_value) = $2)))))
+      order by s.id limit 2`,
+    [ctx.organizationId, key.normalized, key.raw, key.last4],
+  );
+  return classifyPackageMatches(rows.map((r) => ({ shipmentId: r.id, orderId: r.order_id, orderNumber: r.order_number, carrier: r.carrier, trackingLast4: maskTracking(r.tracking_number), status: r.status, shipByAt: r.ship_by_at?.toISOString() ?? null })));
+}

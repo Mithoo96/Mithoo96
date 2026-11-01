@@ -5,7 +5,7 @@ import { z } from "zod";
 import { DomainError, notFound } from "@/core/errors";
 import { maskTracking } from "@/core/shipping/verification";
 import { TASK_CATALOG, TASK_PRIORITIES, TASK_STATUSES, TASK_TYPES, type TaskCheck } from "@/core/tasks/catalog";
-import { canStartTask, evaluateTaskCompletion, rankTasksForEmployee } from "@/core/tasks/rules";
+import { canStartTask, evaluateTaskCompletion, rankTasksForEmployee, taskStepProgress } from "@/core/tasks/rules";
 import { requirePermission, requireUser, type ServiceContext } from "../context";
 import { logActivity, recordEmployeeAction } from "./activity";
 import { notify } from "./notifications";
@@ -13,7 +13,7 @@ import { transitionOrder } from "./orders";
 import { completePackTask, onPackTaskStarted, type CompletionResult } from "./packing";
 import { getSetting } from "./settings";
 import { runShipmentVerification } from "./shipping";
-import { assignTask, createTask, loadTask, toTaskLike, type TaskRow } from "./tasks-core";
+import { assignTask, createTask, lockEmployeeQueue, loadTask, toTaskLike, type TaskRow } from "./tasks-core";
 
 export { assignTask, createTask };
 
@@ -36,9 +36,11 @@ export async function createManualTask(ctx: ServiceContext, raw: z.input<typeof 
 export async function startTask(ctx: ServiceContext, taskId: string): Promise<void> {
   const user = requireUser(ctx);
   requirePermission(ctx, "tasks.work");
+  const currentTaskId = await lockEmployeeQueue(ctx);
   const task = await loadTask(ctx, z.string().uuid().parse(taskId), { forUpdate: true });
   const decision = canStartTask(toTaskLike(task), user.actor.userId);
   if (!decision.ok) throw new DomainError("GUARD_FAILED", decision.reason);
+  if (currentTaskId && currentTaskId !== task.id) throw new DomainError("CONFLICT", "Finish or resume your current task before starting another order");
   if (task.status === "IN_PROGRESS") return;
   await ctx.db.query(`update public.tasks set status = 'IN_PROGRESS', started_at = now() where id = $1`, [task.id]);
   task.status = "IN_PROGRESS";
@@ -51,8 +53,10 @@ export async function startTask(ctx: ServiceContext, taskId: string): Promise<vo
 export async function completeTask(ctx: ServiceContext, taskId: string): Promise<CompletionResult> {
   const user = requireUser(ctx);
   requirePermission(ctx, "tasks.work");
+  const currentTaskId = await lockEmployeeQueue(ctx);
   const task = await loadTask(ctx, z.string().uuid().parse(taskId), { forUpdate: true });
   if (task.assigned_to !== user.actor.userId) throw new DomainError("FORBIDDEN", "This task is not assigned to you");
+  if (currentTaskId && currentTaskId !== task.id) throw new DomainError("CONFLICT", "Resume your current task before completing another order");
 
   if ((task.type === "PACK_ORDER" || task.type === "REPRINT_LABEL") && task.order_id && task.shipment_id) {
     return completePackTask(ctx, task as TaskRow & { order_id: string; shipment_id: string });
@@ -234,19 +238,7 @@ export async function getTaskDetail(ctx: ServiceContext, taskId: string): Promis
     `select distinct evidence_type from public.order_evidence where task_id = $1 and review_status <> 'REJECTED'`,
     [task.id],
   );
-  const steps = (task.instructions ?? []).map((s) => ({
-    key: s.key,
-    text: s.text,
-    check: s.check,
-    done: s.check ? task.checks_state?.[s.check]?.passed === true : false,
-    failed: s.check ? task.checks_state?.[s.check]?.passed === false : false,
-  }));
-  // A step without a check is considered done once a later checked step is done.
-  for (let i = steps.length - 1, laterDone = false; i >= 0; i--) {
-    const s = steps[i]!;
-    if (s.check === null && laterDone) s.done = true;
-    if (s.done) laterDone = true;
-  }
+  const steps = taskStepProgress(task.instructions ?? [], task.checks_state);
   return {
     id: task.id,
     type: task.type,

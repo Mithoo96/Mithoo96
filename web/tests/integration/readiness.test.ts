@@ -21,7 +21,12 @@ const PLATFORM_ADMIN = "a0000000-0000-4000-8000-000000000001";
 const sys = <T>(sql: string, params: unknown[] = []) => runAsSystem(ids.org, "test", (ctx) => ctx.db.query<T & Record<string, unknown>>(sql, params));
 
 describeDb("phase 1 readiness", () => {
-  beforeAll(freshDatabase);
+  beforeAll(async () => {
+    await freshDatabase();
+    // The legacy seed intentionally contains two IN_PROGRESS examples for this employee.
+    // These ordered workflow tests start at task 7; adjust only this disposable fixture.
+    await runAsSystem(ids.org, "test:queue-fixture", (ctx) => ctx.db.query(`update public.tasks set status = 'OPEN', started_at = null where assigned_to = $1 and status = 'IN_PROGRESS'`, [ids.emp1]));
+  });
   afterAll(closeDatabase);
 
   it("employee task restrictions", async () => {

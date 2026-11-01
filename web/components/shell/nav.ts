@@ -1,8 +1,9 @@
-import { Home, Users, FolderOpen, Briefcase, Sparkles, Inbox, ChartLine, LayoutGrid, Settings, type LucideIcon } from "lucide-react";
+import { Package, Home, Users, FolderOpen, Briefcase, Sparkles, Inbox, ChartLine, LayoutGrid, Settings, type LucideIcon } from "lucide-react";
 
 export type NavItem = { label: string; icon: LucideIcon; href: string; match: string[] };
 export const mainNav: NavItem[] = [
   { label: "Home", icon: Home, href: "/", match: ["/"] },
+  { label: "Orders", icon: Package, href: "/orders", match: ["/orders"] },
   { label: "Clients", icon: Users, href: "/clients", match: ["/clients"] },
   { label: "Documents", icon: FolderOpen, href: "/documents", match: ["/documents"] },
   { label: "Work", icon: Briefcase, href: "/work", match: ["/work", "/approvals", "/appointments"] },
