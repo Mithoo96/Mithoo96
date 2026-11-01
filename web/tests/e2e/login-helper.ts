@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
-export async function login(page: Page, password: string) {
-  await page.getByLabel("Email", { exact: true }).fill("owner@zileboutik.demo");
+export async function login(page: Page, password: string, email = "owner@zileboutik.demo") {
+  await page.getByLabel("Email", { exact: true }).fill(email);
   // Keep the secret out of Playwright action logs and failure artifacts.
   await page.evaluate((password) => {
     const input = document.querySelector<HTMLInputElement>('input[name="password"]')!;

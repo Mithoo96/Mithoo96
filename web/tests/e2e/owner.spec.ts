@@ -37,6 +37,14 @@ test("OWNER login, persisted session, real dashboard, and logout", async ({ page
     }
     await expect(page.getByText("Dashboard data could not be loaded.", { exact: false })).toHaveCount(0);
     await expect(page.locator(".launch")).toHaveCount(0);
+    stage = "persisted activity";
+    await page.getByRole("button", { name: "See everything Mithoo handled today" }).click();
+    const activity = page.getByRole("dialog");
+    await expect(activity.getByRole("heading", { name: "Workspace activity", exact: true })).toBeVisible();
+    await expect(activity.getByText("No activity has been recorded.")).toHaveCount(0);
+    await expect(activity.getByText(/Activity is temporarily unavailable/)).toHaveCount(0);
+    expect(await activity.locator("li a").count()).toBeGreaterThan(0);
+    await page.keyboard.press("Escape");
     await page.screenshot({ path: testInfo.outputPath("owner-dashboard.png"), fullPage: true });
     await page.setViewportSize({ width: 390, height: 844 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -57,6 +65,34 @@ test("OWNER login, persisted session, real dashboard, and logout", async ({ page
     await page.goto("/");
     await expect(page).toHaveURL(/\/login/);
   } catch { throw new Error(`OWNER browser checkpoint failed at ${stage}; credential details intentionally suppressed.`); }
+});
+
+test("invalid session cookies redirect back to login", async ({ page, context }) => {
+  await page.goto("/login"); await login(page, process.env.DEMO_ACCOUNT_PASSWORD!);
+  await expect(page).toHaveURL("/");
+  const names = (await context.cookies()).filter((c) => /^sb-.*-auth-token/.test(c.name)).map((c) => c.name);
+  expect(names.length).toBeGreaterThan(0);
+  await context.clearCookies();
+  await context.addCookies([{ name: names[0].replace(/\.\d+$/, ""), value: "base64-invalid-session", url: "http://127.0.0.1:3000" }]);
+  await page.goto("/orders");
+  await expect(page).toHaveURL(/\/login\?next=/);
+  await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeVisible();
+});
+
+test("employee login uses the existing assigned-work UI and excludes owner routes", async ({ page }) => {
+  await page.goto("/login");
+  await login(page, process.env.DEMO_ACCOUNT_PASSWORD!, "employee1@zileboutik.demo");
+  await expect(page).toHaveURL("/work"); await page.keyboard.press("Escape");
+  await expect(page.getByRole("heading", { name: "Today’s Work", exact: true })).toBeVisible();
+  await expect(page.getByText("Zile Boutik · OWNER", { exact: true })).toHaveCount(0);
+  await page.goto("/orders"); await expect(page).toHaveURL("/work"); await page.keyboard.press("Escape");
+  const foreignTask = await page.goto("/work/tasks/10000000-0000-4000-8000-000000000009");
+  expect(foreignTask?.status()).toBe(404);
+  await page.goto("/work"); await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Account menu" }).first().click();
+  await page.getByRole("button", { name: "Sign Out", exact: true }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Sign Out", exact: true }).click();
+  await expect(page).toHaveURL(/\/login/);
 });
 
 test("OWNER JWT reads Zile data and excludes known foreign staging rows", async () => {

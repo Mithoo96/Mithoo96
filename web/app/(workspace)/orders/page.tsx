@@ -1,19 +1,22 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getWorkspace } from "@/server/auth/workspace";
 import { getSessionOrders, getSessionEmployees } from "@/server/adapters/fulfillment";
 import { ORDER_STATUSES } from "@/core/orders/state-machine";
 import { Page, PageHeader, Card } from "@/components/ui/primitives";
 import { PackageLookup } from "@/components/fulfillment/lookup";
 import { Deadline, OrderState } from "@/components/fulfillment/status";
-export default async function OrdersPage({ searchParams }: { searchParams: Promise<{ search?: string; status?: string; page?: string }> }) {
+export default async function OrdersPage({ searchParams }: { searchParams: Promise<{ search?: string; status?: string; page?: string; filter?: string }> }) {
   const { client, workspace } = await getWorkspace(); const query = await searchParams;
+  if (workspace.profile.viewer.role === "EMPLOYEE") redirect("/work");
   let data; let employees;
   try { [data, employees] = await Promise.all([getSessionOrders(client, workspace, query), getSessionEmployees(client, workspace)]); }
   catch { return <Page><PageHeader title="Orders" subtitle="Your authorized fulfillment queue" /><p role="alert" className="glass rounded-[24px] p-6">Orders are unavailable for this session. Employees can use <Link href="/work" className="underline">Today’s Work</Link>.</p></Page>; }
-  const next = new URLSearchParams({ ...(query.search ? { search: query.search } : {}), ...(query.status ? { status: query.status } : {}), page: String(data.page + 1) });
+  const next = new URLSearchParams({ ...(query.search ? { search: query.search } : {}), ...(query.status ? { status: query.status } : {}), ...(query.filter ? { filter: query.filter } : {}), page: String(data.page + 1) });
   const previous = new URLSearchParams(next); previous.set("page", String(Math.max(1, data.page - 1)));
   return <Page wide><PageHeader title="Orders" subtitle={`${workspace.profile.organization.name} · ${data.total} matching orders`} /><PackageLookup />
     <form className="mb-5 flex flex-col gap-3 sm:flex-row" action="/orders">
+      {query.filter && <input type="hidden" name="filter" value={query.filter} />}
       <input name="search" aria-label="Search orders" defaultValue={query.search} placeholder="Search order number" maxLength={100} className="h-12 flex-1 rounded-2xl bg-white px-4 ring-1 ring-hair" />
       <select name="status" aria-label="Order status" defaultValue={query.status ?? ""} className="h-12 rounded-2xl bg-white px-4 ring-1 ring-hair"><option value="">All statuses</option>{ORDER_STATUSES.map((s) => <option key={s}>{s}</option>)}</select>
       <button className="min-h-12 rounded-full bg-ink px-6 text-[14px] font-medium text-white">Filter orders</button>

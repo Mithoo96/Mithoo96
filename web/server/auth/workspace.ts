@@ -24,7 +24,7 @@ export async function resolveWorkspace(client: SupabaseClient): Promise<Workspac
   if (membership.error || profile.error || admin.error) throw new Error("Workspace could not be loaded. Please try again.");
   const memberships = (membership.data ?? []).flatMap((m) => {
     const org = Array.isArray(m.organizations) ? m.organizations[0] : m.organizations;
-    return org && org.status === "ACTIVE" && isOrgRole(m.role) ? [{ org, role: m.role, extra: (m.extra_permissions as string[] | null) ?? [] }] : [];
+    return m.status === "ACTIVE" && org && org.status === "ACTIVE" && isOrgRole(m.role) ? [{ org, role: m.role, extra: (m.extra_permissions as string[] | null) ?? [] }] : [];
   });
   // Deterministic active membership, never a client-provided org or role.
   const selected = memberships[0];

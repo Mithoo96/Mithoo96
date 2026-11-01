@@ -32,15 +32,16 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  const { data } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
+  const authenticated = !error && !!data.user;
   let destination: URL | null = null;
-  if (!isLogin && !data.user) {
+  if (!isLogin && !authenticated) {
     const login = request.nextUrl.clone();
     login.pathname = "/login";
     login.search = "";
     login.searchParams.set("next", request.nextUrl.pathname + request.nextUrl.search);
     destination = login;
-  } else if (isLogin && data.user) {
+  } else if (isLogin && authenticated) {
     destination = new URL(safeReturnPath(request.nextUrl.searchParams.get("next")), request.url);
   }
   if (destination) {

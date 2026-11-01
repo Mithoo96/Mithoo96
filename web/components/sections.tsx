@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { PrototypeDashboard } from "@/server/adapters/prototype";
 import type { DashboardSummary } from "@/server/services/dashboard";
+import type { WorkspaceActivity } from "@/server/adapters/fulfillment";
 import { useState } from "react";
 import { ArrowRight, ArrowUpRight, Users, MessageCircle, Sparkles, ChartLine, CalendarDays, CircleCheck, Briefcase, FileText, ChevronRight, type LucideIcon } from "lucide-react";
 import { GlassCard, Eyebrow } from "./ui";
@@ -85,7 +86,7 @@ const extraActivity: Record<BusinessMode, { label: string; icon: LucideIcon }[]>
   tax: [{ label: "Returns sorted by deadline", icon: FileText }], insurance: [{ label: "Quotes compared across 3 carriers", icon: FileText }],
 };
 
-export function AiActivity({ data }: { data?: PrototypeDashboard }) {
+export function AiActivity({ data, activity, timezone = "UTC" }: { data?: PrototypeDashboard; activity?: WorkspaceActivity | null; timezone?: string }) {
   const [open, setOpen] = useState(false); const { mode } = useOs();
   const log = (data ? [] : aiActivityLog).filter((l) => mode === "all" || l.mode === mode || l.mode === "all");
   return (
@@ -111,8 +112,15 @@ export function AiActivity({ data }: { data?: PrototypeDashboard }) {
       </ul>
       {data && data.handled.length === 0 && <p className="text-[14px] text-mute">No completed activity recorded today.</p>}
       <p className="pointer-events-none mt-7 inline-flex items-center gap-1 text-[12px] text-mute">{data ? "Recorded operations from your workspace." : "Working quietly in the background."} <span className="text-iris">See all</span></p>
-      <Drawer open={open} onClose={() => setOpen(false)} title="Handled by Mithoo" description="Everything that happened in the background today.">
+      <Drawer open={open} onClose={() => setOpen(false)} title={data ? "Workspace activity" : "Handled by Mithoo"} description={data ? "Recent recorded operational events from your organization." : "Everything that happened in the background today."}>
         <ul className="space-y-5">
+          {data && activity === null && <li role="status" className="text-[14px] text-mute">Activity is temporarily unavailable. Please refresh to try again.</li>}
+          {data && activity?.length === 0 && <li className="text-[14px] text-mute">No activity has been recorded.</li>}
+          {data && activity?.map((entry) => <li key={entry.id}>
+            {entry.order_id ? <Link href={`/orders/${entry.order_id}`} onClick={() => setOpen(false)} className="block rounded-2xl p-2 -m-2 hover:bg-[#f7f7fa]">
+              <ActivityItem title={entry.action} detail={entry.summary} when={new Date(entry.occurred_at).toLocaleString("en-US", { timeZone: timezone })} />
+            </Link> : <ActivityItem title={entry.action} detail={entry.summary} when={new Date(entry.occurred_at).toLocaleString("en-US", { timeZone: timezone })} />}
+          </li>)}
           {log.map((l) => (
             <li key={l.id}>{l.href ? <Link href={l.href} onClick={() => setOpen(false)} className="block rounded-2xl p-2 -m-2 hover:bg-[#f7f7fa]"><ActivityItem brand={l.brand} title={l.text} when={l.when} /></Link> : <ActivityItem brand={l.brand} title={l.text} when={l.when} />}</li>
           ))}

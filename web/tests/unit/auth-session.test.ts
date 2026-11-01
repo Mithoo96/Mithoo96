@@ -5,14 +5,19 @@ import { organizationDayStart, getSessionDashboardSummary } from "@/server/servi
 import { resolveWorkspace, type Workspace } from "@/server/auth/workspace";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-const mock = vi.hoisted(() => ({ user: null as null | { id: string }, refresh: false }));
+const mock = vi.hoisted(() => ({ user: null as null | { id: string }, refresh: false, error: false }));
 vi.mock("@supabase/ssr", () => ({ createServerClient: (_url: string, _key: string, options: { cookies: { setAll: (cookies: unknown[], headers: Record<string, string>) => void } }) => ({ auth: { getUser: async () => {
   if (mock.refresh) options.cookies.setAll([{ name: "session", value: "refreshed", options: { path: "/", httpOnly: true } }], { "Cache-Control": "private, no-store", Pragma: "no-cache" });
-  return { data: { user: mock.user } };
+  return { data: { user: mock.user }, error: mock.error ? { code: "session_not_found" } : null };
 } } }) }));
 import { proxy } from "@/proxy";
 
-beforeEach(() => { mock.user = null; mock.refresh = false; vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co"); vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "public-test-key"); });
+beforeEach(() => { mock.user = null; mock.refresh = false; mock.error = false; vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co"); vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "public-test-key"); });
+it("rejects an invalid or expired session even if a stale user is returned", async () => {
+  mock.user = { id: "owner" }; mock.error = true;
+  expect((await proxy(new NextRequest("https://app.example/orders"))).headers.get("location")).toContain("/login");
+  expect((await proxy(new NextRequest("https://app.example/login"))).status).toBe(200);
+});
 it("blocks external return destinations and login loops", () => {
   for (const path of ["//evil.example", "/\\evil.example", "https://evil.example", "/login", "/api/health", "/\nevil"]) expect(safeReturnPath(path)).toBe("/");
   expect(safeReturnPath("/work?filter=today")).toBe("/work?filter=today");
@@ -61,6 +66,7 @@ it("resolves active organization and role from verified membership rows", async 
   expect(w?.profile.organization.id).toBe("zile"); expect(w?.profile.viewer.firstName).toBe("Zile");
 });
 it("does not grant tenant authority for inactive organizations or forged roles", async () => {
+  expect((await resolveWorkspace(workspaceClient([{ ...member(), status: "INACTIVE" }])))?.memberships).toEqual([]);
   expect((await resolveWorkspace(workspaceClient([member("OWNER", "SUSPENDED")])))?.memberships).toEqual([]);
   expect((await resolveWorkspace(workspaceClient([member("PLATFORM_ADMIN")])))?.profile.viewer.role).toBe("NO_MEMBERSHIP");
   expect(await resolveWorkspace(workspaceClient([], null))).toBeNull();

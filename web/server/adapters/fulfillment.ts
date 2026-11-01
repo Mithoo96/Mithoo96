@@ -11,6 +11,7 @@ import { maskTracking } from "@/core/shipping/verification";
 import { rankTasksForEmployee, taskStepProgress } from "@/core/tasks/rules";
 import type { EmployeeTaskDetail } from "../services/tasks";
 import { TASK_CATALOG, TASK_TYPES, TASK_PRIORITIES, TASK_STATUSES, type TaskCheck } from "@/core/tasks/catalog";
+import { organizationDayStart } from "../services/dashboard";
 
 const orderSchema = z.object({ id: z.string(), order_number: z.string(), status: z.enum(ORDER_STATUSES), channel: z.string(), placed_at: z.string(), ship_by_at: z.string().nullable(), risk_level: z.string(), exception_state: z.string().nullable() });
 const shipmentSchema = z.object({ id: z.string(), order_id: z.string(), carrier: z.string().nullable(), tracking_number: z.string().nullable(), status: z.string(), verification_status: z.string(), carrier_accepted_at: z.string().nullable() });
@@ -37,14 +38,26 @@ async function read<T>(query: PromiseLike<{ data: unknown; error: unknown }>, sc
   return schema.parse(result.data);
 }
 
-export async function getSessionOrders(client: SupabaseClient, workspace: Workspace, raw: { search?: string; status?: string; page?: string } = {}) {
+export async function getSessionOrders(client: SupabaseClient, workspace: Workspace, raw: { search?: string; status?: string; page?: string; filter?: string } = {}, now = new Date()) {
   const { org, permissions } = fulfillmentScope(workspace);
   if (!permissions.has("orders.read_all")) throw new DomainError("FORBIDDEN", "Use your assigned work queue");
   const search = (raw.search ?? "").trim().slice(0, 100);
-  const page = Math.min(2000, Math.max(1, Number(raw.page) || 1));
+  const page = Math.min(2000, Math.max(1, Math.trunc(Number(raw.page)) || 1));
   let query = client.from("orders").select(ORDER_COLUMNS, { count: "exact" }).eq("organization_id", org).order("ship_by_at", { nullsFirst: false }).order("id").range((page - 1) * 50, page * 50 - 1);
   if (search) query = query.ilike("order_number", `%${search.replace(/[%_\\]/g, "\\$&")}%`);
   if (ORDER_STATUSES.includes(raw.status as typeof ORDER_STATUSES[number])) query = query.eq("status", raw.status);
+  const dayColumn = raw.filter === "today" ? "placed_at" : raw.filter === "shipped-today" ? "shipped_at" : raw.filter === "delivered-today" ? "delivered_at" : null;
+  if (dayColumn) {
+    const timezone = workspace.profile.organization.timezone;
+    const start = organizationDayStart(now, timezone);
+    const end = organizationDayStart(new Date(new Date(start).getTime() + 36 * 3600_000), timezone);
+    query = query.gte(dayColumn, start).lt(dayColumn, end);
+  }
+  if (raw.filter === "processing") query = query.in("status", ["PACKING", "LABEL_READY", "PACKED"]);
+  if (raw.filter === "attention" || raw.filter === "at-risk") {
+    query = query.not("status", "in", "(DELIVERED,CANCELLED)");
+    query = raw.filter === "attention" ? query.not("exception_state", "is", null) : query.or("risk_level.in.(HIGH,CRITICAL),exception_state.eq.AT_RISK");
+  }
   const result = await query;
   if (result.error || result.count === null) throw new DomainError("INTEGRATION_ERROR", "Orders could not be loaded. Please retry.");
   const orders = z.array(orderSchema).parse(result.data);
@@ -75,6 +88,16 @@ export async function getSessionOrderDetail(client: SupabaseClient, workspace: W
   return { order, items, shipments, labels, tasks, exceptions, approvals, timeline };
 }
 export type OperationalDetail = Awaited<ReturnType<typeof getSessionOrderDetail>>;
+
+/** OWNER/MANAGER workspace activity: only persisted audit records under the user's JWT. */
+export async function getSessionWorkspaceActivity(client: SupabaseClient, workspace: Workspace) {
+  const { org, permissions } = fulfillmentScope(workspace);
+  if (!permissions.has("activity.read")) throw new DomainError("FORBIDDEN", "Workspace activity is not permitted for this role");
+  return read(client.from("activity_logs").select("id,action,occurred_at,summary,order_id")
+    .eq("organization_id", org).order("occurred_at", { ascending: false }).order("id").limit(25),
+  z.array(activitySchema.extend({ order_id: z.string().nullable() })));
+}
+export type WorkspaceActivity = Awaited<ReturnType<typeof getSessionWorkspaceActivity>>;
 
 export async function getSessionEmployees(client: SupabaseClient, workspace: Workspace) {
   const { org, permissions } = fulfillmentScope(workspace);

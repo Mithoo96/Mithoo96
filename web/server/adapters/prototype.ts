@@ -104,14 +104,14 @@ export function toPrototypeDashboard(summary: DashboardSummary, exceptions: read
   const o = summary.orders;
   const stats: PrototypeStat[] = [
     { label: "Orders Today", value: o.today, href: "/orders?filter=today" },
-    { label: "Processing", value: o.inPacking, href: "/work" },
+    { label: "Processing", value: o.inPacking, href: "/orders?filter=processing" },
     { label: "Employee Tasks", value: summary.tasks.open + summary.tasks.inProgress + summary.tasks.awaitingSignoff, href: "/work" },
     { label: "Ready to Pack", value: o.readyToPack, href: "/orders?status=READY_TO_PACK" },
     { label: "Awaiting Verification", value: o.awaitingVerification, href: "/orders?status=AWAITING_VERIFICATION" },
-    { label: "Shipped Today", value: o.shippedToday, href: "/shipping?filter=shipped-today" },
-    { label: "Delivered", value: o.deliveredToday, href: "/orders?status=DELIVERED" },
-    { label: "Need Attention", value: o.needAttention, href: "/exceptions" },
-    { label: "At Risk", value: o.atRisk, href: "/exceptions?filter=at-risk" },
+    { label: "Shipped Today", value: o.shippedToday, href: "/orders?filter=shipped-today" },
+    { label: "Delivered", value: o.deliveredToday, href: "/orders?filter=delivered-today" },
+    { label: "Need Attention", value: o.needAttention, href: "/orders?filter=attention" },
+    { label: "At Risk", value: o.atRisk, href: "/orders?filter=at-risk" },
     { label: "Pending Approvals", value: summary.approvals.pending, href: "/approvals" },
   ];
 
@@ -132,8 +132,8 @@ export function toPrototypeDashboard(summary: DashboardSummary, exceptions: read
 
   const handled: PrototypeHandled[] = [
     { count: summary.tasks.completedToday, label: "tasks completed today" },
-    { count: o.shippedToday, label: "packages handed to carriers" },
-    { count: o.deliveredToday, label: "deliveries confirmed" },
+    { count: o.shippedToday, label: "orders recorded as shipped today" },
+    { count: o.deliveredToday, label: "orders recorded as delivered today" },
   ].filter((h) => h.count > 0);
 
   return { stats, attention, handled };
