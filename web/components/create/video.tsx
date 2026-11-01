@@ -22,7 +22,7 @@ export function VideoWorkspace() {
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
   const [state, setState] = useState<Record<string, "idle" | "working" | "done">>({});
   const [platforms, setPlatforms] = useState<BrandKey[]>(["instagram", "tiktok"]);
-  const [caption, setCaption] = useState("A quiet morning at the studio. Book your fall reset — link in bio.");
+  const [caption, setCaption] = useState("3 things to bring to your tax appointment this year. Book early, link in bio.");
   const publish = useSimulated(1400);
   useEffect(() => () => { if (file) URL.revokeObjectURL(file.url); }, [file]);
 
@@ -33,7 +33,7 @@ export function VideoWorkspace() {
 
   return (
     <Page>
-      <WorkspaceHeader title="Create Video" subtitle="Drop in a video. Mithoo prepares it for every platform."
+      <WorkspaceHeader title="Create Video" subtitle="Turn one tax tip or insurance explainer into posts for every platform."
         actions={file && <Button icon={RotateCcw} onClick={() => { setFile(null); setState({}); }}>Start over</Button>} />
       {!file ? <Dropzone accept="video/*" label="Drop your video here" hint="or click to choose a file · MP4, MOV up to 2 GB · stays on your device"
         onFile={(f) => setFile({ name: f.name, url: URL.createObjectURL(f) })} />
@@ -59,7 +59,7 @@ export function VideoWorkspace() {
       {state.clips === "done" && <div className="mt-8">
         <SectionTitle>Clips</SectionTitle>
         <div className="grid grid-cols-3 gap-3">
-          {["The morning ritual", "Inside the studio", "Client moment"].map((c, i) => (
+          {["What to bring", "Refund timeline", "Ask about life insurance"].map((c, i) => (
             <div key={c} className="overflow-hidden rounded-[20px] bg-white ring-1 ring-hair">
               <div className="relative aspect-[9/16]" style={{ background: mockArt(c, i) }}><span className="absolute bottom-2 right-2 rounded-md bg-black/50 px-1.5 py-0.5 text-[11px] text-white">0:{15 + i * 7}</span></div>
               <p className="truncate px-3 py-2.5 text-[13px] font-medium">{c}</p>

@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowRight, ArrowUpRight, Users, MessageCircle, Sparkles, ChartLine, CalendarDays, CircleCheck, Briefcase, type LucideIcon } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Users, MessageCircle, Sparkles, ChartLine, CalendarDays, CircleCheck, Briefcase, FileText, ChevronRight, type LucideIcon } from "lucide-react";
 import { GlassCard, Eyebrow } from "./ui";
-import { aiActivityToday, aiActivityLog } from "@/lib/mock";
-import { useDerived } from "@/lib/store";
+import { aiActivityLog, dashboard, pipelines, kpis } from "@/lib/mock";
+import { modeLabel, type BusinessMode } from "@/lib/config/business";
+import { Segmented } from "./ui/primitives";
+import { useDerived, useOs } from "@/lib/store";
 import { timeLabel } from "@/lib/format";
 import type { Approval } from "@/lib/types";
 import { BrandIcon } from "./brand-icon";
@@ -15,28 +17,24 @@ import { ActivityItem } from "./domain/activity-item";
 import { TaskCheck } from "./domain/task-item";
 
 export function TodayCard() {
-  const d = useDerived();
+  const { mode } = useOs(); const d = useDerived();
   const [myDay, setMyDay] = useState(false);
-  const stats = [
-    { n: d.todayTasks.length, label: "Tasks", href: "/work" },
-    { n: d.pendingApprovals.length, label: "Approvals", href: "/approvals" },
-    { n: d.todayAppointments.length, label: "Appointments", href: "/appointments" },
-  ];
-  const places = stats.filter((s) => s.n > 0).length;
+  const stats = dashboard[mode].stats.map((s) => ({ n: s.value, label: s.label, href: s.href }));
+  const places = dashboard[mode].attention.length;
   return (
     <GlassCard className="sheen overflow-hidden p-8 md:p-10" delay={300}>
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-gradient-to-br from-[#dfe7ff] via-[#ece6ff] to-[#f6ecda] opacity-70 blur-3xl" />
-      <Eyebrow>Today</Eyebrow>
-      <div className="relative mt-8 grid grid-cols-3 gap-6">
+      <Eyebrow>Today{mode !== "all" ? ` · ${modeLabel[mode]}` : ""}</Eyebrow>
+      <div key={mode} className="page-enter relative mt-8 grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-4">
         {stats.map((s) => (
           <Link key={s.label} href={s.href} className="group -m-2 rounded-2xl p-2 transition-colors hover:bg-white/60">
-            <div className="text-[52px] font-semibold leading-none tracking-[-0.04em] tabular-nums md:text-[64px]">{s.n}</div>
+            <div className="text-[48px] font-semibold leading-none tracking-[-0.04em] tabular-nums md:text-[56px]">{s.n}</div>
             <div className="mt-2 inline-flex items-center gap-1 text-[14px] text-mute transition-colors group-hover:text-ink">{s.label}<ArrowUpRight size={13} className="opacity-0 transition-opacity group-hover:opacity-100" /></div>
           </Link>
         ))}
       </div>
       <div className="relative mt-10 flex flex-col items-start justify-between gap-5 border-t border-hair pt-6 sm:flex-row sm:items-center">
-        <p className="text-[16px] tracking-[-0.01em] text-ink-soft">{places ? `Your business needs you in ${places} place${places > 1 ? "s" : ""} today.` : "You're clear for today."}</p>
+        <p className="text-[16px] tracking-[-0.01em] text-ink-soft">{places ? `Your ${mode === "all" ? "business" : modeLabel[mode].toLowerCase() + " business"} needs you in ${places} place${places > 1 ? "s" : ""} today.` : "You're clear for today."}</p>
         <button onClick={() => setMyDay(true)} className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-[14px] font-medium text-white shadow-[0_8px_24px_-10px_rgba(10,10,30,0.5)] transition-all duration-300 hover:-translate-y-px hover:shadow-[0_12px_28px_-10px_rgba(10,10,30,0.55)] active:scale-[0.97]">
           View My Day
           <ArrowRight size={15} strokeWidth={1.8} className="transition-transform duration-300 group-hover:translate-x-0.5" />
@@ -78,8 +76,14 @@ function MyDayDrawer({ open, onClose }: { open: boolean; onClose: () => void }) 
   );
 }
 
+const extraActivity: Record<BusinessMode, { label: string; icon: LucideIcon }[]> = {
+  all: [{ label: "2 insurance applications organized", icon: FileText }, { label: "4 tax client document reminders prepared", icon: FileText }],
+  tax: [{ label: "Returns sorted by deadline", icon: FileText }], insurance: [{ label: "Quotes compared across 3 carriers", icon: FileText }],
+};
+
 export function AiActivity() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); const { mode } = useOs();
+  const log = aiActivityLog.filter((l) => mode === "all" || l.mode === mode || l.mode === "all");
   return (
     <GlassCard className="flex flex-col p-8" delay={380}>
       <button onClick={() => setOpen(true)} className="absolute inset-0 rounded-[28px]" aria-label="See everything Mithoo handled today" />
@@ -90,18 +94,21 @@ export function AiActivity() {
         </span>
         <Eyebrow>AI Handled Today</Eyebrow>
       </div>
-      <ul className="pointer-events-none mt-7 flex flex-1 flex-col justify-between gap-4">
-        {aiActivityToday.map((a) => (
+      <ul key={mode} className="page-enter pointer-events-none mt-7 flex flex-1 flex-col justify-between gap-3.5">
+        {dashboard[mode].handled.map((a) => (
           <li key={a.label} className="flex items-center gap-3 text-[15px] text-ink-soft">
-            <BrandIcon brand={a.brand} size="xs" />
+            {a.brand ? <BrandIcon brand={a.brand} size="xs" /> : <span className="flex h-6 w-6 items-center justify-center rounded-[8px] bg-white ring-1 ring-hair"><FileText size={12} className="text-ink-soft" /></span>}
             <span><span className="font-semibold text-ink">{a.count}</span> {a.label}</span>
           </li>
+        ))}
+        {extraActivity[mode].map((a) => (
+          <li key={a.label} className="flex items-center gap-3 text-[13px] text-mute"><span className="flex h-6 w-6 items-center justify-center"><a.icon size={13} className="text-mute" /></span>{a.label}</li>
         ))}
       </ul>
       <p className="pointer-events-none mt-7 inline-flex items-center gap-1 text-[12px] text-mute">Working quietly in the background. <span className="text-iris">See all</span></p>
       <Drawer open={open} onClose={() => setOpen(false)} title="Handled by Mithoo" description="Everything that happened in the background today.">
         <ul className="space-y-5">
-          {aiActivityLog.map((l) => (
+          {log.map((l) => (
             <li key={l.id}>{l.href ? <Link href={l.href} onClick={() => setOpen(false)} className="block rounded-2xl p-2 -m-2 hover:bg-[#f7f7fa]"><ActivityItem brand={l.brand} title={l.text} when={l.when} /></Link> : <ActivityItem brand={l.brand} title={l.text} when={l.when} />}</li>
           ))}
         </ul>
@@ -146,19 +153,81 @@ export function QuickActions() {
 }
 
 export function Approvals() {
-  const d = useDerived();
+  const d = useDerived(); const { mode } = useOs();
+  const pending = d.pendingApprovals.filter((a) => mode === "all" || a.category === mode || a.category === "marketing" || a.category === "communication");
   const [review, setReview] = useState<Approval | null>(null);
   return (
     <GlassCard className="p-8" delay={720}>
       <div className="flex items-baseline justify-between">
         <h2 className="text-[20px] font-semibold tracking-[-0.025em]">Needs Your Approval</h2>
-        <Link href="/approvals" className="text-[13px] text-mute transition-colors hover:text-ink">{d.pendingApprovals.length} waiting · View all</Link>
+        <Link href="/approvals" className="text-[13px] text-mute transition-colors hover:text-ink">{pending.length} waiting · View all</Link>
       </div>
       <div className="mt-6 divide-y divide-hair">
-        {d.pendingApprovals.slice(0, 3).map((a) => <ApprovalItem key={a.id} a={a} compact onReview={setReview} />)}
-        {d.pendingApprovals.length === 0 && <p className="py-4 text-[14px] text-mute">Nothing waiting. Mithoo will let you know when something needs you.</p>}
+        {pending.slice(0, 3).map((a) => <ApprovalItem key={a.id} a={a} compact onReview={setReview} />)}
+        {pending.length === 0 && <p className="py-4 text-[14px] text-mute">Nothing waiting. Mithoo will let you know when something needs you.</p>}
       </div>
       <ApprovalDrawer approval={review} onClose={() => setReview(null)} />
     </GlassCard>
+  );
+}
+
+export function ModeSwitcher() {
+  const { mode, setMode } = useOs();
+  return <Segmented value={mode} onChange={setMode} options={(Object.keys(modeLabel) as BusinessMode[]).map((m) => ({ value: m, label: modeLabel[m] }))} />;
+}
+
+const toneDot = { rose: "bg-rose-500", amber: "bg-amber-500", violet: "bg-iris" } as const;
+export function NeedsAttention() {
+  const { mode } = useOs();
+  return (
+    <GlassCard className="p-8" delay={420}>
+      <h2 className="text-[20px] font-semibold tracking-[-0.025em]">Needs Your Attention</h2>
+      <ul key={mode} className="page-enter mt-5 divide-y divide-hair">
+        {dashboard[mode].attention.map((a) => (
+          <li key={a.title}>
+            <Link href={a.href} className="group -mx-3 flex items-center gap-4 rounded-2xl px-3 py-3.5 transition-colors hover:bg-white/70">
+              {a.brand ? <BrandIcon brand={a.brand} size="sm" /> : <span className="flex h-8 w-8 items-center justify-center"><span className={`h-2 w-2 rounded-full ${toneDot[a.tone]}`} /></span>}
+              <span className="min-w-0 flex-1"><span className="block text-[15px] font-medium tracking-[-0.01em]">{a.title}</span><span className="block truncate text-[13px] text-mute">{a.detail}</span></span>
+              <ChevronRight size={16} className="text-mute transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </GlassCard>
+  );
+}
+
+/** Tax or insurance pipeline with stage counts. Only shown when a line is selected. */
+export function Pipeline() {
+  const { mode } = useOs();
+  if (mode === "all") return null;
+  const stages = pipelines[mode]; const max = Math.max(...stages.map((s) => s.count));
+  return (
+    <div key={mode} className="page-enter space-y-5">
+      <div className={`grid grid-cols-2 gap-3 sm:grid-cols-3 ${kpis[mode].length === 7 ? "lg:grid-cols-7" : "lg:grid-cols-6"}`}>
+        {kpis[mode].map((k) => (
+          <div key={k.label} className="glass rounded-[20px] px-4 py-4">
+            <p className="text-[26px] font-semibold tracking-[-0.03em] tabular-nums">{k.value}</p>
+            <p className="mt-0.5 text-[12px] leading-snug text-mute">{k.label}</p>
+          </div>
+        ))}
+      </div>
+      <GlassCard className="p-8">
+        <div className="mb-6 flex items-baseline justify-between"><h2 className="text-[20px] font-semibold tracking-[-0.025em]">{modeLabel[mode]} Pipeline</h2><Link href={`/clients?filter=${mode}`} className="text-[13px] text-mute hover:text-ink">View clients</Link></div>
+        <div className="no-scrollbar -mx-2 overflow-x-auto px-2">
+          <div className="grid min-w-[720px] grid-cols-8 items-start gap-3">
+            {stages.map((s, i) => (
+              <Link key={s.stage} href={`/clients?filter=${mode}`} className="group flex flex-col">
+                <span className="mb-2 text-[22px] font-semibold tabular-nums tracking-[-0.03em]">{s.count}</span>
+                <span className="relative h-24 overflow-hidden rounded-xl bg-[#f3f3f7]">
+                  <span className="absolute inset-x-0 bottom-0 rounded-xl bg-gradient-to-t from-iris/70 to-sky/50 transition-all duration-500 group-hover:from-iris group-hover:to-sky/70" style={{ height: `${Math.max(8, (s.count / max) * 100)}%`, opacity: 0.45 + (i / stages.length) * 0.55 }} />
+                </span>
+                <span className="mt-2.5 text-[12px] leading-snug text-ink-soft">{s.stage}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </GlassCard>
+    </div>
   );
 }

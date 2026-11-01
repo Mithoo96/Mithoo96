@@ -7,12 +7,13 @@ import { Button, useSimulated } from "@/components/ui/button";
 import { Modal } from "@/components/ui/overlay";
 import { useToast } from "@/components/ui/toast";
 import { BrandIcon, brandName, type BrandKey } from "@/components/brand-icon";
-import { business } from "@/lib/mock";
+import { business } from "@/lib/config/business";
+const handle = business.shortName.toLowerCase().replace(/\s+/g, "");
 import { PlatformPicker, WorkspaceHeader, mockArt } from "./shared";
 
 export function SocialWorkspace() {
   const toast = useToast(); const fileRef = useRef<HTMLInputElement>(null);
-  const [text, setText] = useState("Fall is the perfect time to reset. 🍂\n\nOur Wellness Package includes 4 sessions, a personal plan and a check-in call.\n\nBook through the link in our bio.");
+  const [text, setText] = useState("Tax season is almost here. 🧾\n\nBook early with our team and skip the rush. We handle individual and small business returns, and we'll make sure you get every credit you qualify for.\n\nBook through the link in our bio.");
   const [media, setMedia] = useState<string | null>(null);
   const [platforms, setPlatforms] = useState<BrandKey[]>(["instagram", "facebook"]);
   const [preview, setPreview] = useState<BrandKey>("instagram");
@@ -32,8 +33,8 @@ export function SocialWorkspace() {
             <div className="mb-2 flex items-center justify-between"><label htmlFor="post-text" className="text-[13px] font-medium text-ink-soft">Content</label><span className="text-[12px] tabular-nums text-mute">{text.length} / {limit.toLocaleString()}</span></div>
             <Textarea id="post-text" value={text} onChange={(e) => setText(e.target.value)} className="min-h-[180px]" />
             <div className="mt-3 flex flex-wrap gap-2">
-              <Button size="sm" variant="soft" icon={Sparkles} loading={improve.loading} onClick={() => improve.run(() => { setText("Your fall reset starts here. 🍂\n\nFour sessions. A plan made for you. One check-in call to keep you on track.\n\nSpots are limited this month. Tap the link in our bio to book."); toast({ title: "Rewritten in your brand voice" }); })}>Improve with AI</Button>
-              <Button size="sm" variant="ghost" onClick={() => setText((t) => t + "\n\n#wellness #selfcare #sanfrancisco")}>Add hashtags</Button>
+              <Button size="sm" variant="soft" icon={Sparkles} loading={improve.loading} onClick={() => improve.run(() => { setText("Don't wait until April. 🗓️\n\nFile early, get your refund sooner, and let our team handle the paperwork for you and your family.\n\nAppointments are filling up. Tap the link in our bio to reserve yours."); toast({ title: "Rewritten in your brand voice" }); })}>Improve with AI</Button>
+              <Button size="sm" variant="ghost" onClick={() => setText((t) => t + "\n\n#taxseason #taxprep #lifeinsurance #protectyourfamily")}>Add hashtags</Button>
             </div>
           </Card>
           <Card className="p-5">
@@ -51,10 +52,10 @@ export function SocialWorkspace() {
             <div className="flex gap-1.5">{platforms.map((p) => <button key={p} onClick={() => setPreview(p)} aria-label={`Preview on ${brandName(p)}`} className={`rounded-[10px] transition-all ${preview === p ? "ring-2 ring-ink ring-offset-2" : "opacity-60 hover:opacity-100"}`}><BrandIcon brand={p} size="sm" /></button>)}</div>
           </div>
           <Card className="overflow-hidden p-0">
-            <div className="flex items-center gap-3 px-4 py-3"><Avatar name="Smithou Wellness" size={32} /><div className="flex-1"><p className="text-[13px] font-semibold">smithouwellness</p><p className="text-[11px] text-mute">{business.address.split(",")[1]}</p></div><BrandIcon brand={preview} size="xs" /></div>
-            <div className="aspect-square w-full" style={media ? { backgroundImage: `url(${media})`, backgroundSize: "cover", backgroundPosition: "center" } : { background: mockArt("fall reset") }} />
+            <div className="flex items-center gap-3 px-4 py-3"><Avatar name={business.name} size={32} /><div className="flex-1"><p className="text-[13px] font-semibold">{handle}</p><p className="text-[11px] text-mute">{business.type}</p></div><BrandIcon brand={preview} size="xs" /></div>
+            <div className="aspect-square w-full" style={media ? { backgroundImage: `url(${media})`, backgroundSize: "cover", backgroundPosition: "center" } : { background: mockArt("tax season") }} />
             <div className="flex gap-4 px-4 pt-3 text-ink"><Heart size={20} strokeWidth={1.6} /><MessageCircle size={20} strokeWidth={1.6} /><Send size={20} strokeWidth={1.6} /></div>
-            <p className="whitespace-pre-line px-4 pb-4 pt-2 text-[13px] leading-relaxed"><b>smithouwellness</b> {text.length > 180 ? text.slice(0, 180) + "… more" : text}</p>
+            <p className="whitespace-pre-line px-4 pb-4 pt-2 text-[13px] leading-relaxed"><b>{handle}</b> {text.length > 180 ? text.slice(0, 180) + "… more" : text}</p>
           </Card>
         </div>
       </div>

@@ -8,12 +8,12 @@ import { Button, useSimulated } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { WorkspaceHeader, mockArt } from "./shared";
 
-const styles = ["Soft natural light", "Minimal studio", "Warm editorial", "Illustration"];
+const styles = ["Warm natural light", "Clean professional", "Editorial", "Illustration"];
 const ratios = [{ k: "1:1", c: "aspect-square" }, { k: "4:5", c: "aspect-[4/5]" }, { k: "9:16", c: "aspect-[9/16]" }, { k: "16:9", c: "aspect-video" }];
 
 export function ImageWorkspace() {
   const toast = useToast();
-  const [prompt, setPrompt] = useState("A calm treatment room at sunrise, linen textures, eucalyptus on a wooden shelf");
+  const [prompt, setPrompt] = useState("A smiling family at a kitchen table reviewing paperwork together, warm morning light, calm and trustworthy");
   const [style, setStyle] = useState(styles[0]); const [ratio, setRatio] = useState(ratios[0]);
   const [seed, setSeed] = useState<string | null>(null); const [pick, setPick] = useState<number | null>(null);
   const gen = useSimulated(1800, 300);

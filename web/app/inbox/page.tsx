@@ -2,24 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowUp, Check, CheckCheck, Inbox as InboxIcon, MessageSquare, Paperclip, Sparkles, Users, CalendarPlus, UserRound } from "lucide-react";
+import { ArrowLeft, ArrowUp, CheckCheck, Inbox as InboxIcon, Paperclip, Sparkles, CalendarPlus, UserRound } from "lucide-react";
 import { useDerived, useOs } from "@/lib/store";
 import type { Channel, Conversation } from "@/lib/types";
 import { dayLabel, money, timeLabel } from "@/lib/format";
 import { Avatar, EmptyState, KeyValue, Page, PageHeader, SearchField, StatusBadge, Tabs } from "@/components/ui/primitives";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
-import { BrandIcon, brandName } from "@/components/brand-icon";
+import { ChannelIcon as CI, channelLabel, channelLongName } from "@/components/channel-icon";
 import { clientStatus } from "@/components/domain/meta";
 
-function ChannelIcon({ c, size = "sm" }: { c: Conversation; size?: "2xs" | "xs" | "sm" }) {
-  if (c.brand === "sms" || c.brand === "internal") {
-    const I = c.brand === "sms" ? MessageSquare : Users;
-    return <span className={`inline-flex shrink-0 items-center justify-center bg-white ring-1 ring-hair ${size === "2xs" ? "h-[18px] w-[18px] rounded-[6px]" : size === "xs" ? "h-6 w-6 rounded-[8px]" : "h-8 w-8 rounded-[10px]"}`}><I size={size === "2xs" ? 10 : size === "xs" ? 12 : 15} strokeWidth={1.7} className="text-ink-soft" /></span>;
-  }
-  return <BrandIcon brand={c.brand} size={size} />;
-}
-const channelName = (c: Conversation) => (c.brand === "sms" ? "SMS" : c.brand === "internal" ? "Team" : brandName(c.brand));
+const channelName = (c: Conversation) => channelLongName(c.channel);
 
 export default function InboxPage() {
   const os = useOs(); const { clientById } = useDerived(); const toast = useToast();
@@ -40,7 +33,7 @@ export default function InboxPage() {
   const nextAppt = client && os.appointments.filter((a) => a.clientId === client.id && a.day >= 0 && a.status !== "cancelled").sort((a, b) => a.day - b.day)[0];
   const count = (ch: Channel) => os.conversations.filter((c) => c.channel === ch && c.unread).length;
   const send = () => { if (!active || !draft.trim()) return; os.sendMessage(active.id, draft.trim()); setDraft(""); };
-  const aiDraft = () => { const first = active?.name.split(" ")[0]; setDraft(`Hi ${first}, thanks for reaching out! ${client?.status === "new" ? "Our first consultation is $350 and I have openings tomorrow at 9:00 AM or Thursday at 10:00 AM. Would either work?" : "Happy to help with that. Let me check and get right back to you."}`); };
+  const aiDraft = () => { const first = active?.name.split(" ")[0]; setDraft(`Hi ${first}, thanks for reaching out! ${client && client.status === "new" ? (client.lines.includes("insurance") ? "I can walk you through your options on a quick call. I have openings tomorrow at 9:30 AM or Thursday at 5:30 PM. Which works better?" : "We can get your return started as soon as we have your documents. Would tomorrow at 11:00 AM work for a quick consultation?") : "Happy to help with that. Let me check and get right back to you."}`); };
 
   return (
     <Page wide>
@@ -50,14 +43,14 @@ export default function InboxPage() {
         <div className={`flex min-h-0 flex-col border-r border-hair ${mobileThread ? "hidden md:flex" : "flex"}`}>
           <div className="space-y-3 px-4 pt-4">
             <SearchField value={q} onChange={setQ} placeholder="Search messages" />
-            <Tabs value={tab} onChange={setTab} tabs={[{ value: "all", label: "All" }, { value: "email", label: "Email", count: count("email") || undefined }, { value: "sms", label: "SMS", count: count("sms") || undefined }, { value: "social", label: "Social", count: count("social") || undefined }, { value: "internal", label: "Internal", count: count("internal") || undefined }]} />
+            <Tabs value={tab} onChange={setTab} tabs={[{ value: "all", label: "All" }, ...(["email", "sms", "whatsapp", "instagram", "facebook", "internal"] as Channel[]).map((ch) => ({ value: ch as "all" | Channel, label: channelLabel[ch], count: count(ch) || undefined }))]} />
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto p-2">
             {list.length === 0 && <EmptyState icon={InboxIcon} title="No conversations" />}
             {list.map((c) => { const last = c.messages[c.messages.length - 1]; return (
               <button key={c.id} onClick={() => { setActiveId(c.id); setMobileThread(true); }}
                 className={`flex w-full items-start gap-3 rounded-2xl px-3 py-3 text-left transition-colors ${c.id === activeId ? "bg-white shadow-[0_6px_20px_-10px_rgba(30,30,80,0.18)] ring-1 ring-hair" : "hover:bg-white/60"}`}>
-                <span className="relative"><Avatar name={c.name} size={38} /><span className="absolute -bottom-0.5 -right-1"><ChannelIcon c={c} size="2xs" /></span></span>
+                <span className="relative"><Avatar name={c.name} size={38} /><span className="absolute -bottom-0.5 -right-1"><CI channel={c.channel} size="2xs" /></span></span>
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center justify-between gap-2"><span className={`truncate text-[14px] ${c.unread ? "font-semibold" : "font-medium"}`}>{c.name}</span><span className="shrink-0 text-[11px] text-mute">{last.time}</span></span>
                   {c.subject && <span className="block truncate text-[13px] text-ink-soft">{c.subject}</span>}
@@ -75,7 +68,7 @@ export default function InboxPage() {
             <div className="flex items-center gap-3 border-b border-hair px-5 py-3.5">
               <button className="md:hidden" onClick={() => setMobileThread(false)} aria-label="Back"><ArrowLeft size={18} /></button>
               <Avatar name={active.name} size={36} />
-              <div className="min-w-0 flex-1"><p className="truncate text-[15px] font-semibold">{active.name}</p><p className="flex items-center gap-1.5 truncate text-[12px] text-mute"><ChannelIcon c={active} size="xs" />{channelName(active)}{active.subject ? ` · ${active.subject}` : ""}</p></div>
+              <div className="min-w-0 flex-1"><p className="truncate text-[15px] font-semibold">{active.name}</p><p className="flex items-center gap-1.5 truncate text-[12px] text-mute"><CI channel={active.channel} size="2xs" />{channelName(active)}{active.subject ? ` · ${active.subject}` : ""}</p></div>
               {client && <Link href={`/clients/${client.id}`} className="hidden sm:block"><Button size="sm" variant="ghost" icon={UserRound}>Profile</Button></Link>}
             </div>
             <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-5 py-5">
@@ -112,7 +105,7 @@ export default function InboxPage() {
           {client ? <div className="space-y-5">
             <div className="text-center"><div className="flex justify-center"><Avatar name={client.name} size={64} /></div><p className="mt-3 text-[16px] font-semibold">{client.name}</p><div className="mt-2"><StatusBadge tone={clientStatus[client.status].tone}>{clientStatus[client.status].label}</StatusBadge></div></div>
             <KeyValue items={[{ label: "Service", value: client.service }, { label: "Value", value: money(client.value) }, { label: "Source", value: client.source }, { label: "Next", value: nextAppt ? `${dayLabel(nextAppt.day)} ${timeLabel(nextAppt.time)}` : "—" }]} />
-            <div className="rounded-2xl bg-gradient-to-br from-[#f3f5ff] to-[#f7f3ff] p-4 text-[13px] text-ink-soft ring-1 ring-hair"><p className="mb-1 flex items-center gap-1.5 font-medium text-ink"><Sparkles size={13} className="text-iris" />Next step</p>{client.nextStep}</div>
+            <div className="rounded-2xl bg-gradient-to-br from-[#f3f5ff] to-[#f7f3ff] p-4 text-[13px] text-ink-soft ring-1 ring-hair"><p className="mb-1 flex items-center gap-1.5 font-medium text-ink"><Sparkles size={13} className="text-iris" />Next step</p>{client.nextAction}</div>
             <div className="grid gap-2">
               <Link href={`/clients/${client.id}`}><Button className="w-full" icon={UserRound}>Open Profile</Button></Link>
               <Link href="/appointments"><Button className="w-full" icon={CalendarPlus}>Schedule</Button></Link>

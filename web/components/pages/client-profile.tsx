@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, CalendarPlus, FilePlus, ListPlus, MessageSquare, StickyNote, FileText, Download, CalendarDays, Mail, Phone, MapPin, UserRound,
-  Sparkles, UserPlus, ClipboardList, Bell, CreditCard, type LucideIcon } from "lucide-react";
+import { ArrowLeft, CalendarPlus, FilePlus, ListPlus, MessageSquare, StickyNote, FileText, CalendarDays, Mail, Phone, MapPin, UserRound,
+  Sparkles, UserPlus, ClipboardList, Bell, CreditCard, Calculator, ShieldCheck, Receipt, type LucideIcon } from "lucide-react";
 import { useDerived, useOs } from "@/lib/store";
 import type { TimelineKind } from "@/lib/types";
 import { dayLabel, money, timeLabel } from "@/lib/format";
@@ -15,11 +15,14 @@ import { TaskItem, TaskDrawer } from "@/components/domain/task-item";
 import { AppointmentDrawer } from "@/components/domain/appointment-drawer";
 import { AddNoteModal, RequestDocumentModal, ScheduleModal, SendMessageModal } from "@/components/domain/client-actions";
 import { NewTaskModal } from "@/components/domain/task-item";
-import { appointmentStatus, clientStatus } from "@/components/domain/meta";
+import { appointmentStatus, clientStatus, clientTypeLabel, lineTone } from "@/components/domain/meta";
+import { DocumentRow } from "@/components/domain/document-row";
+import { ChannelIcon } from "@/components/channel-icon";
+import { business } from "@/lib/config/business";
 import { BrandIcon } from "@/components/brand-icon";
 import type { Appointment, Task, ClientStatus } from "@/lib/types";
 
-const kindIcon: Record<TimelineKind, LucideIcon> = { lead: UserPlus, form: ClipboardList, sms: MessageSquare, email: Mail, appointment: CalendarDays, document: FileText, reminder: Bell, payment: CreditCard, note: StickyNote, task: ListPlus };
+const kindIcon: Record<TimelineKind, LucideIcon> = { lead: UserPlus, form: ClipboardList, sms: MessageSquare, email: Mail, appointment: CalendarDays, document: FileText, reminder: Bell, payment: CreditCard, note: StickyNote, task: ListPlus, quote: Receipt, application: ShieldCheck, return: Calculator };
 type Tab = "overview" | "timeline" | "messages" | "documents" | "appointments" | "tasks" | "payments";
 type ModalKind = null | "message" | "document" | "schedule" | "task" | "note";
 
@@ -31,7 +34,7 @@ export function ClientProfile({ id }: { id: string }) {
   const [task, setTask] = useState<Task | null>(null); const [appt, setAppt] = useState<Appointment | null>(null);
   if (!client) return <Page><EmptyState icon={UserRound} title="Client not found" action={<Link href="/clients"><Button>Back to Clients</Button></Link>} /></Page>;
 
-  const timeline = os.timelines[id] ?? []; const docs = os.documents[id] ?? []; const pays = os.payments[id] ?? []; const notes = os.notes[id] ?? [];
+  const timeline = os.timelines[id] ?? []; const docs = os.documents.filter((d) => d.clientId === id); const pays = os.payments[id] ?? []; const notes = os.notes[id] ?? [];
   const convs = os.conversations.filter((c) => c.clientId === id);
   const appts = os.appointments.filter((a) => a.clientId === id).sort((a, b) => a.day - b.day);
   const tasks = os.tasks.filter((t) => t.clientId === id);
@@ -57,6 +60,7 @@ export function ClientProfile({ id }: { id: string }) {
               <div className="mt-2 flex flex-wrap items-center gap-2 text-[14px] text-mute">
                 <Menu align="left" trigger={<button className="transition-opacity hover:opacity-80"><StatusBadge tone={s.tone}>{s.label}</StatusBadge></button>}
                   items={(Object.keys(clientStatus) as ClientStatus[]).map((k) => ({ label: clientStatus[k].label, onClick: () => { os.updateClient(id, { status: k }); toast({ title: `Status changed to ${clientStatus[k].label}` }); } }))} />
+                <StatusBadge tone={client.lines.length > 1 ? "violet" : lineTone[client.lines[0]]}>{clientTypeLabel(client.lines)}</StatusBadge>
                 <span>{client.service}</span><span>·</span><span>Client since {client.since}</span>
               </div>
             </div>
@@ -77,11 +81,21 @@ export function ClientProfile({ id }: { id: string }) {
           <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
             <div className="space-y-5">
               <Card className="p-6">
-                <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-mute">Next step</p>
-                <p className="mt-2 text-[20px] font-semibold tracking-[-0.02em]">{client.nextStep}</p>
+                <div className="mb-6 grid gap-3 sm:grid-cols-2">
+                  {client.lines.map((l) => { const stages = business.lines[l].stages as readonly string[]; const cur = l === "tax" ? client.taxStage : client.insuranceStage; const at = stages.indexOf(cur ?? ""); return (
+                    <div key={l} className={`rounded-2xl p-4 ring-1 ring-hair ${client.lines.length === 1 ? "sm:col-span-2" : ""}`}>
+                      <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-mute">{business.lines[l].label}{l === "insurance" && client.product ? ` · ${client.product}` : ""}</p>
+                      <p className="mt-1.5 text-[16px] font-semibold">{cur}</p>
+                      <div className="mt-3 flex gap-1">{stages.map((st, i) => <span key={st} title={st} className={`h-1.5 flex-1 rounded-full ${i <= at ? "bg-gradient-to-r from-sky to-iris" : "bg-[#ececf2]"}`} />)}</div>
+                      <p className="mt-2 text-[12px] text-mute">Step {at + 1} of {stages.length}</p>
+                    </div>
+                  ); })}
+                </div>
+                <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-mute">Next action</p>
+                <p className="mt-2 text-[20px] font-semibold tracking-[-0.02em]">{client.nextAction}</p>
                 <div className="mt-4 flex items-start gap-2 rounded-2xl bg-gradient-to-br from-[#f3f5ff] to-[#f7f3ff] p-4 text-[14px] text-ink-soft ring-1 ring-hair">
                   <Sparkles size={16} className="mt-0.5 shrink-0 text-iris" />
-                  <span>{client.status === "attention" ? "Mithoo suggests a personal call. Two automated reminders didn't get a response." : client.status === "new" ? "Reply within 5 minutes to double the chance of booking. A draft is ready in the Inbox." : client.status === "waiting" ? "A reminder is scheduled for tomorrow at 9:00 AM." : "Everything is on track."}</span>
+                  <span>{client.status === "attention" ? (client.taxStage === "Waiting for Documents" ? "Two document reminders didn't get a response. A personal call usually works better." : "This needs your eyes today. Mithoo prepared the details in Approvals.") : client.status === "new" ? "Leads contacted within an hour are about 3× more likely to book. A reply is drafted in the Inbox." : client.status === "waiting" ? "A reminder is scheduled for tomorrow at 9:00 AM." : client.lines.length === 1 ? `Good fit for ${client.lines[0] === "tax" ? "a life insurance review" : "tax preparation this season"}.` : "Everything is on track."}</span>
                 </div>
               </Card>
               <Card className="p-6">
@@ -93,7 +107,7 @@ export function ClientProfile({ id }: { id: string }) {
             <div className="space-y-5">
               <Card className="p-6">
                 <KeyValue items={[
-                  { label: "Lifetime value", value: money(client.value) }, { label: "Paid", value: money(paid) },
+                  { label: "Client type", value: clientTypeLabel(client.lines) }, { label: "Lifetime value", value: money(client.value) }, { label: "Paid", value: money(paid) },
                   { label: "Next appointment", value: nextAppt ? `${dayLabel(nextAppt.day)}, ${timeLabel(nextAppt.time)}` : "None" }, { label: "Source", value: client.source },
                 ]} />
                 <ul className="mt-5 space-y-3 text-[14px] text-ink-soft">
@@ -116,7 +130,7 @@ export function ClientProfile({ id }: { id: string }) {
             <ol className="relative space-y-7 before:absolute before:bottom-2 before:left-4 before:top-2 before:w-px before:bg-hair">
               {timeline.map((e) => (
                 <li key={e.id} className="relative">
-                  <ActivityItem brand={e.brand} icon={kindIcon[e.kind]} title={<>{e.title}{e.by === "ai" && <span className="ml-2 rounded-full bg-[#f1effc] px-2 py-0.5 text-[11px] font-medium text-iris">Mithoo</span>}</>} detail={e.detail} when={e.when} />
+                  <ActivityItem brand={e.brand} icon={kindIcon[e.kind]} title={<>{e.title}{client.lines.length > 1 && e.line && <span className="ml-2 rounded-full bg-[#f4f4f7] px-2 py-0.5 text-[11px] font-medium text-ink-soft">{business.lines[e.line].label}</span>}{e.by === "ai" && <span className="ml-2 rounded-full bg-[#f1effc] px-2 py-0.5 text-[11px] font-medium text-iris">Mithoo</span>}</>} detail={e.detail} when={e.when} />
                 </li>
               ))}
             </ol>
@@ -128,8 +142,8 @@ export function ClientProfile({ id }: { id: string }) {
             {convs.length === 0 && <EmptyState icon={MessageSquare} title="No conversations yet" action={<Button icon={MessageSquare} onClick={() => setModal("message")}>Send Message</Button>} />}
             {convs.map((c) => (
               <Link key={c.id} href={`/inbox?c=${c.id}`} className="flex items-center gap-4 rounded-2xl px-4 py-4 hover:bg-white">
-                {c.brand !== "sms" && c.brand !== "internal" ? <BrandIcon brand={c.brand} size="sm" /> : <span className="flex h-8 w-8 items-center justify-center rounded-[10px] ring-1 ring-hair"><MessageSquare size={15} className="text-mute" /></span>}
-                <div className="min-w-0 flex-1"><p className="text-[14px] font-medium">{c.subject ?? (c.channel === "sms" ? "Text messages" : "Conversation")}</p><p className="truncate text-[13px] text-mute">{c.messages[c.messages.length - 1].text}</p></div>
+                <ChannelIcon channel={c.channel} size="sm" />
+                <div className="min-w-0 flex-1"><p className="text-[14px] font-medium">{c.subject ?? `${c.channel === "sms" ? "Text messages" : c.channel[0].toUpperCase() + c.channel.slice(1)} conversation`}</p><p className="truncate text-[13px] text-mute">{c.messages[c.messages.length - 1].text}</p></div>
                 <span className="text-[12px] text-mute">{c.messages[c.messages.length - 1].time}</span>
               </Link>
             ))}
@@ -138,13 +152,10 @@ export function ClientProfile({ id }: { id: string }) {
 
         {tab === "documents" && (
           <Card className="p-2">
-            {docs.map((d) => (
-              <div key={d.id} className="flex items-center gap-4 rounded-2xl px-4 py-3.5">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f6f6f9] ring-1 ring-hair"><FileText size={17} className="text-mute" /></span>
-                <div className="min-w-0 flex-1"><p className="truncate text-[14px] font-medium">{d.name}</p><p className="text-[13px] text-mute">{d.date}{d.size ? ` · ${d.size}` : ""}</p></div>
-                <StatusBadge tone={d.status === "received" ? "green" : d.status === "overdue" ? "rose" : "amber"}>{d.status === "received" ? "Received" : d.status === "overdue" ? "Overdue" : "Requested"}</StatusBadge>
-                {d.status === "received" ? <Button size="icon-sm" variant="ghost" aria-label="Download" onClick={() => toast({ title: "Downloads are disabled in the demo", tone: "info" })}><Download size={15} /></Button>
-                  : <Button size="sm" variant="ghost" onClick={() => toast({ title: "Reminder prepared", description: `${d.name} · demo only` })}>Remind</Button>}
+            {client.lines.map((l) => (
+              <div key={l}>
+                {client.lines.length > 1 && <p className="px-4 pb-1 pt-3 text-[12px] font-medium uppercase tracking-[0.14em] text-mute">{business.lines[l].label}</p>}
+                {docs.filter((d) => d.line === l).map((d) => <DocumentRow key={d.id} doc={d} />)}
               </div>
             ))}
             <div className="px-4 py-3"><Button size="sm" icon={FilePlus} onClick={() => setModal("document")}>Request Document</Button></div>
@@ -175,7 +186,7 @@ export function ClientProfile({ id }: { id: string }) {
 
         {tab === "payments" && (
           <Card className="p-2">
-            {pays.length === 0 && <EmptyState icon={CreditCard} title="No payments yet" body="Payments appear here once Stripe records them." />}
+            {pays.length === 0 && <EmptyState icon={CreditCard} title="No payments yet" body="Preparation fees and premiums appear here once Stripe records them." />}
             {pays.map((p) => (
               <div key={p.id} className="flex items-center gap-4 rounded-2xl px-4 py-3.5">
                 <BrandIcon brand="stripe" size="sm" />

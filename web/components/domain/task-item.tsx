@@ -33,7 +33,7 @@ export function TaskItem({ task, onOpen }: { task: Task; onOpen: (t: Task) => vo
       <TaskCheck task={task} />
       <div className="min-w-0 flex-1">
         <p className={`truncate text-[15px] tracking-[-0.01em] transition-colors ${done ? "text-mute line-through" : "font-medium"}`}>{task.title}</p>
-        <p className="truncate text-[13px] text-mute">{task.due}{client ? ` · ${client.name}` : ""}</p>
+        <p className="truncate text-[13px] text-mute">{task.line && <span className={`mr-1.5 rounded-full px-1.5 py-px text-[11px] font-medium ${task.line === "tax" ? "bg-sky-50 text-sky-700" : "bg-violet-50 text-violet-700"}`}>{task.line === "tax" ? "Tax" : "Insurance"}</span>}{task.due}{client ? ` · ${client.name}` : ""}</p>
       </div>
       {!done && <span className="hidden sm:inline-flex"><StatusBadge tone={priorityTone[task.priority]}>{task.priority[0].toUpperCase() + task.priority.slice(1)}</StatusBadge></span>}
       {who && <Avatar name={who.name} size={28} />}

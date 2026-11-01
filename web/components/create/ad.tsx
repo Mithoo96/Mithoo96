@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, Users, ShoppingBag, Eye, CalendarCheck, Send, ImagePlus, MapPin } from "lucide-react";
 import { useOs } from "@/lib/store";
+import { business } from "@/lib/config/business";
 import { money } from "@/lib/format";
 import { Page, Card, Field, Input, Textarea, Chip, KeyValue, Select } from "@/components/ui/primitives";
 import { Button, useSimulated } from "@/components/ui/button";
@@ -20,8 +21,8 @@ const steps = ["Objective", "Creative", "Copy", "Audience", "Budget", "Review"];
 export function AdWorkspace() {
   const os = useOs(); const toast = useToast(); const req = useSimulated(1200, 99999);
   const [step, setStep] = useState(0);
-  const [f, setF] = useState({ objective: objectives[0].k, creative: 0, headline: "Your fall reset starts here", text: "4 sessions, a personal plan and a check-in call. Limited spots in November.", cta: "Book Now",
-    location: "San Francisco + 10 mi", age: "25–54", interests: ["Wellness", "Yoga", "Self-care"], budget: 300, days: 10, platforms: ["instagram", "facebook"] as BrandKey[] });
+  const [f, setF] = useState({ objective: objectives[0].k, creative: 0, headline: "Protect your family for less than you think", text: "Term Life from about $1 a day. Talk to a licensed agent in 15 minutes, no pressure.", cta: "Get Quote",
+    location: "Miami-Dade + Broward", age: "25–54", interests: ["Parents", "Homeowners", "Small business owners"], budget: 300, days: 10, platforms: ["instagram", "facebook"] as BrandKey[] });
   const set = (p: Partial<typeof f>) => setF({ ...f, ...p });
   const daily = f.budget / f.days;
   const reach = [Math.round(f.budget * 9), Math.round(f.budget * 16)];
@@ -29,7 +30,7 @@ export function AdWorkspace() {
 
   return (
     <Page>
-      <WorkspaceHeader title="Create Ad" subtitle="A guided ad for Instagram and Facebook. Nothing launches without your approval."
+      <WorkspaceHeader title="Create Ad" subtitle="A guided Meta ad for your tax or insurance services. Nothing launches without your approval."
         actions={<span className="inline-flex items-center gap-2 text-[13px] text-mute"><BrandIcon brand="meta" size="xs" />Meta Ads connected</span>} />
       <Steps steps={steps} current={step} onJump={setStep} />
       <Card className="p-5 md:p-7">
@@ -45,12 +46,12 @@ export function AdWorkspace() {
           {step === 2 && <div className="space-y-4">
             <Field label="Headline"><Input id="ad-headline" value={f.headline} onChange={(e) => set({ headline: e.target.value })} /></Field>
             <Field label="Primary text"><Textarea id="ad-text" value={f.text} onChange={(e) => set({ text: e.target.value })} /></Field>
-            <Field label="Button"><Select id="ad-cta" value={f.cta} onChange={(e) => set({ cta: e.target.value })}>{["Book Now", "Learn More", "Sign Up", "Get Offer"].map((c) => <option key={c}>{c}</option>)}</Select></Field>
+            <Field label="Button"><Select id="ad-cta" value={f.cta} onChange={(e) => set({ cta: e.target.value })}>{["Get Quote", "Book Now", "Learn More", "Sign Up"].map((c) => <option key={c}>{c}</option>)}</Select></Field>
           </div>}
           {step === 3 && <div className="space-y-5">
             <Field label="Location"><div className="relative"><MapPin size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-mute" /><Input id="ad-loc" className="pl-10" value={f.location} onChange={(e) => set({ location: e.target.value })} /></div></Field>
             <Field label="Age"><div className="flex flex-wrap gap-2">{["18–34", "25–54", "35–64", "All adults"].map((a) => <Chip key={a} active={f.age === a} onClick={() => set({ age: a })}>{a}</Chip>)}</div></Field>
-            <Field label="Interests"><div className="flex flex-wrap gap-2">{["Wellness", "Yoga", "Self-care", "Fitness", "Nutrition", "Meditation"].map((i) => <Chip key={i} active={f.interests.includes(i)} onClick={() => set({ interests: f.interests.includes(i) ? f.interests.filter((x) => x !== i) : [...f.interests, i] })}>{i}</Chip>)}</div></Field>
+            <Field label="Interests"><div className="flex flex-wrap gap-2">{["Parents", "Homeowners", "Small business owners", "Newlyweds", "Retirement planning", "Haitian community"].map((i) => <Chip key={i} active={f.interests.includes(i)} onClick={() => set({ interests: f.interests.includes(i) ? f.interests.filter((x) => x !== i) : [...f.interests, i] })}>{i}</Chip>)}</div></Field>
             <Field label="Platforms"><PlatformPicker options={["instagram", "facebook"]} value={f.platforms} onChange={(v) => set({ platforms: v })} /></Field>
           </div>}
           {step === 4 && <div className="space-y-6">
@@ -65,7 +66,7 @@ export function AdWorkspace() {
           </div>}
           {step === 5 && <div className="grid gap-6 md:grid-cols-[1fr_1.2fr]">
             <div className="overflow-hidden rounded-[22px] bg-white ring-1 ring-hair">
-              <div className="flex items-center gap-2 px-4 py-3"><BrandIcon brand={f.platforms[0] ?? "instagram"} size="xs" /><span className="text-[13px] font-semibold">smithouwellness</span><span className="text-[11px] text-mute">Sponsored</span></div>
+              <div className="flex items-center gap-2 px-4 py-3"><BrandIcon brand={f.platforms[0] ?? "instagram"} size="xs" /><span className="text-[13px] font-semibold">{business.shortName.toLowerCase().replace(/\s+/g, "")}</span><span className="text-[11px] text-mute">Sponsored</span></div>
               <div className="aspect-[4/5]" style={{ background: mockArt("ad", f.creative) }} />
               <div className="flex items-center justify-between gap-3 px-4 py-3"><p className="text-[13px] font-semibold">{f.headline}</p><span className="shrink-0 rounded-lg bg-[#f2f2f6] px-3 py-1.5 text-[12px] font-medium">{f.cta}</span></div>
             </div>

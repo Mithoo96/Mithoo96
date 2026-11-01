@@ -10,6 +10,7 @@ import { Modal, ConfirmDialog } from "@/components/ui/overlay";
 import { useToast } from "@/components/ui/toast";
 import { BrandIcon } from "@/components/brand-icon";
 import { LogoMark } from "@/components/shell/sidebar";
+import { business } from "@/lib/config/business";
 
 const cats: ("All" | IntegrationCategory)[] = ["All", "Communication", "Marketing", "Payments", "CRM", "Productivity", "Accounting", "AI"];
 
@@ -26,7 +27,7 @@ export default function AppsPage() {
 
   return (
     <Page>
-      <PageHeader title="Apps" subtitle="Bring your tools together. Mithoo works across all of them." />
+      <PageHeader title="Apps" subtitle={`Everything ${business.name} uses, working together in one place.`} />
 
       <SectionTitle action={<span className="text-[13px] text-mute">{connected.length} connected</span>}>Connected to your business</SectionTitle>
       <div className="glass mb-12 overflow-hidden rounded-[28px] p-6 md:p-8">
@@ -89,7 +90,7 @@ export default function AppsPage() {
       <Modal open={!!manage && !confirmOff} onClose={() => setManage(null)} title={manage?.name} description={manage?.description}
         footer={<><Button variant="danger" onClick={() => setConfirmOff(true)}>Disconnect</Button><Button variant="primary" onClick={() => setManage(null)}>Done</Button></>}>
         {manage && <div className="space-y-3 pb-2">
-          <div className="flex items-center gap-3"><BrandIcon brand={manage.id} size="md" /><div><p className="text-[14px] font-medium">Connected as smithou@smithouwellness.com</p><p className="text-[13px] text-mute">Last synced 4 minutes ago</p></div></div>
+          <div className="flex items-center gap-3"><BrandIcon brand={manage.id} size="md" /><div><p className="text-[14px] font-medium">Connected as {business.owner.email}</p><p className="text-[13px] text-mute">Last synced 4 minutes ago</p></div></div>
           <ul className="space-y-2">{manage.scopes.map((s) => <li key={s} className="flex items-center gap-2.5 rounded-2xl bg-[#f7f7fa] px-4 py-3 text-[14px]"><ShieldCheck size={16} className="text-emerald-600" />{s}</li>)}</ul>
         </div>}
       </Modal>

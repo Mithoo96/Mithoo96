@@ -7,52 +7,72 @@ import { ArrowUp, Mic, Sparkles, X } from "lucide-react";
 import { useDerived, useOs } from "@/lib/store";
 import { metrics } from "@/lib/mock";
 import { formatValue, timeLabel } from "@/lib/format";
+import { business } from "@/lib/config/business";
 import { BrandStack } from "@/components/brand-icon";
 import { useToast } from "@/components/ui/toast";
 
 export const suggestedPrompts = [
   "What needs my attention today?",
-  "Show clients waiting for documents.",
+  "Which tax clients are missing documents?",
+  "Which insurance leads need follow-up?",
   "How is my business doing this week?",
-  "Prepare a follow-up campaign.",
+  "Prepare a tax season campaign.",
+  "Show insurance applications waiting for review.",
 ];
 
 type Answer = { text: string; bullets?: ReactNode[]; actions?: { label: string; href: string }[] };
 type Turn = { id: number; q: string; a?: Answer };
+const L = ({ id, name }: { id: string; name: string }) => <Link href={`/clients/${id}`} className="font-medium text-ink hover:underline">{name}</Link>;
 
 /** Mock "AI" built from live prototype state. Swap for a real model call later. */
 function useMockBrain() {
   const os = useOs(); const d = useDerived();
   return (q: string): Answer => {
     const s = q.toLowerCase();
-    if (s.includes("document") || s.includes("waiting")) {
-      const waiting = os.clients.filter((c) => c.status === "waiting" || c.status === "attention");
-      return { text: `${waiting.length} clients are waiting on something. Here are the ones that need a nudge:`,
-        bullets: waiting.slice(0, 5).map((c) => <><Link href={`/clients/${c.id}`} className="font-medium text-ink hover:underline">{c.name}</Link> · {c.nextStep}</>),
-        actions: [{ label: "View Clients", href: "/clients" }, { label: "Open Work", href: "/work" }] };
+    if (s.includes("tax") && (s.includes("document") || s.includes("missing"))) {
+      const waiting = os.clients.filter((c) => os.documents.some((x) => x.clientId === c.id && x.line === "tax" && (x.status === "missing" || x.status === "requested")));
+      return { text: `${waiting.length} tax clients in your sample list are waiting on documents (12 across the full practice). The most common gap is the W-2.`,
+        bullets: waiting.slice(0, 5).map((c) => <><L id={c.id} name={c.name} /> · {os.documents.filter((x) => x.clientId === c.id && x.line === "tax" && x.status !== "received" && x.status !== "review").map((x) => x.name).join(", ")}</>),
+        actions: [{ label: "Open Documents", href: "/documents" }, { label: "Start Reminder Campaign", href: "/create/campaign?preset=tax-season" }] };
+    }
+    if (s.includes("application")) {
+      const apps = os.approvals.filter((a) => a.category === "insurance" && a.status === "pending");
+      const inApp = os.clients.filter((c) => c.insuranceStage === "Application");
+      return { text: `${inApp.length} insurance applications need attention before they go to the carrier.`,
+        bullets: [...inApp.map((c) => <><L id={c.id} name={c.name} /> · {c.product} · {c.nextAction}</>), ...apps.map((a) => <>In Approvals: <b className="text-ink">{a.title}</b> · {a.meta}</>)],
+        actions: [{ label: "Review in Approvals", href: "/approvals" }] };
+    }
+    if (s.includes("insurance") || s.includes("lead")) {
+      const leads = os.clients.filter((c) => c.lines.includes("insurance") && (c.insuranceStage === "New Lead" || c.insuranceStage === "Contacted"));
+      return { text: "9 insurance leads haven't been contacted in 48 hours. These are the warmest ones in your list:",
+        bullets: leads.map((c) => <><L id={c.id} name={c.name} /> · {c.product} · {c.source} · last contact {c.lastContact}</>),
+        actions: [{ label: "Open Inbox", href: "/inbox" }, { label: "View insurance clients", href: "/clients?filter=insurance" }] };
     }
     if (s.includes("doing") || s.includes("week") || s.includes("revenue") || s.includes("report")) {
-      const [rev, leads, , , , conv] = metrics;
-      return { text: "It was a strong week. Revenue and leads are both up, and conversion held steady.",
+      const [rev, leads, appts] = metrics;
+      return { text: "A strong week. Insurance is driving revenue and tax leads are picking up ahead of the season.",
         bullets: [
-          <>Revenue <b className="text-ink">{formatValue(rev.data["7d"].value, "currency")}</b>, up {rev.data["7d"].delta}%</>,
-          <>New leads <b className="text-ink">{leads.data["7d"].value}</b>, up {leads.data["7d"].delta}%. Instagram brought the most.</>,
-          <>Conversion <b className="text-ink">{formatValue(conv.data["7d"].value, "percent")}</b></>,
-          <>One thing to watch: first replies to leads slowed on Thursday.</>],
+          <>Revenue <b className="text-ink">{formatValue(rev.data["7d"].value, "currency")}</b>, up {rev.data["7d"].delta}%. Insurance commissions are 58% of it.</>,
+          <>New leads <b className="text-ink">{leads.data["7d"].value}</b>, up {leads.data["7d"].delta}%. Facebook and Instagram ads brought the most.</>,
+          <>{appts.data["7d"].value} appointments, up {appts.data["7d"].delta}%</>,
+          <>One thing to watch: insurance first-contact time slowed on Thursday.</>],
         actions: [{ label: "Open Insights", href: "/insights" }] };
     }
-    if (s.includes("campaign") || s.includes("follow")) {
-      return { text: "I drafted a reactivation campaign for 8 past clients who haven't booked in 3–6 months.",
-        bullets: [<>Offer: complimentary check-in with any package</>, <>Channels: email and SMS, then a retargeting ad <span className="ml-1 align-middle"><BrandStack brands={["gmail", "instagram", "facebook"]} /></span></>, <>Suggested budget: $150 over 7 days</>],
-        actions: [{ label: "Open Campaign Builder", href: "/create/campaign" }, { label: "Review Approvals", href: "/approvals" }] };
+    if (s.includes("campaign") || s.includes("season")) {
+      return { text: "I drafted a tax season campaign for 42 clients who filed with you last year but haven't booked yet.",
+        bullets: [<>Offer: book early and get priority preparation, plus a free family life insurance review</>,
+          <>Channels: email, then WhatsApp, then an Instagram and Facebook reminder <span className="ml-1 align-middle"><BrandStack brands={["gmail", "whatsapp", "instagram", "facebook"]} /></span></>,
+          <>Suggested ad budget: $150 over 14 days</>],
+        actions: [{ label: "Open Campaign Builder", href: "/create/campaign?preset=tax-season" }, { label: "Review Approvals", href: "/approvals" }] };
     }
     const unconfirmed = d.todayAppointments.filter((a) => a.status === "pending");
-    return { text: `Your business needs you in a few places today. ${d.pendingApprovals.length} approvals, ${d.todayTasks.length} tasks and ${d.todayAppointments.length} appointments.`,
+    return { text: `Good ${new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, ${business.owner.firstName}. Here's what needs you today across tax and insurance:`,
       bullets: [
+        <>4 tax clients are missing documents, starting with <L id="c01" name="Jean Pierre" /></>,
+        <>9 insurance leads need follow-up, including <L id="c03" name="Kevin Charles" /> from this morning's Facebook ad</>,
         ...d.pendingApprovals.slice(0, 2).map((a) => <>Approve <b className="text-ink">{a.title}</b> · {a.meta}</>),
-        ...unconfirmed.map((a) => <>{d.clientById(a.clientId)?.name} hasn’t confirmed {timeLabel(a.time)}</>),
-        <>{d.unreadConversations.length} messages are waiting for a reply</>],
-      actions: [{ label: "Review Approvals", href: "/approvals" }, { label: "View My Day", href: "/work" }, { label: "Open Inbox", href: "/inbox" }] };
+        ...unconfirmed.map((a) => <>{d.clientById(a.clientId)?.name} hasn’t confirmed {timeLabel(a.time)}</>)],
+      actions: [{ label: "Review Approvals", href: "/approvals" }, { label: "Open Work", href: "/work" }, { label: "Open Inbox", href: "/inbox" }] };
   };
 }
 
@@ -85,8 +105,8 @@ export function AssistantPanel({ open, onClose, initialPrompt }: { open: boolean
         <div className="relative flex-1 overflow-y-auto px-6 py-5">
           {turns.length === 0 && (
             <div className="pb-2 pt-4">
-              <p className="text-[26px] font-semibold tracking-[-0.03em]">How can I help?</p>
-              <p className="mt-1 text-[14px] text-mute">I know your clients, schedule, inbox and numbers. Answers here are demo responses.</p>
+              <p className="text-[26px] font-semibold tracking-[-0.03em]">How can I help, {business.owner.firstName}?</p>
+              <p className="mt-1 text-[14px] text-mute">I know your tax clients, insurance pipeline, schedule and inbox. Answers here are demo responses.</p>
               <div className="mt-6 grid gap-2 sm:grid-cols-2">
                 {suggestedPrompts.map((p) => (
                   <button key={p} onClick={() => ask(p)} className="rounded-2xl bg-white px-4 py-3.5 text-left text-[14px] text-ink-soft ring-1 ring-hair transition-all duration-300 hover:-translate-y-px hover:text-ink hover:shadow-[0_10px_24px_-14px_rgba(60,60,140,0.35)]">{p}</button>

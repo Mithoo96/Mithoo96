@@ -7,16 +7,16 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog, Modal } from "@/components/ui/overlay";
 import { useToast } from "@/components/ui/toast";
 import { BrandIcon } from "@/components/brand-icon";
-import { business } from "@/lib/mock";
+import { business } from "@/lib/config/business";
 import { WorkspaceHeader } from "./shared";
 
-const segments = [{ k: "All clients", n: 210 }, { k: "Members", n: 48 }, { k: "New leads", n: 12 }, { k: "Inactive 60+ days", n: 42 }];
+const segments = [{ k: "All clients", n: 312 }, { k: "Tax clients", n: 214 }, { k: "Insurance clients", n: 131 }, { k: "Last year, not booked", n: 42 }, { k: "New leads", n: 18 }];
 
 export function EmailWorkspace() {
   const toast = useToast(); const fileRef = useRef<HTMLInputElement>(null);
-  const [to, setTo] = useState<string[]>(["Members"]); const [custom, setCustom] = useState("");
-  const [subject, setSubject] = useState("Your November wellness plan");
-  const [body, setBody] = useState("Hi {first_name},\n\nAs the days get shorter, it's a good time to protect your routine. This month we're adding early morning sessions on Tuesdays and Thursdays.\n\nReply to this email or book online to save your spot.\n\nWarmly,\nSmithou");
+  const [to, setTo] = useState<string[]>(["Last year, not booked"]); const [custom, setCustom] = useState("");
+  const [subject, setSubject] = useState("Tax season is coming. Let's get you on the calendar");
+  const [body, setBody] = useState("Hi {first_name},\n\nThank you for trusting us with your taxes last year. Tax season opens soon and our calendar fills up quickly.\n\nReply to this email or book online to reserve your preparation appointment. If anything changed this year (new job, new baby, a home purchase), let us know and we'll tell you what to bring.\n\nWhile you're here: if you'd like a free life insurance review for your family, just mention it.\n\nWarmly,\n" + business.owner.name + "\n" + business.name);
   const [files, setFiles] = useState<string[]>([]);
   const [mode, setMode] = useState<"edit" | "preview">("edit");
   const [confirm, setConfirm] = useState(false); const [sending, setSending] = useState<"idle" | "sending" | "sent">("idle");
@@ -53,14 +53,14 @@ export function EmailWorkspace() {
           <Field label="Message"><Textarea id="email-body" value={body} onChange={(e) => setBody(e.target.value)} className="min-h-[220px]" /></Field>
           <div className="flex flex-wrap items-center gap-2">
             <Button size="sm" variant="ghost" icon={Paperclip} onClick={() => fileRef.current?.click()}>Attachment</Button>
-            <Button size="sm" variant="soft" icon={Sparkles} onClick={() => { setSubject("A little something for your November routine"); toast({ title: "Subject improved", description: "Predicted open rate +8%" }); }}>Improve subject</Button>
+            <Button size="sm" variant="soft" icon={Sparkles} onClick={() => { setSubject("Your tax appointment, before the rush"); toast({ title: "Subject improved", description: "Predicted open rate +8%" }); }}>Improve subject</Button>
             {files.map((f) => <span key={f} className="inline-flex items-center gap-1.5 rounded-full bg-[#f4f4f8] px-3 py-1 text-[12px]">{f}<button aria-label={`Remove ${f}`} onClick={() => setFiles(files.filter((x) => x !== f))}><X size={12} /></button></span>)}
             <input ref={fileRef} type="file" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setFiles([...files, f.name]); e.target.value = ""; }} />
           </div>
         </div> : <div className="mx-auto max-w-[560px] rounded-[20px] bg-white p-6 ring-1 ring-hair">
           <p className="text-[12px] text-mute">From: {business.name} &lt;{business.email}&gt;</p>
           <p className="mt-3 text-[18px] font-semibold">{subject}</p>
-          <p className="mt-4 whitespace-pre-line text-[14px] leading-relaxed text-ink-soft">{body.replace("{first_name}", "Sofia")}</p>
+          <p className="mt-4 whitespace-pre-line text-[14px] leading-relaxed text-ink-soft">{body.replace("{first_name}", "Marie-Claude")}</p>
           {files.length > 0 && <p className="mt-4 text-[12px] text-mute">{files.length} attachment{files.length > 1 ? "s" : ""}</p>}
         </div>}
         <div className="mt-6 flex flex-wrap justify-end gap-2 border-t border-hair pt-5">

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Building2, Users, ShieldCheck, Bell, Palette, Sparkles, CreditCard, Lock, UserPlus, Save, Monitor, Smartphone, Check, type LucideIcon } from "lucide-react";
+import { UserRound, Building2, Users, ShieldCheck, Bell, Palette, Sparkles, CreditCard, Lock, UserPlus, Save, Monitor, Smartphone, Check, type LucideIcon } from "lucide-react";
 import { useOs } from "@/lib/store";
-import { business, defaultPermissions, permissionAreas, roles } from "@/lib/mock";
+import { defaultPermissions, permissionAreas, roles } from "@/lib/mock";
+import { business } from "@/lib/config/business";
+import { OwnerAvatar } from "@/components/owner-avatar";
 import type { Role } from "@/lib/types";
 import { Avatar, Card, Field, Input, Page, PageHeader, Select, StatusBadge, Textarea, Toggle, Chip, Segmented } from "@/components/ui/primitives";
 import { Button, useSimulated } from "@/components/ui/button";
@@ -12,7 +14,7 @@ import { useToast } from "@/components/ui/toast";
 import { BrandIcon } from "@/components/brand-icon";
 
 const sections: { k: string; label: string; icon: LucideIcon }[] = [
-  { k: "profile", label: "Business Profile", icon: Building2 }, { k: "team", label: "Team", icon: Users }, { k: "permissions", label: "Permissions", icon: ShieldCheck },
+  { k: "profile", label: "My Profile", icon: UserRound }, { k: "business", label: "Business Profile", icon: Building2 }, { k: "team", label: "Team", icon: Users }, { k: "permissions", label: "Permissions", icon: ShieldCheck },
   { k: "notifications", label: "Notifications", icon: Bell }, { k: "brand", label: "Brand", icon: Palette }, { k: "ai", label: "AI Preferences", icon: Sparkles },
   { k: "billing", label: "Billing", icon: CreditCard }, { k: "security", label: "Security", icon: Lock },
 ];
@@ -24,11 +26,11 @@ function SaveBar({ label = "Save Changes" }: { label?: string }) {
 
 export default function SettingsPage() {
   const [sec, setSec] = useState("profile");
-  useEffect(() => { const h = window.location.hash.slice(1); if (sections.some((s) => s.k === h)) setSec(h); }, []);
+  useEffect(() => { const read = () => { const h = window.location.hash.slice(1); if (sections.some((s) => s.k === h)) setSec(h); }; read(); window.addEventListener("hashchange", read); return () => window.removeEventListener("hashchange", read); }, []);
   const go = (k: string) => { setSec(k); history.replaceState(null, "", `#${k}`); };
   return (
     <Page>
-      <PageHeader title="Settings" subtitle={business.name} />
+      <PageHeader title="Settings" subtitle={`${business.name} · ${business.type}`} />
       <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
         <nav className="no-scrollbar -mx-5 flex gap-1 overflow-x-auto px-5 lg:mx-0 lg:flex-col lg:px-0">
           {sections.map((s) => (
@@ -38,7 +40,7 @@ export default function SettingsPage() {
           ))}
         </nav>
         <div key={sec} className="page-enter min-w-0">
-          {sec === "profile" && <Profile />}{sec === "team" && <Team />}{sec === "permissions" && <Permissions />}{sec === "notifications" && <NotificationPrefs />}
+          {sec === "profile" && <MyProfile />}{sec === "business" && <Profile />}{sec === "team" && <Team />}{sec === "permissions" && <Permissions />}{sec === "notifications" && <NotificationPrefs />}
           {sec === "brand" && <Brand />}{sec === "ai" && <AiPrefs />}{sec === "billing" && <Billing />}{sec === "security" && <Security />}
         </div>
       </div>
@@ -46,20 +48,44 @@ export default function SettingsPage() {
   );
 }
 
+function MyProfile() {
+  const toast = useToast();
+  return (
+    <Card className="space-y-6 p-6 md:p-8">
+      <div className="flex items-center gap-5">
+        <OwnerAvatar size={84} />
+        <div><p className="text-[22px] font-semibold tracking-[-0.025em]">{business.owner.name}</p><p className="text-[14px] text-mute">{business.owner.title} · {business.name}</p>
+          <Button size="sm" className="mt-3" onClick={() => toast({ title: "Photo uploads are disabled in the demo", tone: "info" })}>Change photo</Button></div>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Full name"><Input id="me-name" defaultValue={business.owner.name} /></Field>
+        <Field label="Title"><Input id="me-title" defaultValue={business.owner.title} /></Field>
+        <Field label="Email"><Input id="me-email" defaultValue={business.owner.email} /></Field>
+        <Field label="Language"><Select id="me-lang" defaultValue="English"><option>English</option><option>Kreyòl Ayisyen</option><option>Français</option><option>Español</option></Select></Field>
+      </div>
+      <SaveBar />
+    </Card>
+  );
+}
+
 function Profile() {
-  const [f, setF] = useState(business);
+  const [f, setF] = useState({ name: business.name as string, type: business.type as string, phone: business.phone as string, email: business.email as string, website: business.website as string, hours: business.hours as string, address: business.address as string });
+  const [services, setServices] = useState<string[]>([...business.lines.tax.services, ...business.lines.insurance.services]);
+  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
   return (
     <Card className="space-y-5 p-6 md:p-8">
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Business Name"><Input id="bp-name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></Field>
-        <Field label="Industry"><Select id="bp-industry" value={f.industry} onChange={(e) => setF({ ...f, industry: e.target.value })}>{["Health & Wellness", "Beauty & Spa", "Professional Services", "Fitness", "Home Services"].map((i) => <option key={i}>{i}</option>)}</Select></Field>
-        <Field label="Phone"><Input id="bp-phone" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></Field>
-        <Field label="Email"><Input id="bp-email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></Field>
-        <Field label="Website"><Input id="bp-web" value={f.website} onChange={(e) => setF({ ...f, website: e.target.value })} /></Field>
-        <Field label="Business Hours"><Input id="bp-hours" value={f.hours} onChange={(e) => setF({ ...f, hours: e.target.value })} /></Field>
+        <Field label="Business Name"><Input id="bp-name" value={f.name} onChange={set("name")} /></Field>
+        <Field label="Business Type"><Input id="bp-type" value={f.type} onChange={set("type")} /></Field>
+        <Field label="Phone"><Input id="bp-phone" value={f.phone} onChange={set("phone")} /></Field>
+        <Field label="Email"><Input id="bp-email" value={f.email} onChange={set("email")} /></Field>
+        <Field label="Website"><Input id="bp-web" value={f.website} onChange={set("website")} /></Field>
+        <Field label="Business Hours"><Input id="bp-hours" value={f.hours} onChange={set("hours")} /></Field>
       </div>
-      <Field label="Address"><Input id="bp-address" value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} /></Field>
-      <Field label="Services"><div className="flex flex-wrap gap-2">{f.services.map((s) => <Chip key={s} active>{s}</Chip>)}<Chip onClick={() => setF({ ...f, services: [...f.services, "New service"] })}>+ Add service</Chip></div></Field>
+      <Field label="Address"><Input id="bp-address" value={f.address} onChange={set("address")} /></Field>
+      {(["tax", "insurance"] as const).map((l) => (
+        <Field key={l} label={`${business.lines[l].label} services`}><div className="flex flex-wrap gap-2">{services.filter((s) => (business.lines[l].services as readonly string[]).includes(s) || (l === "tax" && s === "New service")).map((s) => <Chip key={s} active>{s}</Chip>)}{l === "tax" && <Chip onClick={() => setServices([...services, "New service"])}>+ Add service</Chip>}</div></Field>
+      ))}
       <SaveBar />
     </Card>
   );
@@ -68,7 +94,7 @@ function Profile() {
 function Team() {
   const os = useOs(); const toast = useToast(); const [open, setOpen] = useState(false);
   const [inv, setInv] = useState({ name: "", email: "", role: "Staff" as Role });
-  const roleTone = { Owner: "violet", Manager: "blue", Staff: "gray", Marketing: "amber" } as const;
+  const roleTone: Record<Role, "violet" | "blue" | "gray" | "amber" | "green" | "rose"> = { Owner: "violet", Manager: "blue", "Tax Preparer": "green", "Insurance Agent": "rose", Marketing: "amber", Staff: "gray" };
   return (
     <Card className="p-2">
       <div className="flex items-center justify-between px-5 pb-2 pt-4"><p className="text-[15px] font-semibold">{os.team.length} members</p><Button size="sm" variant="primary" icon={UserPlus} onClick={() => setOpen(true)}>Invite</Button></div>
@@ -98,7 +124,7 @@ function Permissions() {
     <Card className="p-6 md:p-8">
       <p className="mb-5 text-[14px] text-mute">Choose what each role can see and change. The Owner always has full access.</p>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[560px] text-[14px]">
+        <table className="w-full min-w-[760px] text-[14px]">
           <thead><tr className="text-left text-[12px] uppercase tracking-[0.12em] text-mute"><th className="pb-3 font-medium">Area</th>{roles.map((r) => <th key={r} className="pb-3 text-center font-medium">{r}</th>)}</tr></thead>
           <tbody className="divide-y divide-hair">
             {permissionAreas.map((a) => (
@@ -116,8 +142,8 @@ function Permissions() {
 
 function NotificationPrefs() {
   const groups = [
-    { t: "Needs Action", d: "Approvals, unconfirmed appointments, overdue payments", on: [true, true, true] },
-    { t: "Important", d: "Renewals, new leads, negative reviews", on: [true, false, true] },
+    { t: "Needs Action", d: "Applications to review, returns ready, campaigns to approve", on: [true, true, true] },
+    { t: "Important", d: "New leads, missing documents, policy reviews due", on: [true, false, true] },
     { t: "AI Handled", d: "A daily summary of what Mithoo did for you", on: [false, false, true] },
   ];
   const [s, setS] = useState(groups.map((g) => g.on));
@@ -139,15 +165,15 @@ function NotificationPrefs() {
 
 function Brand() {
   const colors = ["#0b0b0f", "#8b7cf6", "#7aa7ff", "#e9d9bd", "#2f6b5a"]; const [color, setColor] = useState(colors[1]);
-  const [voice, setVoice] = useState("Warm"); const toast = useToast();
+  const [voice, setVoice] = useState("Trustworthy"); const toast = useToast();
   return (
     <Card className="space-y-6 p-6 md:p-8">
-      <div className="flex items-center gap-5"><span className="flex h-20 w-20 items-center justify-center rounded-[22px] bg-gradient-to-br from-[#f6f3ff] via-white to-[#f7efe2] text-[22px] font-semibold ring-1 ring-hair">SW</span>
-        <div><p className="text-[15px] font-medium">Logo</p><p className="text-[13px] text-mute">PNG or SVG, at least 512px</p><Button size="sm" className="mt-2" onClick={() => toast({ title: "Uploads are disabled in the demo", tone: "info" })}>Upload logo</Button></div></div>
+      <div className="flex items-center gap-5"><span className="flex h-20 w-20 items-center justify-center rounded-[22px] bg-gradient-to-br from-[#f6f3ff] via-white to-[#f7efe2] text-[22px] font-semibold ring-1 ring-hair">{business.monogram}</span>
+        <div><p className="text-[15px] font-medium">Logo</p><p className="text-[13px] text-mute">{business.website.replace("https://", "")}</p><Button size="sm" className="mt-2" onClick={() => toast({ title: "Uploads are disabled in the demo", tone: "info" })}>Upload logo</Button></div></div>
       <Field label="Brand color"><div className="flex gap-3">{colors.map((c) => <button key={c} aria-label={`Color ${c}`} onClick={() => setColor(c)} className={`h-10 w-10 rounded-full ring-offset-2 transition-all ${color === c ? "ring-2 ring-ink" : "ring-1 ring-hair"}`} style={{ background: c }} />)}</div></Field>
-      <Field label="Voice"><div className="flex flex-wrap gap-2">{["Warm", "Professional", "Playful", "Calm", "Direct"].map((v) => <Chip key={v} active={voice === v} onClick={() => setVoice(v)}>{v}</Chip>)}</div></Field>
-      <Field label="Words to avoid" hint="Mithoo won't use these in anything it writes."><Input id="brand-avoid" defaultValue="cheap, guaranteed, miracle" /></Field>
-      <Field label="About your business"><Textarea id="brand-about" defaultValue="A calm, modern wellness studio in the Mission. We build personal plans and stay with clients for the long run." /></Field>
+      <Field label="Voice"><div className="flex flex-wrap gap-2">{["Warm", "Professional", "Trustworthy", "Calm", "Direct"].map((v) => <Chip key={v} active={voice === v} onClick={() => setVoice(v)}>{v}</Chip>)}</div></Field>
+      <Field label="Words to avoid" hint="Mithoo won't use these in anything it writes."><Input id="brand-avoid" defaultValue="guaranteed refund, cheapest, no questions asked" /></Field>
+      <Field label="About your business"><Textarea id="brand-about" defaultValue="A family-focused tax and life insurance agency. We help clients file with confidence and protect the people they love." /></Field>
       <SaveBar />
     </Card>
   );
@@ -155,9 +181,9 @@ function Brand() {
 
 function AiPrefs() {
   const [level, setLevel] = useState<"ask" | "suggest" | "auto">("suggest");
-  const caps = [{ t: "Reply to common questions", b: "instagram" as const, on: true }, { t: "Send appointment reminders", b: "whatsapp" as const, on: true }, { t: "Follow up with new leads", b: "gmail" as const, on: true }, { t: "Confirm appointments", b: "googlecalendar" as const, on: true }, { t: "Send payment reminders", b: "stripe" as const, on: false }];
+  const caps = [{ t: "Answer common tax and insurance questions", b: "instagram" as const, on: true }, { t: "Send tax document reminders", b: "whatsapp" as const, on: true }, { t: "Follow up with new insurance leads", b: "meta" as const, on: true }, { t: "Prepare client follow-up emails", b: "gmail" as const, on: true }, { t: "Confirm appointments", b: "googlecalendar" as const, on: true }, { t: "Send payment reminders", b: "stripe" as const, on: false }];
   const [on, setOn] = useState(caps.map((c) => c.on));
-  const desc = { ask: "Mithoo drafts everything and waits for your approval.", suggest: "Routine messages go out automatically. Anything new or involving money waits for you.", auto: "Mithoo handles everything it's confident about and tells you afterwards." };
+  const desc = { ask: "Mithoo drafts everything and waits for your approval.", suggest: "Routine reminders go out automatically. Applications, returns and anything involving money wait for you.", auto: "Mithoo handles everything it's confident about and tells you afterwards." };
   return (
     <Card className="space-y-7 p-6 md:p-8">
       <div><p className="mb-3 text-[15px] font-medium">How much should Mithoo do on its own?</p>
@@ -206,7 +232,7 @@ function Billing() {
 
 function Security() {
   const toast = useToast(); const [twofa, setTwofa] = useState(true); const [revoke, setRevoke] = useState<string | null>(null);
-  const [sessions, setSessions] = useState([{ id: "s1", d: "MacBook Pro · Safari", w: "San Francisco · Active now", i: Monitor, current: true }, { id: "s2", d: "iPhone 16 · Mithoo app", w: "San Francisco · 2h ago", i: Smartphone }, { id: "s3", d: "Windows · Chrome", w: "Oakland · 3 days ago", i: Monitor }]);
+  const [sessions, setSessions] = useState([{ id: "s1", d: "MacBook Pro · Safari", w: "Office · Active now", i: Monitor, current: true }, { id: "s2", d: "iPhone · Mithoo app", w: "Mobile · 2h ago", i: Smartphone }, { id: "s3", d: "Front desk · Chrome", w: "Office · Yesterday", i: Monitor }]);
   return (
     <div className="space-y-5">
       <Card className="flex items-center justify-between gap-4 p-6"><div><p className="text-[15px] font-medium">Two-step verification</p><p className="text-[13px] text-mute">Ask for a code when signing in on a new device.</p></div>

@@ -3,6 +3,7 @@ import "./globals.css";
 import { LaunchScreen } from "@/components/launch-screen";
 import { LAUNCH_KEY } from "@/lib/greeting";
 import { OsProvider } from "@/lib/store";
+import { business } from "@/lib/config/business";
 import { ToastProvider } from "@/components/ui/toast";
 import { AppShell } from "@/components/shell/app-shell";
 
@@ -12,8 +13,8 @@ const launchScript = `try{if(localStorage.getItem("${LAUNCH_KEY}")!==new Date().
 export const viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" as const };
 
 export const metadata: Metadata = {
-  title: "Mithoo — Business OS",
-  description: "An operating system for your business.",
+  title: `${business.name} · Mithoo`,
+  description: `${business.type} · Powered by Mithoo`,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

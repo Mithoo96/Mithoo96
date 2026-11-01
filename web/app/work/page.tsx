@@ -8,18 +8,20 @@ import type { Task, TaskBucket } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, EmptyState, Page, PageHeader, Segmented } from "@/components/ui/primitives";
 import { TaskDrawer, TaskItem, NewTaskModal } from "@/components/domain/task-item";
+import { ModeSwitcher } from "@/components/sections";
 
 const labels: Record<TaskBucket, string> = { today: "Today", upcoming: "Upcoming", waiting: "Waiting", completed: "Completed" };
 
 export default function WorkPage() {
-  const { tasks } = useOs(); const d = useDerived();
+  const { tasks: all, mode } = useOs(); const d = useDerived();
+  const tasks = all.filter((t) => mode === "all" || !t.line || t.line === mode);
   const [bucket, setBucket] = useState<TaskBucket>("today");
   const [open, setOpen] = useState<Task | null>(null); const [adding, setAdding] = useState(false);
   const list = tasks.filter((t) => t.bucket === bucket);
   const doneToday = tasks.filter((t) => t.bucket === "completed" && t.previousBucket === "today").length;
   return (
     <Page>
-      <PageHeader title="Work" subtitle={`${d.todayTasks.length} tasks today${doneToday ? ` · ${doneToday} done` : ""}`}
+      <PageHeader title="Work" subtitle={`${tasks.filter((t) => t.bucket === "today").length} tasks today${doneToday ? ` · ${doneToday} done` : ""}`}
         actions={<Button variant="primary" icon={Plus} onClick={() => setAdding(true)}>New Task</Button>} />
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
         <Link href="/approvals"><Card className="flex items-center gap-4 p-5" onClick={() => {}}>
@@ -31,6 +33,7 @@ export default function WorkPage() {
           <div className="flex-1"><p className="text-[15px] font-semibold">Appointments</p><p className="text-[13px] text-mute">{d.todayAppointments.length} today</p></div><ArrowUpRight size={16} className="text-mute" />
         </Card></Link>
       </div>
+      <div className="mb-4"><ModeSwitcher /></div>
       <Segmented value={bucket} onChange={setBucket} className="mb-5"
         options={(Object.keys(labels) as TaskBucket[]).map((b) => ({ value: b, label: labels[b], count: tasks.filter((t) => t.bucket === b).length }))} />
       <Card className="p-2">

@@ -7,8 +7,8 @@ import { LAUNCH_KEY } from "@/lib/greeting";
 
 
 
-// Timeline (ms). Text sequence finishes ~2.2s, holds, then hands off to the dashboard.
-const EXIT_AT = 4700;
+// Timeline (ms): greeting → headline → summary lines → closing line (~4.4s), hold ~2.5s, then hand off.
+const EXIT_AT = 7000;
 const EXIT_DURATION = 1400;
 
 export function LaunchScreen() {
@@ -53,7 +53,7 @@ export function LaunchScreen() {
 
       <div className="launch-copy relative px-6 text-center">
         <p className="launch-in text-[17px] tracking-[-0.01em] text-mute" style={{ animationDelay: "300ms" }}>
-          <Greeting name={business.owner} emoji />
+          <Greeting name={business.owner.firstName} emoji />
         </p>
         <h1
           className="launch-up mt-4 text-[52px] font-semibold leading-[1.02] tracking-[-0.04em] text-ink [text-wrap:balance] md:text-[88px]"
@@ -64,10 +64,18 @@ export function LaunchScreen() {
         <p className="launch-in mt-5 text-[19px] tracking-[-0.01em] text-ink-soft/80 md:text-[21px]" style={{ animationDelay: "1500ms" }}>
           {launch.subtitle}
         </p>
-        <p className="launch-in mt-12 inline-flex items-center gap-2.5 rounded-full px-5 py-2.5 text-[15px] text-ink-soft glass" style={{ animationDelay: "2200ms" }}>
-          <span className="pulse-dot h-2 w-2 rounded-full bg-gradient-to-br from-sky to-iris" />
-          <span><span className="font-semibold text-ink">{launch.handledCount} things</span> handled while you were away.</span>
+        <ul className="mx-auto mt-10 grid max-w-[560px] gap-2.5 text-left sm:grid-cols-2">
+          {launch.items.map((item, i) => (
+            <li key={item} className="launch-in glass flex items-center gap-3 rounded-2xl px-4 py-3 text-[15px] text-ink-soft" style={{ animationDelay: `${2100 + i * 380}ms` }}>
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-br from-sky to-iris" />
+              <span><span className="font-semibold text-ink">{item.split(" ")[0]}</span> {item.split(" ").slice(1).join(" ")}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="launch-in mt-9 inline-flex items-center gap-2.5 text-[16px] font-medium tracking-[-0.01em] text-ink" style={{ animationDelay: "4100ms" }}>
+          <span className="pulse-dot h-2 w-2 rounded-full bg-gradient-to-br from-sky to-iris" />{launch.closing}
         </p>
+        <p className="launch-in mt-10 text-[11px] text-mute" style={{ animationDelay: "4400ms" }}>{business.name} · Powered by {business.poweredBy}</p>
       </div>
     </div>
   );

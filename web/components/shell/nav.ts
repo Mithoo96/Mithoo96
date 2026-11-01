@@ -1,9 +1,10 @@
-import { Home, Users, Briefcase, Sparkles, Inbox, ChartLine, LayoutGrid, Settings, type LucideIcon } from "lucide-react";
+import { Home, Users, FolderOpen, Briefcase, Sparkles, Inbox, ChartLine, LayoutGrid, Settings, type LucideIcon } from "lucide-react";
 
 export type NavItem = { label: string; icon: LucideIcon; href: string; match: string[] };
 export const mainNav: NavItem[] = [
   { label: "Home", icon: Home, href: "/", match: ["/"] },
   { label: "Clients", icon: Users, href: "/clients", match: ["/clients"] },
+  { label: "Documents", icon: FolderOpen, href: "/documents", match: ["/documents"] },
   { label: "Work", icon: Briefcase, href: "/work", match: ["/work", "/approvals", "/appointments"] },
   { label: "Create", icon: Sparkles, href: "/create", match: ["/create"] },
   { label: "Inbox", icon: Inbox, href: "/inbox", match: ["/inbox"] },

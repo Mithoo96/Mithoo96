@@ -2,8 +2,9 @@
 
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from "react";
 import * as mock from "@/lib/mock";
-import type { Approval, ApprovalStatus, Appointment, Client, ClientDocument, Conversation, Integration, Note, Notification, Payment, Task, TeamMember, TimelineEvent } from "@/lib/types";
+import type { Approval, ApprovalStatus, Appointment, BusinessMode, Client, ClientDocument, Conversation, DocStatus, Integration, LineKey, Note, Notification, Payment, Task, TeamMember, TimelineEvent } from "@/lib/types";
 import { nowTime, uid } from "@/lib/format";
+import { business } from "@/lib/config/business";
 
 type Map<T> = Record<string, T[]>;
 const byClient = <T,>(fn: (c: Client) => T[]) => Object.fromEntries(mock.clients.map((c) => [c.id, fn(c)])) as Map<T>;
@@ -15,7 +16,8 @@ const byClient = <T,>(fn: (c: Client) => T[]) => Object.fromEntries(mock.clients
 function useOsState() {
   const [clients, setClients] = useState<Client[]>(mock.clients);
   const [timelines, setTimelines] = useState<Map<TimelineEvent>>(() => byClient(mock.seedTimeline));
-  const [documents, setDocuments] = useState<Map<ClientDocument>>(() => byClient(mock.seedDocuments));
+  const [documents, setDocuments] = useState<ClientDocument[]>(mock.documents);
+  const [mode, setMode] = useState<BusinessMode>("all");
   const [payments] = useState<Map<Payment>>(() => byClient(mock.seedPayments));
   const [notes, setNotes] = useState<Map<Note>>(() => byClient(mock.seedNotes));
   const [tasks, setTasks] = useState<Task[]>(mock.tasks);
@@ -39,12 +41,21 @@ function useOsState() {
     },
     updateClient: (id: string, patch: Partial<Client>) => setClients((l) => l.map((c) => (c.id === id ? { ...c, ...patch } : c))),
     addTimeline,
-    requestDocument: (clientId: string, name: string) => {
-      setDocuments((m) => ({ ...m, [clientId]: [{ id: uid("d"), name, status: "requested", date: "Requested just now" }, ...(m[clientId] ?? [])] }));
-      addTimeline(clientId, { kind: "document", title: "Document requested", detail: name, by: "team", brand: "gmail" });
+    setMode,
+    requestDocument: (clientId: string, name: string, line: LineKey) => {
+      setDocuments((l) => {
+        const existing = l.find((d) => d.clientId === clientId && d.name === name && d.status !== "received");
+        if (existing) return l.map((d) => (d === existing ? { ...d, status: "requested", date: "Requested just now" } : d));
+        return [{ id: uid("d"), clientId, line, name, status: "requested", date: "Requested just now" }, ...l];
+      });
+      addTimeline(clientId, { kind: "document", title: `${name} requested`, detail: "Secure upload link prepared", by: "team", brand: "gmail", line });
+    },
+    setDocumentStatus: (id: string, status: DocStatus, extra?: Partial<ClientDocument>) => setDocuments((l) => l.map((d) => (d.id === id ? { ...d, status, ...extra } : d))),
+    uploadDocument: (id: string, fileName: string, size: number) => {
+      setDocuments((l) => l.map((d) => (d.id === id ? { ...d, status: "review", date: `Uploaded just now · ${fileName}`, size: `${Math.max(1, Math.round(size / 1024))} KB` } : d)));
     },
     addNote: (clientId: string, text: string) => {
-      setNotes((m) => ({ ...m, [clientId]: [{ id: uid("n"), text, when: "Just now", author: "Smithou Laurent" }, ...(m[clientId] ?? [])] }));
+      setNotes((m) => ({ ...m, [clientId]: [{ id: uid("n"), text, when: "Just now", author: business.owner.name }, ...(m[clientId] ?? [])] }));
       addTimeline(clientId, { kind: "note", title: "Note added", detail: text, by: "team" });
     },
     addTask: (t: Omit<Task, "id" | "notes">) => { const id = uid("t"); setTasks((l) => [{ ...t, id, notes: [] }, ...l]); return id; },
@@ -52,7 +63,7 @@ function useOsState() {
     toggleTask: (id: string) => setTasks((l) => l.map((t) => t.id !== id ? t
       : t.bucket === "completed" ? { ...t, bucket: t.previousBucket ?? "today", previousBucket: undefined }
       : { ...t, previousBucket: t.bucket, bucket: "completed" })),
-    addTaskNote: (id: string, text: string) => setTasks((l) => l.map((t) => (t.id === id ? { ...t, notes: [{ id: uid("n"), text, when: "Just now", author: "Smithou" }, ...t.notes] } : t))),
+    addTaskNote: (id: string, text: string) => setTasks((l) => l.map((t) => (t.id === id ? { ...t, notes: [{ id: uid("n"), text, when: "Just now", author: business.owner.name }, ...t.notes] } : t))),
     setApprovalStatus: (id: string, status: ApprovalStatus) => setApprovals((l) => l.map((a) => (a.id === id ? { ...a, status } : a))),
     updateApproval: (id: string, patch: Partial<Approval>) => setApprovals((l) => l.map((a) => (a.id === id ? { ...a, ...patch } : a))),
     addApproval: (a: Omit<Approval, "id" | "status" | "when">) => setApprovals((l) => [{ ...a, id: uid("ap"), status: "pending", when: "Just now" }, ...l]),
@@ -84,9 +95,9 @@ function useOsState() {
         const existing = l.find((c) => c.clientId === clientId && c.channel === channel);
         const msg = { id: uid("m"), from: "me" as const, text, time: nowTime(), status: "delivered" as const };
         if (existing) return [{ ...existing, messages: [...existing.messages, msg] }, ...l.filter((c) => c !== existing)];
-        return [{ id: uid("cv"), channel, brand: channel === "email" ? "gmail" : "sms", clientId, name: client.name, unread: false, messages: [msg] }, ...l];
+        return [{ id: uid("cv"), channel, clientId, name: client.name, unread: false, messages: [msg] }, ...l];
       });
-      addTimeline(clientId, { kind: channel === "email" ? "email" : "sms", title: channel === "email" ? "Email sent" : "SMS sent", detail: text.slice(0, 80), by: "team", brand: channel === "email" ? "gmail" : undefined });
+      addTimeline(clientId, { kind: channel === "email" ? "email" : "sms", title: channel === "email" ? "Email sent" : channel === "whatsapp" ? "WhatsApp message sent" : "SMS sent", detail: text.slice(0, 80), by: "team", brand: channel === "email" ? "gmail" : channel === "whatsapp" ? "whatsapp" : undefined });
     },
     markNotificationRead: (id: string) => setNotifications((l) => l.map((n) => (n.id === id ? { ...n, read: true } : n))),
     markAllNotificationsRead: () => setNotifications((l) => l.map((n) => ({ ...n, read: true }))),
@@ -94,7 +105,7 @@ function useOsState() {
     setIntegrationState: (id: Integration["id"], state: Integration["state"]) => setIntegrations((l) => l.map((i) => (i.id === id ? { ...i, state } : i))),
   };
 
-  return { clients, timelines, documents, payments, notes, tasks, appointments, conversations, approvals, notifications, team, integrations, ...actions };
+  return { mode, clients, timelines, documents, payments, notes, tasks, appointments, conversations, approvals, notifications, team, integrations, ...actions };
 }
 
 type OsState = ReturnType<typeof useOsState>;
@@ -122,5 +133,7 @@ export function useDerived() {
     todayAppointments: os.appointments.filter((a) => a.day === 0 && a.status !== "cancelled").sort((a, b) => a.time.localeCompare(b.time)),
     unreadConversations: os.conversations.filter((c) => c.unread),
     clientsNeedingAttention: os.clients.filter((c) => c.status === "attention" || c.status === "waiting" || c.status === "new"),
+    docsFor: (clientId: string) => os.documents.filter((d) => d.clientId === clientId),
+    inMode: (lines?: LineKey[] | LineKey) => os.mode === "all" || !lines || (Array.isArray(lines) ? lines.includes(os.mode) : lines === os.mode),
   }), [os]);
 }
