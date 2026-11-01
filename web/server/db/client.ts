@@ -10,6 +10,7 @@
  */
 import { Pool, type PoolClient, type QueryResultRow } from "pg";
 import { DomainError } from "@/core/errors";
+import { databasePoolConfig } from "./pool-config";
 
 export interface Db {
   query<T extends QueryResultRow = QueryResultRow>(text: string, params?: readonly unknown[]): Promise<T[]>;
@@ -36,14 +37,7 @@ export function getPool(): Pool {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { serverEnv } = require("../env") as typeof import("../env");
       const env = serverEnv();
-      globalForPool.__mbosPool = new Pool({
-        connectionString: env.DATABASE_URL,
-        max: env.DATABASE_POOL_MAX,
-        connectionTimeoutMillis: 10_000,
-        ssl: env.DATABASE_SSL === "require" ? { rejectUnauthorized: true } : undefined,
-        statement_timeout: 15_000,
-        idle_in_transaction_session_timeout: 30_000,
-      });
+      globalForPool.__mbosPool = new Pool(databasePoolConfig(env));
     }
   }
   return globalForPool.__mbosPool;
