@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --color-ink: #0b0b0f;
+  --color-ink-soft: #3a3a44;
+  --color-mute: #8a8a96;
+  --color-hair: rgba(15, 15, 30, 0.07);
+  --color-champagne: #e9d9bd;
+  --color-iris: #8b7cf6;
+  --color-sky: #7aa7ff;
+}
+
+html, body { background: #ffffff; color: var(--color-ink); }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* Glass surface */
+.glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,255,255,0.62));
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--color-hair);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 1px 2px rgba(16, 16, 40, 0.03),
+    0 12px 40px -12px rgba(30, 30, 80, 0.08);
+}
+
+/* Slow drifting orbs behind the hero */
+@keyframes drift-a { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(60px,30px,0) scale(1.08); } }
+@keyframes drift-b { 0%,100% { transform: translate3d(0,0,0) scale(1.05); } 50% { transform: translate3d(-50px,20px,0) scale(0.95); } }
+@keyframes drift-c { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(30px,-30px,0) scale(1.1); } }
+@keyframes sheen { 0% { transform: translateX(-120%) skewX(-18deg); } 100% { transform: translateX(260%) skewX(-18deg); } }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes breathe { 0%,100% { opacity: .45; transform: scale(1); } 50% { opacity: 1; transform: scale(1.35); } }
+
+.orb { position: absolute; border-radius: 9999px; filter: blur(70px); will-change: transform; }
+.orb-a { animation: drift-a 22s ease-in-out infinite; }
+.orb-b { animation: drift-b 28s ease-in-out infinite; }
+.orb-c { animation: drift-c 34s ease-in-out infinite; }
+.sheen::after {
+  content: ""; position: absolute; inset: 0; width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+  animation: sheen 9s ease-in-out infinite; animation-delay: 2s; pointer-events: none;
+}
+.rise { opacity: 0; animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards; }
+.pulse-dot { animation: breathe 2.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-a, .orb-b, .orb-c, .sheen::after, .pulse-dot { animation: none; }
+  .rise { animation: none; opacity: 1; }
+}
