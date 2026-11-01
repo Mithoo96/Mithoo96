@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createSupabaseSetupClient } from "@/lib/supabase/client";
+import { invitationGrant } from "@/lib/supabase/invitation";
 
 export function PasswordSetup() {
   const client = useRef<ReturnType<typeof createSupabaseSetupClient> | null>(null);
@@ -35,6 +36,23 @@ export function PasswordSetup() {
     }
     void initialize();
   }, []);
+  async function acceptInvitation(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (pending) return;
+    const form = event.currentTarget;
+    setPending(true); setError("");
+    try {
+      const grant = invitationGrant(String(new FormData(form).get("invitation") ?? ""), process.env.NEXT_PUBLIC_SUPABASE_URL!);
+      const auth = client.current ?? createSupabaseSetupClient(); client.current = auth;
+      const { error } = await auth.auth.verifyOtp(grant);
+      form.reset();
+      if (error) throw new Error();
+      const { data, error: userError } = await auth.auth.getUser();
+      if (userError || !data.user?.email) throw new Error();
+      setEmail(data.user.email);
+    } catch { form.reset(); setError("This invitation could not be verified. Copy the original Supabase invitation link from your email, or request a fresh invitation if it has expired."); }
+    finally { setPending(false); }
+  }
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (pending || !client.current || !email) return;
@@ -67,6 +85,11 @@ export function PasswordSetup() {
       <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-mute">Mithoo Business OS</p>
       <h1 className="mt-5 text-[32px] font-semibold tracking-[-0.03em]">Choose your password.</h1>
       {loading && <p role="status" className="mt-4 text-[14px] text-mute">Verifying your setup link…</p>}
+      {!loading && !email && <form onSubmit={acceptInvitation} className="mt-5">
+        <p className="text-[14px] text-mute">If your email link does not return here, copy the invitation link from your email and paste it privately below. Never share it in chat.</p>
+        <label className="mt-6 block text-[14px]">Invitation link<input name="invitation" type="password" autoComplete="off" spellCheck={false} required disabled={pending} className="mt-2 h-12 w-full rounded-2xl bg-white px-4 ring-1 ring-hair" /></label>
+        <button disabled={pending} aria-busy={pending} className="mt-7 h-12 w-full rounded-full bg-ink text-[15px] font-medium text-white disabled:opacity-60">{pending ? "Verifying…" : "Verify invitation"}</button>
+      </form>}
       {email && <form onSubmit={submit} className="mt-5">
         <p className="text-[14px] text-mute">Set a private password for {email}. Use 12 or more characters.</p>
         <label className="mt-6 block text-[14px]">New password<input name="password" type="password" autoComplete="new-password" required minLength={12} maxLength={128} disabled={pending} className="mt-2 h-12 w-full rounded-2xl bg-white px-4 ring-1 ring-hair" /></label>

@@ -3,7 +3,7 @@ import { createElement } from "react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { PasswordSetup } from "@/app/auth/setup/password-setup";
-const mocks = vi.hoisted(() => ({ getUser: vi.fn(), setSession: vi.fn(), updateUser: vi.fn(), signOut: vi.fn(), signInWithPassword: vi.fn() }));
+const mocks = vi.hoisted(() => ({ getUser: vi.fn(), setSession: vi.fn(), verifyOtp: vi.fn(), updateUser: vi.fn(), signOut: vi.fn(), signInWithPassword: vi.fn() }));
 vi.mock("@/lib/supabase/client", () => ({ createSupabaseSetupClient: () => ({ auth: mocks }) }));
 beforeEach(() => {
   vi.resetAllMocks(); window.history.replaceState(null, "", "/auth/setup");
@@ -54,4 +54,15 @@ it("does not update a different account if the authenticated identity changes", 
   for (const label of ["New password", "Confirm password"]) fireEvent.change(screen.getByLabelText(label), { target: { value: "fictional-unit-test-value" } });
   fireEvent.submit(screen.getByRole("button", { name: "Save password and sign in" }).closest("form")!);
   await screen.findByRole("alert"); expect(mocks.updateUser).not.toHaveBeenCalled();
+});
+it("accepts a privately pasted project invitation through public Auth and discards its redirect", async () => {
+  vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
+  mocks.getUser.mockResolvedValueOnce({ data: { user: null }, error: { code: "session_not_found" } }).mockResolvedValue({ data: { user: { email: "preview@example.test" } }, error: null });
+  mocks.verifyOtp.mockResolvedValue({ error: null });
+  render(createElement(PasswordSetup)); await screen.findByLabelText("Invitation link");
+  fireEvent.change(screen.getByLabelText("Invitation link"), { target: { value: "https://example.supabase.co/auth/v1/verify?token=fictional-test-token-only&type=invite&redirect_to=https://other.example" } });
+  fireEvent.submit(screen.getByRole("button", { name: "Verify invitation" }).closest("form")!);
+  await screen.findByLabelText("New password");
+  expect(mocks.verifyOtp).toHaveBeenCalledWith({ token_hash: "fictional-test-token-only", type: "invite" });
+  expect(screen.queryByLabelText("Invitation link")).toBeNull();
 });
