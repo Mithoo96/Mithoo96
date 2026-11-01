@@ -4,3 +4,9 @@ next-env.d.ts
 out/
 *.zip
 *.tsbuildinfo
+.env
+.env.*
+!.env.example
+coverage/
+supabase/.branches
+supabase/.temp
