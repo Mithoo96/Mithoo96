@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Greeting } from "./greeting";
-import { user, launch } from "@/lib/mock";
+import { business, launch } from "@/lib/mock";
 import { LAUNCH_KEY } from "@/lib/greeting";
 
 
@@ -53,7 +53,7 @@ export function LaunchScreen() {
 
       <div className="launch-copy relative px-6 text-center">
         <p className="launch-in text-[17px] tracking-[-0.01em] text-mute" style={{ animationDelay: "300ms" }}>
-          <Greeting name={user.name} emoji />
+          <Greeting name={business.owner} emoji />
         </p>
         <h1
           className="launch-up mt-4 text-[52px] font-semibold leading-[1.02] tracking-[-0.04em] text-ink [text-wrap:balance] md:text-[88px]"

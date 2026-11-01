@@ -1,0 +1,25 @@
+import type { Approval } from "@/lib/types";
+
+export const approvals: Approval[] = [
+  { id: "ap1", title: "Campaign Ready", meta: "$300 budget", category: "marketing", status: "pending", brands: ["instagram", "facebook"],
+    summary: "Fall reactivation campaign targeting past clients within 10 miles.", requestedBy: "Nadia Haddad", when: "2h ago",
+    details: [{ label: "Budget", value: "$300" }, { label: "Duration", value: "10 days" }, { label: "Platforms", value: "Instagram + Facebook" }, { label: "Expected leads", value: "18–25" }] },
+  { id: "ap2", title: "42 Client Follow-ups", meta: "Ready", category: "communication", status: "pending", brands: ["gmail"],
+    summary: "Personal follow-up emails for clients who haven't booked in 60+ days.", requestedBy: "Mithoo AI", when: "1h ago",
+    details: [{ label: "Recipients", value: "42 clients" }, { label: "Channel", value: "Email" }, { label: "Send time", value: "Tomorrow, 9:00 AM" }] },
+  { id: "ap3", title: "Social Post", meta: "Instagram + Facebook", category: "marketing", status: "pending", brands: ["instagram", "facebook"],
+    summary: "“5 ways to reset your routine this fall” carousel with booking link.", requestedBy: "Nadia Haddad", when: "Yesterday",
+    details: [{ label: "Format", value: "Carousel · 5 slides" }, { label: "Scheduled", value: "Thu, 12:00 PM" }, { label: "Platforms", value: "Instagram + Facebook" }] },
+  { id: "ap4", title: "Appointment change requested", meta: "Noah Fischer · Fri → Mon", category: "operations", status: "pending", brands: ["googlecalendar"],
+    summary: "Noah asked to move his follow-up from Friday 1:30 PM to Monday 10:00 AM.", requestedBy: "Noah Fischer", when: "35m ago",
+    details: [{ label: "Current", value: "Fri, 1:30 PM" }, { label: "Requested", value: "Mon, 10:00 AM" }, { label: "Room", value: "Available" }] },
+  { id: "ap5", title: "Refund request", meta: "$120 · Isabella Novak", category: "finance", status: "pending", brands: ["stripe"],
+    summary: "Partial refund for a cancelled add-on service.", requestedBy: "Clara Dupont", when: "3h ago",
+    details: [{ label: "Amount", value: "$120.00" }, { label: "Method", value: "Original card" }, { label: "Reason", value: "Service not delivered" }] },
+  { id: "ap6", title: "Holiday hours announcement", meta: "SMS to 210 clients", category: "communication", status: "approved", brands: ["whatsapp"],
+    summary: "Notice about reduced hours on Nov 26–27.", requestedBy: "Clara Dupont", when: "Yesterday",
+    details: [{ label: "Recipients", value: "210 clients" }, { label: "Channel", value: "SMS" }] },
+  { id: "ap7", title: "Supplier invoice", meta: "$1,840 · Wellness Supply Co.", category: "finance", status: "rejected", brands: ["quickbooks"],
+    summary: "Duplicate of an invoice already paid on Oct 15.", requestedBy: "Leo Martins", when: "2 days ago",
+    details: [{ label: "Amount", value: "$1,840.00" }, { label: "Due", value: "Nov 5" }] },
+];
