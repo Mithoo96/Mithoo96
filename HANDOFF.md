@@ -1,3 +1,54 @@
+# Phase 2 checkpoint — real OWNER sessions and dashboard
+
+Work is on `codex/phase-2-auth`, based on completed Phase 1 commit `322f9ee`.
+The Phase 1 reference below remains intact; its claims that login, workspace identity
+and the home dashboard are mock are superseded by this section.
+
+- `/login` uses public Supabase email/password Auth and SSR cookies. The existing account
+  menu logs out of the current session. Inactivity locking now requires real login.
+- The **same approved shell** wraps `(workspace)`. Route grouping changes no URLs.
+  All actual application routes, including `/`, `/work` and `/approvals`, require a
+  verified session. Login is public; existing sessions redirect to the workspace.
+- `proxy.ts` refreshes cookies and copies them/cache headers across redirects. Responses
+  are private/no-store. Missing config fails closed. Cookies are Secure in production.
+- `server/auth/workspace.ts` verifies the user and resolves active memberships/organizations
+  with the user's public client. The existing `toWorkspaceProfile` adapter is shared.
+  Select oldest active membership, then organization ID as a tie breaker. No client-provided
+  tenant ID authorizes a read. Organization switching is deferred.
+- `getSessionDashboardSummary` extends the existing dashboard service using HTTPS PostgREST
+  under the user's JWT, sharing DashboardSummary and the prototype adapter. No service key
+  or direct PostgreSQL connection is required for this read-only checkpoint.
+- Home displays real order, risk, approval and task counts. Today follows the organization's
+  timezone/DST. Processing means PACKING/LABEL_READY/PACKED. Employee Tasks is the
+  OPEN/IN_PROGRESS/AWAITING_VERIFICATION team backlog, including the unassigned pool.
+  Shipped and Delivered count their event timestamps within the organization-local day.
+- Revenue uses stored amounts only, paginated reads and integer-cent totals by currency.
+  Missing amounts are excluded and identified. Without known amounts/revenue permission,
+  the card is absent. Errors never fall back to mock numbers.
+- OWNER/MANAGER dashboard permissions use the existing map. EMPLOYEE receives a restricted
+  task-integration notice. PLATFORM_ADMIN gains no tenant dashboard access merely by being
+  a platform administrator. No permission, RLS, migration or engine was modified.
+- Other modules/global utilities remain explicitly marked prototype previews. Their local
+  actions do not write organization records. Mock badges are removed from authenticated chrome.
+  Orders, live employee workflows, approval decisions and notifications are **not connected**.
+
+Validation: typecheck, production build, lint (no errors; prototype warnings remain), 45 unit
+tests and four live Playwright tests. Browser tests cover actual route redirects, invalid
+login, existing OWNER login, real dashboard, desktop/mobile layouts, page refresh, authenticated
+login redirect, logout and OWNER-JWT cross-tenant isolation. No PostgreSQL integration suite
+was run: those tests reset a disposable database, which this checkpoint does not authorize.
+No reset, reseed, migration, RLS change or operational data write occurred.
+
+Run from `web/`: `npm run test:auth` with configured public Supabase variables and
+DEMO_ACCOUNT_PASSWORD. It defaults to system Chromium (CHROMIUM_PATH overrides).
+Runtime proxies are preserved. Traces/videos/automatic failure screenshots are off;
+no session-storage artifact is saved. Safe dashboard screenshots go to ignored test-results/.
+
+See docs/AGENT-DECISIONS.md for decisions and remaining work. No deployment is included.
+Do not start Orders until this checkpoint is reviewed.
+
+---
+
 # HANDOFF — Mithoo Business OS · Phase 1 (backend foundation) COMPLETE
 
 > # ⚠️ THE EXISTING PROTOTYPE IS THE APPROVED MASTER UI. DO NOT REDESIGN IT. CONNECT PRODUCTION FUNCTIONALITY INTO IT.

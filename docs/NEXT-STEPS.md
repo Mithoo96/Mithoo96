@@ -1,3 +1,8 @@
+> Phase 2 update: real login/session handling, route protection, workspace identity and
+> the OWNER dashboard read path are implemented on codex/phase-2-auth.
+> See HANDOFF.md and AGENT-DECISIONS.md. Login/home items below are complete;
+> Orders and other module integrations remain pending.
+
 # Next steps (prioritized)
 
 > **THE EXISTING PROTOTYPE (`web/app`, `web/components`, `web/lib`) IS THE APPROVED MASTER UI. DO NOT REDESIGN IT.**
