@@ -29,11 +29,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [prompt, setPrompt] = useState(false);
   const last = useRef(Date.now());
 
-  const signIn = useCallback(() => { setStatus("active"); setPrompt(false); last.current = Date.now(); replayLaunch(); }, []);
+  // Unlock keeps your work and replays the welcome. Signing back in after a full sign-out
+  // restarts the platform from Home, exactly like opening it fresh, so the welcome always plays.
+  const signIn = useCallback(() => {
+    if (status === "signedOut") { window.location.assign("/"); return; }
+    setStatus("active"); setPrompt(false); last.current = Date.now(); replayLaunch();
+  }, [status]);
   const value: Session = {
     status, awake, idleMinutes, setIdleMinutes,
     setAwake: (v) => { setAwake(v); last.current = Date.now(); },
-    signOut: () => { setPrompt(false); setStatus("signedOut"); },
+    signOut: () => { setPrompt(false); setAwake(false); setStatus("signedOut"); try { sessionStorage.clear(); } catch {} },
     lock: () => { setPrompt(false); setStatus("locked"); },
     signIn,
   };
