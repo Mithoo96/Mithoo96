@@ -1,0 +1,33 @@
+import "server-only";
+import { ZodError } from "zod";
+import { isDomainError, type DomainErrorCode } from "@/core/errors";
+import { runAsMember, type UserServiceContext } from "../context";
+import { getSessionUserId } from "../auth/session";
+
+export type ActionResult<T> =
+  | { readonly ok: true; readonly data: T }
+  | { readonly ok: false; readonly error: { readonly code: DomainErrorCode | "INTERNAL"; readonly message: string; readonly details?: unknown } };
+
+/**
+ * Wraps every server action: authenticates via Supabase, re-checks
+ * organization membership in an RLS-scoped transaction, converts errors to a
+ * safe shape (no stack traces or SQL reach the client).
+ */
+export async function memberAction<T>(organizationId: string, fn: (ctx: UserServiceContext) => Promise<T>): Promise<ActionResult<T>> {
+  try {
+    const userId = await getSessionUserId();
+    const data = await runAsMember(userId, organizationId, fn, { requestId: crypto.randomUUID() });
+    return { ok: true, data };
+  } catch (err) {
+    return toActionError(err);
+  }
+}
+
+export function toActionError(err: unknown): ActionResult<never> {
+  if (isDomainError(err)) return { ok: false, error: { code: err.code, message: err.message, details: err.details } };
+  if (err instanceof ZodError) {
+    return { ok: false, error: { code: "VALIDATION_FAILED", message: "Invalid input", details: err.issues.map((i) => ({ path: i.path.join("."), message: i.message })) } };
+  }
+  console.error("[action] unexpected error", err);
+  return { ok: false, error: { code: "INTERNAL", message: "Something went wrong. Please try again." } };
+}
