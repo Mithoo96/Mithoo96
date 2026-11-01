@@ -152,3 +152,89 @@ export async function getDashboardSummary(ctx: ServiceContext): Promise<Dashboar
     revenueAtRiskOrdersWithoutAmount: withoutAmount,
   };
 }
+
+/** Hosted read path: the caller supplies a verified cookie-bound public client, never admin. */
+export async function getSessionDashboardSummary(
+  client: import("@supabase/supabase-js").SupabaseClient,
+  workspace: import("../auth/workspace").Workspace,
+  now = new Date(),
+): Promise<DashboardSummary> {
+  const { isOrgRole, resolvePermissions } = await import("@/core/tenancy/permissions");
+  const role = workspace.profile.viewer.role;
+  if (!isOrgRole(role)) throw new Error("An active organization membership is required.");
+  const permissions = resolvePermissions(role, workspace.extraPermissions);
+  if (!permissions.has("dashboard.read")) throw new Error("Dashboard access is not permitted for this role.");
+  const org = workspace.profile.organization.id;
+  const tz = workspace.profile.organization.timezone;
+  const start = organizationDayStart(now, tz);
+  const end = organizationDayStart(new Date(new Date(start).getTime() + 36 * 3600_000), tz);
+  const count = async (table: string, filters: (query: ReturnType<typeof base>) => ReturnType<typeof base> = (q) => q) => {
+    const { count, error } = await filters(base(table));
+    if (error || count === null) throw new Error("Dashboard data is temporarily unavailable.");
+    return count;
+  };
+  const base = (table: string) => client.from(table).select("id", { count: "exact", head: true }).eq("organization_id", org);
+  const active = (q: ReturnType<typeof base>) => q.not("status", "in", "(DELIVERED,CANCELLED)");
+  const attention = (q: ReturnType<typeof base>) => active(q).not("exception_state", "is", null);
+  const atRisk = (q: ReturnType<typeof base>) => active(q).or("risk_level.in.(HIGH,CRITICAL),exception_state.eq.AT_RISK");
+  const today = (q: ReturnType<typeof base>, column: string) => q.gte(column, start).lt(column, end);
+  const [ordersToday, fresh, readyToPack, inPacking, awaitingVerification, readyToShip, shippedToday, deliveredToday, deliveredLast7Days, needAttention, risk, low, medium, high, critical, pending, pendingOwner, open, inProgress, awaitingSignoff, overdue, unassigned, completedToday] = await Promise.all([
+    count("orders", (q) => today(q, "placed_at")), count("orders", (q) => q.eq("status", "NEW")),
+    count("orders", (q) => q.eq("status", "READY_TO_PACK")), count("orders", (q) => q.in("status", ["PACKING", "LABEL_READY", "PACKED"])),
+    count("orders", (q) => q.eq("status", "AWAITING_VERIFICATION")), count("orders", (q) => q.eq("status", "READY_TO_SHIP")),
+    count("orders", (q) => today(q, "shipped_at")), count("orders", (q) => today(q, "delivered_at")),
+    count("orders", (q) => q.gte("delivered_at", new Date(now.getTime() - 7 * 86400_000).toISOString())),
+    count("orders", attention), count("orders", atRisk),
+    ...["LOW", "MEDIUM", "HIGH", "CRITICAL"].map((severity) => count("exceptions", (q) => q.in("status", ["OPEN", "ACKNOWLEDGED", "IN_PROGRESS"]).eq("severity", severity))),
+    count("approvals", (q) => q.eq("status", "PENDING")), count("approvals", (q) => q.eq("status", "PENDING").eq("required_role", "OWNER")),
+    count("tasks", (q) => q.eq("status", "OPEN")), count("tasks", (q) => q.eq("status", "IN_PROGRESS")), count("tasks", (q) => q.eq("status", "AWAITING_VERIFICATION")),
+    count("tasks", (q) => q.in("status", ["OPEN", "IN_PROGRESS", "BLOCKED"]).lt("due_at", now.toISOString())),
+    count("tasks", (q) => q.eq("status", "OPEN").is("assigned_to", null)), count("tasks", (q) => today(q.eq("status", "COMPLETED"), "completed_at")),
+  ]);
+  let revenueAtRisk: DashboardSummary["revenueAtRisk"] = null;
+  let missing: number | null = null;
+  if (permissions.has("revenue.read")) {
+    const totals = new Map<string, { cents: bigint; count: number }>();
+    missing = 0;
+    // Explicit pagination avoids PostgREST's row cap silently truncating revenue.
+    for (let offset = 0; ; offset += 500) {
+      const { data, error } = await client.from("orders").select("id,currency,total_amount").eq("organization_id", org)
+        .not("status", "in", "(DELIVERED,CANCELLED)").or("exception_state.not.is.null,risk_level.in.(HIGH,CRITICAL)").order("id").range(offset, offset + 499);
+      if (error) throw new Error("Revenue data is temporarily unavailable.");
+      for (const row of data ?? []) {
+        if (row.total_amount === null) { missing++; continue; }
+        const amount = String(row.total_amount);
+        if (!/^-?\d+(\.\d{1,2})?$/.test(amount)) throw new Error("Revenue amount could not be calculated safely.");
+        const [whole, fraction = ""] = amount.replace("-", "").split(".");
+        const cents = (BigInt(whole) * 100n + BigInt(fraction.padEnd(2, "0"))) * (amount.startsWith("-") ? -1n : 1n);
+        const total = totals.get(row.currency) ?? { cents: 0n, count: 0 };
+        total.cents += cents; total.count++; totals.set(row.currency, total);
+      }
+      if (!data || data.length < 500) break;
+    }
+    if (totals.size) revenueAtRisk = [...totals].map(([currency, t]) => ({ currency, amount: `${t.cents < 0n ? "-" : ""}${(t.cents < 0n ? -t.cents : t.cents) / 100n}.${String((t.cents < 0n ? -t.cents : t.cents) % 100n).padStart(2, "0")}`, orderCount: t.count }));
+  }
+  return {
+    generatedAt: now.toISOString(), timezone: tz,
+    orders: { today: ordersToday, new: fresh, readyToPack, inPacking, awaitingVerification, readyToShip, shippedToday, deliveredToday, deliveredLast7Days, needAttention, atRisk: risk },
+    exceptions: { open: low + medium + high + critical, bySeverity: { LOW: low, MEDIUM: medium, HIGH: high, CRITICAL: critical } },
+    approvals: { pending, pendingOwner },
+    tasks: { open, inProgress, awaitingSignoff, overdue, unassigned, completedToday, byEmployee: [] },
+    revenueAtRisk, revenueAtRiskOrdersWithoutAmount: missing,
+  };
+}
+
+/** Calendar midnight in the organization's IANA timezone, including DST changes. */
+export function organizationDayStart(now: Date, timezone: string): string {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(now);
+  const part = (type: string) => parts.find((p) => p.type === type)!.value;
+  const target = Date.UTC(Number(part("year")), Number(part("month")) - 1, Number(part("day")));
+  let result = target;
+  for (let i = 0; i < 3; i++) {
+    const zoned = new Intl.DateTimeFormat("en-US", { timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(new Date(result));
+    const n = (type: string) => Number(zoned.find((p) => p.type === type)!.value);
+    const represented = Date.UTC(n("year"), n("month") - 1, n("day"), n("hour"), n("minute"), n("second"));
+    result += target - represented;
+  }
+  return new Date(result).toISOString();
+}

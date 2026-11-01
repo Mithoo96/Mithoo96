@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Greeting } from "./greeting";
-import { business, launch } from "@/lib/mock";
+import { useWorkspace } from "@/components/shell/workspace";
 
 
 
@@ -14,6 +14,8 @@ const EXIT_DURATION = 1400;
 export const replayLaunch = () => window.dispatchEvent(new Event("mithoo:replay-launch"));
 
 export function LaunchScreen() {
+  const { profile } = useWorkspace();
+  const launch = { subtitle: "Your workspace is ready.", items: [profile.organization.name, profile.viewer.role], closing: "Let’s see what needs your attention." };
   const [phase, setPhase] = useState<"idle" | "intro" | "leaving" | "done">("idle");
   const [run, setRun] = useState(0);
 
@@ -64,7 +66,7 @@ export function LaunchScreen() {
 
       <div className="launch-copy relative px-6 text-center">
         <p className="launch-in text-[17px] tracking-[-0.01em] text-mute" style={{ animationDelay: "300ms" }}>
-          <Greeting name={business.owner.firstName} emoji />
+          <Greeting name={profile.viewer.firstName ?? "there"} emoji />
         </p>
         <h1
           className="launch-up mt-4 text-[52px] font-semibold leading-[1.02] tracking-[-0.04em] text-ink [text-wrap:balance] md:text-[88px]"
@@ -86,7 +88,7 @@ export function LaunchScreen() {
         <p className="launch-in mt-9 inline-flex items-center gap-2.5 text-[16px] font-medium tracking-[-0.01em] text-ink" style={{ animationDelay: "4100ms" }}>
           <span className="pulse-dot h-2 w-2 rounded-full bg-gradient-to-br from-sky to-iris" />{launch.closing}
         </p>
-        <p className="launch-in mt-10 text-[11px] text-mute" style={{ animationDelay: "4400ms" }}>{business.name} · Powered by {business.poweredBy}</p>
+        <p className="launch-in mt-10 text-[11px] text-mute" style={{ animationDelay: "4400ms" }}>{profile.organization.name} · Powered by {profile.poweredBy}</p>
       </div>
     </div>
   );

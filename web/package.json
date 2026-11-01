@@ -14,7 +14,8 @@
     "test:integration": "vitest run tests/integration",
     "db:reset:local": "tsx scripts/db/reset-local.ts --seed",
     "db:seed:generate": "tsx scripts/db/generate-seed.ts",
-    "db:demo-passwords": "tsx scripts/db/set-demo-passwords.ts"
+    "db:demo-passwords": "tsx scripts/db/set-demo-passwords.ts",
+    "test:auth": "NODE_USE_ENV_PROXY=1 playwright test"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -28,6 +29,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.6",
     "@types/pg": "^8.23.1",

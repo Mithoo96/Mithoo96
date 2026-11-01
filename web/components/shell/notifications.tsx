@@ -16,7 +16,7 @@ export function NotificationsDrawer({ open, onClose }: { open: boolean; onClose:
   const list = os.notifications.filter((n) => n.kind === tab);
   const count = (k: Notification["kind"]) => os.notifications.filter((n) => n.kind === k && !n.read).length;
   return (
-    <Drawer open={open} onClose={onClose} title="Notifications" description="What needs you, what matters, and what Mithoo handled."
+    <Drawer open={open} onClose={onClose} title="Notifications · Prototype preview" description="What needs you, what matters, and what Mithoo handled."
       footer={<Button variant="ghost" size="sm" onClick={os.markAllNotificationsRead}>Mark all as read</Button>}>
       <Segmented value={tab} onChange={setTab} options={[{ value: "action", label: "Needs Action", count: count("action") }, { value: "important", label: "Important", count: count("important") }, { value: "ai", label: "AI Handled" }]} />
       <ul className="mt-5 space-y-1">

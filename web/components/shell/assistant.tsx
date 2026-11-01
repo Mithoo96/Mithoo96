@@ -7,7 +7,6 @@ import { ArrowUp, Mic, Sparkles, X } from "lucide-react";
 import { useDerived, useOs } from "@/lib/store";
 import { metrics } from "@/lib/mock";
 import { formatValue, timeLabel } from "@/lib/format";
-import { business } from "@/lib/config/business";
 import { BrandStack } from "@/components/brand-icon";
 import { useToast } from "@/components/ui/toast";
 
@@ -66,7 +65,7 @@ function useMockBrain() {
         actions: [{ label: "Open Campaign Builder", href: "/create/campaign?preset=tax-season" }, { label: "Review Approvals", href: "/approvals" }] };
     }
     const unconfirmed = d.todayAppointments.filter((a) => a.status === "pending");
-    return { text: `Good ${new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, ${business.owner.firstName}. Here's what needs you today across tax and insurance:`,
+    return { text: `Good ${new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, there. Here's what needs you today across tax and insurance:`,
       bullets: [
         <>4 tax clients are missing documents, starting with <L id="c01" name="Jean Pierre" /></>,
         <>9 insurance leads need follow-up, including <L id="c03" name="Kevin Charles" /> from this morning's Facebook ad</>,
@@ -99,14 +98,14 @@ export function AssistantPanel({ open, onClose, initialPrompt }: { open: boolean
       <div className="assistant-in relative flex h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-[30px] bg-white/95 shadow-[0_40px_100px_-30px_rgba(40,40,120,0.4)] ring-1 ring-hair backdrop-blur-2xl md:h-auto md:max-h-[78vh] md:rounded-[30px]">
         <div aria-hidden className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[80%] -translate-x-1/2 rounded-full bg-gradient-to-r from-[#dfe7ff] via-[#ece6ff] to-[#f6ecda] opacity-70 blur-3xl" />
         <div className="relative flex items-center justify-between px-6 pt-5">
-          <span className="inline-flex items-center gap-2 text-[13px] font-medium text-ink-soft"><Sparkles size={15} className="text-iris" />Mithoo</span>
+          <span className="inline-flex items-center gap-2 text-[13px] font-medium text-ink-soft"><Sparkles size={15} className="text-iris" />Mithoo · Prototype</span>
           <button onClick={onClose} aria-label="Close assistant" className="flex h-8 w-8 items-center justify-center rounded-full text-mute hover:bg-[#f4f4f8] hover:text-ink"><X size={16} /></button>
         </div>
         <div className="relative flex-1 overflow-y-auto px-6 py-5">
           {turns.length === 0 && (
             <div className="pb-2 pt-4">
-              <p className="text-[26px] font-semibold tracking-[-0.03em]">How can I help, {business.owner.firstName}?</p>
-              <p className="mt-1 text-[14px] text-mute">I know your tax clients, insurance pipeline, schedule and inbox. Answers here are demo responses.</p>
+              <p className="text-[26px] font-semibold tracking-[-0.03em]">How can I help?</p>
+              <p className="mt-1 text-[14px] text-mute">Prototype assistant · not connected to your organization. Answers here are fictional demo responses.</p>
               <div className="mt-6 grid gap-2 sm:grid-cols-2">
                 {suggestedPrompts.map((p) => (
                   <button key={p} onClick={() => ask(p)} className="rounded-2xl bg-white px-4 py-3.5 text-left text-[14px] text-ink-soft ring-1 ring-hair transition-all duration-300 hover:-translate-y-px hover:text-ink hover:shadow-[0_10px_24px_-14px_rgba(60,60,140,0.35)]">{p}</button>
@@ -131,7 +130,7 @@ export function AssistantPanel({ open, onClose, initialPrompt }: { open: boolean
           <div ref={endRef} />
         </div>
         <form onSubmit={(e) => { e.preventDefault(); ask(text); }} className="relative flex items-center gap-2 border-t border-hair px-4 py-3" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
-          <input ref={inputRef} id="assistant-input" value={text} onChange={(e) => setText(e.target.value)} placeholder="Ask your business anything..." className="h-11 min-w-0 flex-1 bg-transparent px-2 text-[15px] placeholder:text-mute focus:outline-none" />
+          <input ref={inputRef} id="assistant-input" value={text} onChange={(e) => setText(e.target.value)} placeholder="Prototype · Ask your business anything..." className="h-11 min-w-0 flex-1 bg-transparent px-2 text-[15px] placeholder:text-mute focus:outline-none" />
           <button type="button" aria-label="Voice input" onClick={() => toast({ title: "Voice input is coming soon", tone: "info" })} className="flex h-9 w-9 items-center justify-center rounded-full text-mute hover:bg-[#f4f4f8] hover:text-ink"><Mic size={17} strokeWidth={1.6} /></button>
           <button type="submit" aria-label="Send" disabled={!text.trim()} className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-white transition-opacity disabled:opacity-30"><ArrowUp size={16} strokeWidth={2} /></button>
         </form>

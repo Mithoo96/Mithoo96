@@ -10,6 +10,7 @@ export async function createSupabaseServerClient() {
   if (!config) throw new DomainError("INTEGRATION_NOT_CONFIGURED", "Supabase Auth is not configured");
   const cookieStore = await cookies();
   return createServerClient(config.url, config.anonKey, {
+    cookieOptions: { sameSite: "lax", secure: process.env.NODE_ENV === "production" },
     cookies: {
       getAll() {
         return cookieStore.getAll();

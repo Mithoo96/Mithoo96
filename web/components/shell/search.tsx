@@ -49,7 +49,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
       <div className="pop-in relative w-full max-w-[620px] overflow-hidden rounded-[26px] bg-white shadow-[0_30px_80px_-20px_rgba(30,30,80,0.35)] ring-1 ring-hair">
         <div className="flex items-center gap-3 border-b border-hair px-5">
           <Search size={18} strokeWidth={1.7} className="text-mute" />
-          <input id="global-search" autoFocus value={q} onChange={(e) => { setQ(e.target.value); setSel(0); }} placeholder="Search clients, documents, tasks, messages…" className="h-14 flex-1 bg-transparent text-[16px] focus:outline-none" />
+          <input id="global-search" autoFocus value={q} onChange={(e) => { setQ(e.target.value); setSel(0); }} placeholder="Prototype · Search clients, documents, tasks, messages…" className="h-14 flex-1 bg-transparent text-[16px] focus:outline-none" />
           <kbd className="rounded-md bg-[#f2f2f6] px-1.5 py-0.5 text-[11px] text-mute">esc</kbd>
         </div>
         <div className="max-h-[56vh] overflow-y-auto p-2">

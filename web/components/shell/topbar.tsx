@@ -3,17 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Bell, Menu as MenuIcon, Search, UserRound, Building2, Users, LogOut } from "lucide-react";
-import { business } from "@/lib/config/business";
+import { useWorkspace } from "./workspace";
 import { OwnerAvatar } from "@/components/owner-avatar";
 import { ConfirmDialog } from "@/components/ui/overlay";
 import { useSession, AwakeIndicator } from "./session";
-import { useOs } from "@/lib/store";
 import { Logo } from "./sidebar";
 import { useShell } from "./ui-context";
 
 export function Topbar() {
   const { openSearch, openNotifications, openMenu } = useShell();
-  const unread = useOs().notifications.filter((n) => !n.read).length;
+  const unread = 0; // Notification integration is a later checkpoint; never show prototype counts.
   return (
     <>
       {/* Desktop: floating utilities, top-right, leaving the hero untouched */}
@@ -45,7 +44,7 @@ export function Topbar() {
 
 function BellButton({ unread, onClick, plain }: { unread: number; onClick: () => void; plain?: boolean }) {
   return (
-    <button onClick={onClick} aria-label={`Notifications, ${unread} unread`} className={`relative flex h-10 w-10 items-center justify-center rounded-full text-ink-soft transition-all hover:text-ink ${plain ? "hover:bg-[#f4f4f8]" : "glass"}`}>
+    <button onClick={onClick} aria-label="Notifications · prototype preview" className={`relative flex h-10 w-10 items-center justify-center rounded-full text-ink-soft transition-all hover:text-ink ${plain ? "hover:bg-[#f4f4f8]" : "glass"}`}>
       <Bell size={17} strokeWidth={1.7} />
       {unread > 0 && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-gradient-to-br from-sky to-iris ring-2 ring-white" />}
     </button>
@@ -53,6 +52,7 @@ function BellButton({ unread, onClick, plain }: { unread: number; onClick: () =>
 }
 
 function ProfileMenu({ small = false }: { small?: boolean }) {
+  const { profile } = useWorkspace();
   const [open, setOpen] = useState(false); const [signOut, setSignOut] = useState(false);
   const router = useRouter(); const session = useSession();
   const go = (href: string) => { setOpen(false); router.push(href); };
@@ -71,7 +71,7 @@ function ProfileMenu({ small = false }: { small?: boolean }) {
         <div className="pop-in absolute right-0 z-40 mt-2 w-[260px] rounded-[22px] bg-white p-2 shadow-[0_24px_60px_-18px_rgba(30,30,80,0.35)] ring-1 ring-hair">
           <div className="flex items-center gap-3 px-3 pb-3 pt-2">
             <OwnerAvatar size={44} />
-            <div className="min-w-0"><p className="truncate text-[15px] font-semibold">{business.owner.name}</p><p className="truncate text-[12px] text-mute">{business.owner.title}</p><p className="truncate text-[12px] text-mute">{business.name}</p></div>
+            <div className="min-w-0"><p className="truncate text-[15px] font-semibold">{profile.viewer.name}</p><p className="truncate text-[12px] text-mute">{profile.viewer.role}</p><p className="truncate text-[12px] text-mute">{profile.organization.name}</p></div>
           </div>
           <div className="border-t border-hair pt-1.5">
             {items.map((i) => <button key={i.label} onClick={i.onClick} className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[14px] hover:bg-[#f4f4f8]"><i.icon size={15} strokeWidth={1.7} className="text-mute" />{i.label}</button>)}
@@ -79,7 +79,7 @@ function ProfileMenu({ small = false }: { small?: boolean }) {
           </div>
         </div>
       </>}
-      <ConfirmDialog open={signOut} onClose={() => setSignOut(false)} title="Sign out?" body="You'll return to the sign-in screen. In this demo you can sign right back in." confirmLabel="Sign Out" onConfirm={session.signOut} />
+      <ConfirmDialog open={signOut} onClose={() => setSignOut(false)} title="Sign out?" body="You'll return to the sign-in screen." confirmLabel="Sign Out" onConfirm={session.signOut} />
     </div>
   );
 }

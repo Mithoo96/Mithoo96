@@ -29,3 +29,7 @@ __pycache__/
 .DS_Store
 *.pem
 npm-debug.log*
+
+# Browser tests: never retain authentication artifacts
+**/test-results/
+**/playwright-report/

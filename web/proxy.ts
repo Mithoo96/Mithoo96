@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { safeReturnPath } from "@/lib/supabase/navigation";
 
 /**
  * Refreshes the Supabase session cookie and redirects unauthenticated users
@@ -10,9 +11,14 @@ export async function proxy(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   let response = NextResponse.next({ request });
-  if (!url || !anonKey) return response;
+  response.headers.set("Cache-Control", "private, no-store");
+  const isLogin = request.nextUrl.pathname === "/login";
+  if (!url || !anonKey) {
+    return isLogin ? response : new NextResponse("Authentication is temporarily unavailable", { status: 503 });
+  }
 
   const supabase = createServerClient(url, anonKey, {
+    cookieOptions: { sameSite: "lax", secure: process.env.NODE_ENV === "production" },
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -27,16 +33,30 @@ export async function proxy(request: NextRequest) {
   });
 
   const { data } = await supabase.auth.getUser();
-  const isAppRoute = request.nextUrl.pathname.startsWith("/app");
-  if (isAppRoute && !data.user) {
+  let destination: URL | null = null;
+  if (!isLogin && !data.user) {
     const login = request.nextUrl.clone();
     login.pathname = "/login";
-    login.searchParams.set("next", request.nextUrl.pathname);
-    return NextResponse.redirect(login);
+    login.search = "";
+    login.searchParams.set("next", request.nextUrl.pathname + request.nextUrl.search);
+    destination = login;
+  } else if (isLogin && data.user) {
+    destination = new URL(safeReturnPath(request.nextUrl.searchParams.get("next")), request.url);
   }
+  if (destination) {
+    const redirect = NextResponse.redirect(destination);
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    for (const name of ["cache-control", "expires", "pragma"]) {
+      const value = response.headers.get(name);
+      if (value) redirect.headers.set(name, value);
+    }
+    redirect.headers.set("Cache-Control", "private, no-store");
+    return redirect;
+  }
+  response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/webhooks|api/cron|api/health).*)"],
+  matcher: ["/((?!_next/|favicon.ico|images/|api/webhooks/|api/cron/|api/health).*)"],
 };

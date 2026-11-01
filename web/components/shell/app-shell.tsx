@@ -1,5 +1,6 @@
 "use client";
 
+import { useWorkspace } from "./workspace";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Sidebar } from "./sidebar";
@@ -14,6 +15,8 @@ import { HeroGlow } from "@/components/hero";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const path = usePathname();
+  const { profile } = useWorkspace();
+  const operational = profile.viewer.role === "OWNER" || profile.viewer.role === "MANAGER";
   const [assistant, setAssistant] = useState<{ open: boolean; prompt?: string }>({ open: false });
   const [search, setSearch] = useState(false);
   const [notifs, setNotifs] = useState(false);
@@ -41,7 +44,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main className="relative flex min-w-0 flex-1 flex-col overflow-x-clip pb-20 md:pb-0">
           <Topbar />
           <HeroGlow />
-          <div key={pageKey} className="relative flex-1">{children}</div>
+          <div key={pageKey} className="relative flex-1">
+            {path !== "/" && <p role="status" className="mx-6 mt-20 rounded-2xl bg-[#f7f7fa] p-4 text-[13px] text-mute">Prototype preview · this module is not connected to your organization. Changes here are local demonstrations.</p>}
+            {operational || path === "/" ? children : <p className="p-8 text-mute">This module is not available for your role. Contact your organization administrator.</p>}
+          </div>
           {showCommandBar && <CommandBar onOpen={ui.openAssistant} />}
         </main>
       </div>

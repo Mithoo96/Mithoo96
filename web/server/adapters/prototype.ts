@@ -62,6 +62,17 @@ export async function getWorkspaceProfile(ctx: ServiceContext): Promise<Workspac
       where m.organization_id = $1 and m.role = 'OWNER' and m.status = 'ACTIVE' order by m.created_at limit 1`,
     [ctx.organizationId],
   );
+  return toWorkspaceProfile(org, me, user.actor.userId, user.role, owner);
+}
+
+/** Shared profile mapping for SQL services and the session-bound HTTPS read path. */
+export function toWorkspaceProfile(
+  org: { id: string; name: string; slug: string; timezone: string; metadata: Record<string, unknown> },
+  me: { display_name: string | null; full_name: string | null; avatar_url: string | null } | null,
+  userId: string,
+  role: string,
+  owner: { display_name: string | null; full_name: string | null } | null = null,
+): WorkspaceProfile {
   const viewerName = me?.display_name ?? me?.full_name ?? null;
   const ownerName = owner?.display_name ?? owner?.full_name ?? null;
   const meta = org.metadata ?? {};
@@ -77,7 +88,7 @@ export async function getWorkspaceProfile(ctx: ServiceContext): Promise<Workspac
       timezone: org.timezone,
       logoUrl: typeof meta.logo_url === "string" ? meta.logo_url : null,
     },
-    viewer: { userId: user.actor.userId, name: viewerName, firstName: firstNameOf(viewerName), role: user.role, avatarUrl: me?.avatar_url ?? null },
+    viewer: { userId, name: viewerName, firstName: firstNameOf(viewerName), role, avatarUrl: me?.avatar_url ?? null },
     owner: { name: ownerName, firstName: firstNameOf(ownerName) },
   };
 }
@@ -93,6 +104,8 @@ export function toPrototypeDashboard(summary: DashboardSummary, exceptions: read
   const o = summary.orders;
   const stats: PrototypeStat[] = [
     { label: "Orders Today", value: o.today, href: "/orders?filter=today" },
+    { label: "Processing", value: o.inPacking, href: "/work" },
+    { label: "Employee Tasks", value: summary.tasks.open + summary.tasks.inProgress + summary.tasks.awaitingSignoff, href: "/work" },
     { label: "Ready to Pack", value: o.readyToPack, href: "/orders?status=READY_TO_PACK" },
     { label: "Awaiting Verification", value: o.awaitingVerification, href: "/orders?status=AWAITING_VERIFICATION" },
     { label: "Shipped Today", value: o.shippedToday, href: "/shipping?filter=shipped-today" },
@@ -118,7 +131,7 @@ export function toPrototypeDashboard(summary: DashboardSummary, exceptions: read
   }
 
   const handled: PrototypeHandled[] = [
-    { count: summary.tasks.completedToday, label: "packing tasks completed today" },
+    { count: summary.tasks.completedToday, label: "tasks completed today" },
     { count: o.shippedToday, label: "packages handed to carriers" },
     { count: o.deliveredToday, label: "deliveries confirmed" },
   ].filter((h) => h.count > 0);

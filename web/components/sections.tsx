@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import type { PrototypeDashboard } from "@/server/adapters/prototype";
+import type { DashboardSummary } from "@/server/services/dashboard";
 import { useState } from "react";
 import { ArrowRight, ArrowUpRight, Users, MessageCircle, Sparkles, ChartLine, CalendarDays, CircleCheck, Briefcase, FileText, ChevronRight, type LucideIcon } from "lucide-react";
 import { GlassCard, Eyebrow } from "./ui";
@@ -16,15 +18,15 @@ import { ApprovalDrawer, ApprovalItem } from "./domain/approval-item";
 import { ActivityItem } from "./domain/activity-item";
 import { TaskCheck } from "./domain/task-item";
 
-export function TodayCard() {
-  const { mode } = useOs(); const d = useDerived();
+export function TodayCard({ data }: { data?: PrototypeDashboard }) {
+  const { mode } = useOs();
   const [myDay, setMyDay] = useState(false);
-  const stats = dashboard[mode].stats.map((s) => ({ n: s.value, label: s.label, href: s.href }));
-  const places = dashboard[mode].attention.length;
+  const stats = (data ?? dashboard[mode]).stats.map((s) => ({ n: s.value, label: s.label, href: s.href }));
+  const places = (data ?? dashboard[mode]).attention.length;
   return (
     <GlassCard className="sheen overflow-hidden p-8 md:p-10" delay={300}>
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-gradient-to-br from-[#dfe7ff] via-[#ece6ff] to-[#f6ecda] opacity-70 blur-3xl" />
-      <Eyebrow>Today{mode !== "all" ? ` · ${modeLabel[mode]}` : ""}</Eyebrow>
+      <Eyebrow>Today{!data && mode !== "all" ? ` · ${modeLabel[mode]}` : ""}</Eyebrow>
       <div key={mode} className="page-enter relative mt-8 grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-4">
         {stats.map((s) => (
           <Link key={s.label} href={s.href} className="group -m-2 rounded-2xl p-2 transition-colors hover:bg-white/60">
@@ -40,17 +42,18 @@ export function TodayCard() {
           <ArrowRight size={15} strokeWidth={1.8} className="transition-transform duration-300 group-hover:translate-x-0.5" />
         </button>
       </div>
-      <MyDayDrawer open={myDay} onClose={() => setMyDay(false)} />
+      <MyDayDrawer live={!!data} open={myDay} onClose={() => setMyDay(false)} />
     </GlassCard>
   );
 }
 
-function MyDayDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+function MyDayDrawer({ open, onClose, live = false }: { open: boolean; onClose: () => void; live?: boolean }) {
   const d = useDerived();
   const date = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
   return (
     <Drawer open={open} onClose={onClose} title="My Day" description={date}>
       <div className="space-y-8">
+        {live ? <p className="text-[14px] text-mute">Your live operating counts are on the dashboard. Detailed workflows will be connected in the next checkpoint.</p> : <>
         <section>
           <p className="mb-3 flex items-center gap-2 text-[13px] font-medium uppercase tracking-[0.14em] text-mute"><CalendarDays size={14} />Appointments</p>
           <div className="space-y-3">
@@ -71,6 +74,7 @@ function MyDayDrawer({ open, onClose }: { open: boolean; onClose: () => void }) 
           <p className="mb-3 flex items-center gap-2 text-[13px] font-medium uppercase tracking-[0.14em] text-mute"><Briefcase size={14} />Tasks</p>
           <div className="space-y-1">{d.todayTasks.map((t) => <div key={t.id} className="flex items-center gap-3 rounded-2xl px-3 py-2.5 hover:bg-[#f7f7fa]"><TaskCheck task={t} /><span className="flex-1 text-[14px]">{t.title}</span><span className="text-[12px] text-mute">{t.due}</span></div>)}</div>
         </section>
+      </>}
       </div>
     </Drawer>
   );
@@ -81,9 +85,9 @@ const extraActivity: Record<BusinessMode, { label: string; icon: LucideIcon }[]>
   tax: [{ label: "Returns sorted by deadline", icon: FileText }], insurance: [{ label: "Quotes compared across 3 carriers", icon: FileText }],
 };
 
-export function AiActivity() {
+export function AiActivity({ data }: { data?: PrototypeDashboard }) {
   const [open, setOpen] = useState(false); const { mode } = useOs();
-  const log = aiActivityLog.filter((l) => mode === "all" || l.mode === mode || l.mode === "all");
+  const log = (data ? [] : aiActivityLog).filter((l) => mode === "all" || l.mode === mode || l.mode === "all");
   return (
     <GlassCard className="flex flex-col p-8" delay={380}>
       <button onClick={() => setOpen(true)} className="absolute inset-0 rounded-[28px]" aria-label="See everything Mithoo handled today" />
@@ -92,20 +96,21 @@ export function AiActivity() {
           <span className="pulse-dot absolute inset-0 rounded-full bg-iris/40" />
           <span className="relative h-2 w-2 rounded-full bg-gradient-to-br from-sky to-iris" />
         </span>
-        <Eyebrow>AI Handled Today</Eyebrow>
+        <Eyebrow>{data ? "Handled Today" : "AI Handled Today"}</Eyebrow>
       </div>
       <ul key={mode} className="page-enter pointer-events-none mt-7 flex flex-1 flex-col justify-between gap-3.5">
-        {dashboard[mode].handled.map((a) => (
+        {(data ?? dashboard[mode]).handled.map((a) => (
           <li key={a.label} className="flex items-center gap-3 text-[15px] text-ink-soft">
             {a.brand ? <BrandIcon brand={a.brand} size="xs" /> : <span className="flex h-6 w-6 items-center justify-center rounded-[8px] bg-white ring-1 ring-hair"><FileText size={12} className="text-ink-soft" /></span>}
             <span><span className="font-semibold text-ink">{a.count}</span> {a.label}</span>
           </li>
         ))}
-        {extraActivity[mode].map((a) => (
+        {(data ? [] : extraActivity[mode]).map((a) => (
           <li key={a.label} className="flex items-center gap-3 text-[13px] text-mute"><span className="flex h-6 w-6 items-center justify-center"><a.icon size={13} className="text-mute" /></span>{a.label}</li>
         ))}
       </ul>
-      <p className="pointer-events-none mt-7 inline-flex items-center gap-1 text-[12px] text-mute">Working quietly in the background. <span className="text-iris">See all</span></p>
+      {data && data.handled.length === 0 && <p className="text-[14px] text-mute">No completed activity recorded today.</p>}
+      <p className="pointer-events-none mt-7 inline-flex items-center gap-1 text-[12px] text-mute">{data ? "Recorded operations from your workspace." : "Working quietly in the background."} <span className="text-iris">See all</span></p>
       <Drawer open={open} onClose={() => setOpen(false)} title="Handled by Mithoo" description="Everything that happened in the background today.">
         <ul className="space-y-5">
           {log.map((l) => (
@@ -124,7 +129,7 @@ const actions: { key: string; title: string; icon: LucideIcon; href: string }[] 
   { key: "reports", title: "Reports", icon: ChartLine, href: "/insights" },
 ];
 
-export function QuickActions() {
+export function QuickActions({ live = false }: { live?: boolean }) {
   const d = useDerived();
   const notes: Record<string, string> = {
     clients: `${d.clientsNeedingAttention.length} need attention`,
@@ -145,26 +150,27 @@ export function QuickActions() {
             <ArrowUpRight size={16} strokeWidth={1.6} className="text-mute opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </div>
           <div className="mt-8 text-[17px] font-semibold tracking-[-0.02em]">{a.title}</div>
-          <div className="mt-1 text-[13px] text-mute">{notes[a.key]}</div>
+          <div className="mt-1 text-[13px] text-mute">{live ? "Prototype · not connected yet" : notes[a.key]}</div>
         </Link>
       ))}
     </div>
   );
 }
 
-export function Approvals() {
+export function Approvals({ summary }: { summary?: DashboardSummary }) {
   const d = useDerived(); const { mode } = useOs();
-  const pending = d.pendingApprovals.filter((a) => mode === "all" || a.category === mode || a.category === "marketing" || a.category === "communication");
+  const pending = (summary ? [] : d.pendingApprovals).filter((a) => mode === "all" || a.category === mode || a.category === "marketing" || a.category === "communication");
   const [review, setReview] = useState<Approval | null>(null);
   return (
     <GlassCard className="p-8" delay={720}>
       <div className="flex items-baseline justify-between">
         <h2 className="text-[20px] font-semibold tracking-[-0.025em]">Needs Your Approval</h2>
-        <Link href="/approvals" className="text-[13px] text-mute transition-colors hover:text-ink">{pending.length} waiting · View all</Link>
+        <Link href="/approvals" className="text-[13px] text-mute transition-colors hover:text-ink">{summary?.approvals.pending ?? pending.length} waiting · View all</Link>
       </div>
       <div className="mt-6 divide-y divide-hair">
         {pending.slice(0, 3).map((a) => <ApprovalItem key={a.id} a={a} compact onReview={setReview} />)}
-        {pending.length === 0 && <p className="py-4 text-[14px] text-mute">Nothing waiting. Mithoo will let you know when something needs you.</p>}
+        {summary && <p className="py-4 text-[14px] text-mute">{summary.approvals.pending} pending approvals · {summary.approvals.pendingOwner} require an owner. Review actions will be connected in a later checkpoint.</p>}
+        {!summary && pending.length === 0 && <p className="py-4 text-[14px] text-mute">Nothing waiting. Mithoo will let you know when something needs you.</p>}
       </div>
       <ApprovalDrawer approval={review} onClose={() => setReview(null)} />
     </GlassCard>
@@ -177,13 +183,13 @@ export function ModeSwitcher() {
 }
 
 const toneDot = { rose: "bg-rose-500", amber: "bg-amber-500", violet: "bg-iris" } as const;
-export function NeedsAttention() {
+export function NeedsAttention({ data }: { data?: PrototypeDashboard }) {
   const { mode } = useOs();
   return (
     <GlassCard className="p-8" delay={420}>
       <h2 className="text-[20px] font-semibold tracking-[-0.025em]">Needs Your Attention</h2>
       <ul key={mode} className="page-enter mt-5 divide-y divide-hair">
-        {dashboard[mode].attention.map((a) => (
+        {(data ?? dashboard[mode]).attention.map((a) => (
           <li key={a.title}>
             <Link href={a.href} className="group -mx-3 flex items-center gap-4 rounded-2xl px-3 py-3.5 transition-colors hover:bg-white/70">
               {a.brand ? <BrandIcon brand={a.brand} size="sm" /> : <span className="flex h-8 w-8 items-center justify-center"><span className={`h-2 w-2 rounded-full ${toneDot[a.tone]}`} /></span>}
