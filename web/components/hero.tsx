@@ -1,4 +1,5 @@
 import { user } from "@/lib/mock";
+import { Greeting } from "./greeting";
 
 export function HeroGlow() {
   return (
@@ -14,7 +15,7 @@ export function HeroGlow() {
 export function Hero() {
   return (
     <header className="relative pb-12 pt-16 md:pt-24">
-      <p className="rise text-[15px] text-mute" style={{ animationDelay: "0ms" }}>Good morning, {user.name}.</p>
+      <p className="rise text-[15px] text-mute" style={{ animationDelay: "0ms" }}><Greeting name={user.name} punctuation="." /></p>
       <h1
         className="rise mt-3 text-[44px] font-semibold leading-[1.04] tracking-[-0.035em] text-ink md:text-[64px]"
         style={{ animationDelay: "120ms" }}

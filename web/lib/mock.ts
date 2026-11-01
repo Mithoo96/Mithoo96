@@ -26,3 +26,8 @@ export const aiActivity = [
   { count: 7, label: "leads followed up" },
   { count: 2, label: "questions answered" },
 ];
+
+export const launch = {
+  subtitle: "Here’s what happened while you were away.",
+  handledCount: 14,
+};
