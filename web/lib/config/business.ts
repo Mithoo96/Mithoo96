@@ -43,6 +43,8 @@ export const business = {
     },
   },
   appointmentServices: ["Tax Consultation", "Tax Preparation", "Life Insurance Consultation", "Policy Review", "Needs Analysis"],
+  // Awake mode: after this much inactivity the platform asks whether to stay awake.
+  session: { idleMinutes: 5, answerSeconds: 60 },
   roles: ["Owner", "Manager", "Tax Preparer", "Insurance Agent", "Marketing", "Staff"] as const,
 } as const;
 

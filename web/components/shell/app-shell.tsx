@@ -9,6 +9,7 @@ import { SearchModal } from "./search";
 import { NotificationsDrawer } from "./notifications";
 import { AssistantPanel, CommandBar } from "./assistant";
 import { ShellCtx } from "./ui-context";
+import { SessionProvider } from "./session";
 import { HeroGlow } from "@/components/hero";
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -29,15 +30,18 @@ export function AppShell({ children }: { children: ReactNode }) {
     window.addEventListener("keydown", onKey); return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  const [pageKey, setPageKey] = useState(0);
+  useEffect(() => { const r = () => setPageKey((k) => k + 1); window.addEventListener("mithoo:replay-launch", r); return () => window.removeEventListener("mithoo:replay-launch", r); }, []);
   const showCommandBar = !path.startsWith("/inbox");
   return (
+    <SessionProvider>
     <ShellCtx.Provider value={ui}>
       <div className="flex min-h-screen bg-white">
         <Sidebar />
         <main className="relative flex min-w-0 flex-1 flex-col overflow-x-clip pb-20 md:pb-0">
           <Topbar />
           <HeroGlow />
-          <div className="relative flex-1">{children}</div>
+          <div key={pageKey} className="relative flex-1">{children}</div>
           {showCommandBar && <CommandBar onOpen={ui.openAssistant} />}
         </main>
       </div>
@@ -47,5 +51,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       <NotificationsDrawer open={notifs} onClose={() => setNotifs(false)} />
       <AssistantPanel key={String(assistant.open)} open={assistant.open} initialPrompt={assistant.prompt} onClose={closeAssistant} />
     </ShellCtx.Provider>
+    </SessionProvider>
   );
 }

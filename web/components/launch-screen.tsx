@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Greeting } from "./greeting";
 import { business, launch } from "@/lib/mock";
-import { LAUNCH_KEY } from "@/lib/greeting";
 
 
 
@@ -11,19 +10,30 @@ import { LAUNCH_KEY } from "@/lib/greeting";
 const EXIT_AT = 7000;
 const EXIT_DURATION = 1400;
 
+/** Fire this to play the welcome again (e.g. after signing back in). */
+export const replayLaunch = () => window.dispatchEvent(new Event("mithoo:replay-launch"));
+
 export function LaunchScreen() {
   const [phase, setPhase] = useState<"idle" | "intro" | "leaving" | "done">("idle");
+  const [run, setRun] = useState(0);
+
+  // Replays: re-arm the pre-paint flag and restart the sequence.
+  useEffect(() => {
+    const replay = () => { document.documentElement.classList.add("launching"); setPhase("idle"); setRun((r) => r + 1); };
+    window.addEventListener("mithoo:replay-launch", replay);
+    return () => window.removeEventListener("mithoo:replay-launch", replay);
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
     if (!root.classList.contains("launching")) return setPhase("done");
-    try { localStorage.setItem(LAUNCH_KEY, new Date().toDateString()); } catch {}
     setPhase("intro");
 
     let doneTimer: number | undefined;
     const leave = () => {
       setPhase("leaving");
       root.classList.remove("launching"); // dashboard entrance animations start here
+      window.dispatchEvent(new Event("mithoo:launch-done"));
       doneTimer = window.setTimeout(() => setPhase("done"), EXIT_DURATION);
     };
     const exitTimer = window.setTimeout(leave, EXIT_AT);
@@ -35,12 +45,13 @@ export function LaunchScreen() {
     };
     window.addEventListener("keydown", skip);
     return () => { window.clearTimeout(exitTimer); window.clearTimeout(doneTimer); window.removeEventListener("keydown", skip); };
-  }, []);
+  }, [run]);
 
   if (phase === "done") return null;
 
   return (
     <div
+      key={run}
       className={`launch ${phase === "leaving" ? "is-leaving" : ""}`}
       onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }))}
       role="presentation"

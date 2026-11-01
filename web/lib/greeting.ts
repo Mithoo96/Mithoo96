@@ -12,4 +12,3 @@ export const greetings: Record<DayPart, { text: string; emoji: string }> = {
   afternoon: { text: "Good afternoon", emoji: "☀️" },
   evening: { text: "Good evening", emoji: "🌙" },
 };
-export const LAUNCH_KEY = "mithoo:launch-seen";

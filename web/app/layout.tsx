@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { LaunchScreen } from "@/components/launch-screen";
-import { LAUNCH_KEY } from "@/lib/greeting";
 import { OsProvider } from "@/lib/store";
 import { business } from "@/lib/config/business";
 import { ToastProvider } from "@/components/ui/toast";
 import { AppShell } from "@/components/shell/app-shell";
 
-// Runs before paint: decide whether today's launch screen should show (no flash of dashboard).
-const launchScript = `try{if(localStorage.getItem("${LAUNCH_KEY}")!==new Date().toDateString())document.documentElement.classList.add("launching")}catch(e){}`;
+// Runs before paint so the welcome screen shows every time the platform opens (no flash of the dashboard).
+const launchScript = `document.documentElement.classList.add("launching")`;
 
 export const viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" as const };
 

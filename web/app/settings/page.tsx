@@ -6,6 +6,7 @@ import { useOs } from "@/lib/store";
 import { defaultPermissions, permissionAreas, roles } from "@/lib/mock";
 import { business } from "@/lib/config/business";
 import { OwnerAvatar } from "@/components/owner-avatar";
+import { useSession } from "@/components/shell/session";
 import type { Role } from "@/lib/types";
 import { Avatar, Card, Field, Input, Page, PageHeader, Select, StatusBadge, Textarea, Toggle, Chip, Segmented } from "@/components/ui/primitives";
 import { Button, useSimulated } from "@/components/ui/button";
@@ -232,9 +233,18 @@ function Billing() {
 
 function Security() {
   const toast = useToast(); const [twofa, setTwofa] = useState(true); const [revoke, setRevoke] = useState<string | null>(null);
+  const session = useSession();
   const [sessions, setSessions] = useState([{ id: "s1", d: "MacBook Pro · Safari", w: "Office · Active now", i: Monitor, current: true }, { id: "s2", d: "iPhone · Mithoo app", w: "Mobile · 2h ago", i: Smartphone }, { id: "s3", d: "Front desk · Chrome", w: "Office · Yesterday", i: Monitor }]);
   return (
     <div className="space-y-5">
+      <Card className="space-y-5 p-6">
+        <div className="flex items-center justify-between gap-4"><div><p className="text-[15px] font-medium">Awake mode</p><p className="text-[13px] text-mute">Keep the session open while you work, without check-ins.</p></div>
+          <Toggle label="Awake mode" checked={session.awake} onChange={(v) => { session.setAwake(v); toast({ title: v ? "Awake mode on" : "Awake mode off", tone: v ? "success" : "info" }); }} /></div>
+        <div className="flex flex-col gap-3 border-t border-hair pt-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-[15px] font-medium">Ask me after</p><p className="text-[13px] text-mute">How long without activity before Mithoo asks if you want to stay in awake mode.</p></div>
+          <Segmented value={String(session.idleMinutes)} onChange={(v) => { session.setIdleMinutes(Number(v)); toast({ title: `Mithoo will check in after ${v} minute${v === "1" ? "" : "s"} away` }); }}
+            options={["1", "5", "15", "30"].map((m) => ({ value: m, label: `${m} min` }))} /></div>
+        <div className="border-t border-hair pt-5"><Button size="sm" onClick={session.lock}>Lock now</Button></div>
+      </Card>
       <Card className="flex items-center justify-between gap-4 p-6"><div><p className="text-[15px] font-medium">Two-step verification</p><p className="text-[13px] text-mute">Ask for a code when signing in on a new device.</p></div>
         <Toggle label="Two-step verification" checked={twofa} onChange={(v) => { setTwofa(v); toast({ title: v ? "Two-step verification on" : "Two-step verification off", tone: v ? "success" : "info" }); }} /></Card>
       <Card className="p-2">
