@@ -9,12 +9,12 @@
  * activity, approaching deadlines and overdue work.
  *
  * DEMO LOGINS ARE FOR LOCAL/STAGING ONLY — never run this seed against a
- * production project.
+ * production project. No password is committed: seeded users get a random,
+ * unusable password. Set a demo password afterwards with
+ *   DEMO_ACCOUNT_PASSWORD=... npm run db:demo-passwords
  */
 import { writeFileSync } from "node:fs";
 import path from "node:path";
-
-const DEMO_PASSWORD = "ZileDemo!2026"; // local demo only; documented in HANDOFF.md
 
 const id = (prefix: string, n: number) => `${prefix}000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const q = (v: string | null | undefined) => (v === null || v === undefined ? "null" : `'${v.replace(/'/g, "''")}'`);
@@ -119,7 +119,7 @@ select set_config('app.allow_status_import', 'on', true);
 // Users
 for (const u of Object.values(users)) {
   push(`insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
-values ('00000000-0000-0000-0000-000000000000', ${q(u.id)}, 'authenticated', 'authenticated', ${q(u.email)}, extensions.crypt(${q(DEMO_PASSWORD)}, extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', ${json({ full_name: u.name, display_name: u.name.replace(" (Demo)", "") })}, now(), now(), '', '', '', '')
+values ('00000000-0000-0000-0000-000000000000', ${q(u.id)}, 'authenticated', 'authenticated', ${q(u.email)}, extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', ${json({ full_name: u.name, display_name: u.name.replace(" (Demo)", "") })}, now(), now(), '', '', '', '')
 on conflict (id) do nothing;
 insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
 values (${q(u.id)}, ${q(u.id)}, ${q(u.id)}, ${json({ sub: u.id, email: u.email, email_verified: true })}, 'email', now(), now(), now())

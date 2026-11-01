@@ -4,8 +4,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: [
-      { find: /^server-only$/, replacement: path.resolve(__dirname, "tests/helpers/server-only-stub.ts") },
-      { find: /^@\/(.*)$/, replacement: path.resolve(__dirname, "$1") },
+      { find: /^server-only$/, replacement: path.resolve(import.meta.dirname, "tests/helpers/server-only-stub.ts") },
+      { find: /^@\/(.*)$/, replacement: path.resolve(import.meta.dirname, "$1") },
     ],
   },
   test: {

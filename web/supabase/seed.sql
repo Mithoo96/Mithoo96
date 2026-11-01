@@ -6,43 +6,43 @@ begin;
 select set_config('app.allow_status_import', 'on', true);
 
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
-values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000001', 'authenticated', 'authenticated', 'platform.admin@mithoo.demo', extensions.crypt('ZileDemo!2026', extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Mithoo Platform Admin","display_name":"Mithoo Platform Admin"}'::jsonb, now(), now(), '', '', '', '')
+values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000001', 'authenticated', 'authenticated', 'platform.admin@mithoo.demo', extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Mithoo Platform Admin","display_name":"Mithoo Platform Admin"}'::jsonb, now(), now(), '', '', '', '')
 on conflict (id) do nothing;
 insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
 values ('a0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000001', '{"sub":"a0000000-0000-4000-8000-000000000001","email":"platform.admin@mithoo.demo","email_verified":true}'::jsonb, 'email', now(), now(), now())
 on conflict do nothing;
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
-values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000002', 'authenticated', 'authenticated', 'owner@zileboutik.demo', extensions.crypt('ZileDemo!2026', extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Zile Owner (Demo)","display_name":"Zile Owner"}'::jsonb, now(), now(), '', '', '', '')
+values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000002', 'authenticated', 'authenticated', 'owner@zileboutik.demo', extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Zile Owner (Demo)","display_name":"Zile Owner"}'::jsonb, now(), now(), '', '', '', '')
 on conflict (id) do nothing;
 insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
 values ('a0000000-0000-4000-8000-000000000002', 'a0000000-0000-4000-8000-000000000002', 'a0000000-0000-4000-8000-000000000002', '{"sub":"a0000000-0000-4000-8000-000000000002","email":"owner@zileboutik.demo","email_verified":true}'::jsonb, 'email', now(), now(), now())
 on conflict do nothing;
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
-values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000003', 'authenticated', 'authenticated', 'manager@zileboutik.demo', extensions.crypt('ZileDemo!2026', extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Morgan Manager (Demo)","display_name":"Morgan Manager"}'::jsonb, now(), now(), '', '', '', '')
+values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000003', 'authenticated', 'authenticated', 'manager@zileboutik.demo', extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Morgan Manager (Demo)","display_name":"Morgan Manager"}'::jsonb, now(), now(), '', '', '', '')
 on conflict (id) do nothing;
 insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
 values ('a0000000-0000-4000-8000-000000000003', 'a0000000-0000-4000-8000-000000000003', 'a0000000-0000-4000-8000-000000000003', '{"sub":"a0000000-0000-4000-8000-000000000003","email":"manager@zileboutik.demo","email_verified":true}'::jsonb, 'email', now(), now(), now())
 on conflict do nothing;
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
-values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000004', 'authenticated', 'authenticated', 'employee1@zileboutik.demo', extensions.crypt('ZileDemo!2026', extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Jordan Packer (Demo)","display_name":"Jordan Packer"}'::jsonb, now(), now(), '', '', '', '')
+values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000004', 'authenticated', 'authenticated', 'employee1@zileboutik.demo', extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Jordan Packer (Demo)","display_name":"Jordan Packer"}'::jsonb, now(), now(), '', '', '', '')
 on conflict (id) do nothing;
 insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
 values ('a0000000-0000-4000-8000-000000000004', 'a0000000-0000-4000-8000-000000000004', 'a0000000-0000-4000-8000-000000000004', '{"sub":"a0000000-0000-4000-8000-000000000004","email":"employee1@zileboutik.demo","email_verified":true}'::jsonb, 'email', now(), now(), now())
 on conflict do nothing;
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
-values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000005', 'authenticated', 'authenticated', 'employee2@zileboutik.demo', extensions.crypt('ZileDemo!2026', extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Riley Packer (Demo)","display_name":"Riley Packer"}'::jsonb, now(), now(), '', '', '', '')
+values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000005', 'authenticated', 'authenticated', 'employee2@zileboutik.demo', extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Riley Packer (Demo)","display_name":"Riley Packer"}'::jsonb, now(), now(), '', '', '', '')
 on conflict (id) do nothing;
 insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
 values ('a0000000-0000-4000-8000-000000000005', 'a0000000-0000-4000-8000-000000000005', 'a0000000-0000-4000-8000-000000000005', '{"sub":"a0000000-0000-4000-8000-000000000005","email":"employee2@zileboutik.demo","email_verified":true}'::jsonb, 'email', now(), now(), now())
 on conflict do nothing;
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
-values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000006', 'authenticated', 'authenticated', 'owner@northwind.demo', extensions.crypt('ZileDemo!2026', extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Northwind Owner (Demo)","display_name":"Northwind Owner"}'::jsonb, now(), now(), '', '', '', '')
+values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000006', 'authenticated', 'authenticated', 'owner@northwind.demo', extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Northwind Owner (Demo)","display_name":"Northwind Owner"}'::jsonb, now(), now(), '', '', '', '')
 on conflict (id) do nothing;
 insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
 values ('a0000000-0000-4000-8000-000000000006', 'a0000000-0000-4000-8000-000000000006', 'a0000000-0000-4000-8000-000000000006', '{"sub":"a0000000-0000-4000-8000-000000000006","email":"owner@northwind.demo","email_verified":true}'::jsonb, 'email', now(), now(), now())
 on conflict do nothing;
 insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
-values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000007', 'authenticated', 'authenticated', 'employee@northwind.demo', extensions.crypt('ZileDemo!2026', extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Northwind Employee (Demo)","display_name":"Northwind Employee"}'::jsonb, now(), now(), '', '', '', '')
+values ('00000000-0000-0000-0000-000000000000', 'a0000000-0000-4000-8000-000000000007', 'authenticated', 'authenticated', 'employee@northwind.demo', extensions.crypt(gen_random_uuid()::text, extensions.gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', '{"full_name":"Northwind Employee (Demo)","display_name":"Northwind Employee"}'::jsonb, now(), now(), '', '', '', '')
 on conflict (id) do nothing;
 insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
 values ('a0000000-0000-4000-8000-000000000007', 'a0000000-0000-4000-8000-000000000007', 'a0000000-0000-4000-8000-000000000007', '{"sub":"a0000000-0000-4000-8000-000000000007","email":"employee@northwind.demo","email_verified":true}'::jsonb, 'email', now(), now(), now())
