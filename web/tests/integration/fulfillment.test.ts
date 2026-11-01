@@ -64,6 +64,74 @@ describeDb("orders and fulfillment checkpoint", () => {
     expect(changed).toHaveLength(0); // Reuse never grants employee exception update access.
     await expect(employee((ctx) => confirmPackage(ctx, ids.task(7)))).rejects.toMatchObject({ code: "GUARD_FAILED" });
   });
+  // These fixture edits run only in the disposable LOCAL integration database.
+  const rejectedScans = [
+    { kind: "duplicate tracking", setup: `update public.shipments set tracking_number = $2 where id = $1`, target: ids.shipment(8), value: tracking(7), scan: tracking(7), check: "TRACKING_UNIQUE", exception: "DUPLICATE_TRACKING" },
+    { kind: "tracking mismatch", setup: `update public.shipping_labels set tracking_number = $2, barcode_value = $2 where shipment_id = $1`, target: ids.shipment(7), value: tracking(8), scan: tracking(8), check: "TRACKING_MATCHES_SHIPMENT", exception: "TRACKING_MISMATCH" },
+    { kind: "label association mismatch", setup: `update public.shipping_labels set order_id = $2::uuid where shipment_id = $1`, target: ids.shipment(7), value: ids.order(8), scan: tracking(7), check: "LABEL_BELONGS_TO_ORDER", exception: "LABEL_ORDER_MISMATCH" },
+    { kind: "another package's tracking scan", setup: null, target: "", value: "", scan: tracking(8), check: "SCAN_MATCHES_LABEL", exception: "TRACKING_MISMATCH" },
+  ];
+  it.each(rejectedScans)("preserves operational state and audits rejected $kind", async (scenario) => {
+    await prepareScan();
+    if (scenario.setup) await system((ctx) => ctx.db.query(scenario.setup, [scenario.target, scenario.value]));
+    const snapshot = () => employee((ctx) => ctx.db.one<{
+      order_status: string; task_status: string; shipment_status: string; tracking_number: string;
+      carrier_accepted_at: Date | null; delivered_at: Date | null;
+    }>(`select o.status as order_status, t.status as task_status, s.status as shipment_status,
+               s.tracking_number, s.carrier_accepted_at, s.delivered_at
+          from public.tasks t join public.orders o on o.id=t.order_id join public.shipments s on s.id=t.shipment_id
+         where t.id=$1`, [ids.task(7)]));
+    const before = await snapshot();
+    expect(before.order_status).toBe("LABEL_READY");
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const result = await employee((ctx) => verifyLabel(ctx, { taskId: ids.task(7), scannedValue: scenario.scan }));
+      expect(result.passed).toBe(false);
+      expect(result.checks.find((c) => c.code === scenario.check)?.result).toBe("FAIL");
+      expect(await snapshot()).toEqual(before);
+    }
+    const facts = await employee(async (ctx) => ({
+      task: await ctx.db.one<{ checks_state: { LABEL_SCANNED: { passed: boolean } } }>(`select checks_state from public.tasks where id=$1`, [ids.task(7)]),
+      shipment: await ctx.db.one<{ verification_status: string }>(`select verification_status from public.shipments where id=$1`, [ids.shipment(7)]),
+      logs: await ctx.db.query<{ action: string }>(`select action from public.activity_logs where order_id=$1`, [ids.order(7)]),
+      attempts: await ctx.db.query(`select id from public.employee_actions where task_id=$1 and action_type='LABEL_SCANNED' and result='MISMATCH'`, [ids.task(7)]),
+    }));
+    expect(facts.task.checks_state.LABEL_SCANNED.passed).toBe(false);
+    expect(facts.shipment.verification_status).toBe("MISMATCH");
+    expect(facts.logs.filter((l) => l.action === "label.scan_failed")).toHaveLength(2);
+    expect(facts.attempts).toHaveLength(2);
+    expect(await employee((ctx) => ctx.db.query(`select id from public.activity_logs where order_id=$1 and changes->'status'->>'to'='PACKED'`, [ids.order(7)]))).toHaveLength(0);
+    const exceptions = await runAsMember(ids.owner, ids.org, (ctx) => getExceptions(ctx, { orderId: ids.order(7), type: [scenario.exception as "DUPLICATE_TRACKING" | "TRACKING_MISMATCH" | "LABEL_ORDER_MISMATCH"] }));
+    expect(exceptions).toHaveLength(1);
+    await expect(employee((ctx) => confirmPackage(ctx, ids.task(7)))).rejects.toMatchObject({ code: "GUARD_FAILED" });
+  });
+  it("rejects a task linked to another order's shipment before any scan writes", async () => {
+    await prepareScan();
+    await system((ctx) => ctx.db.query(`update public.tasks set shipment_id=$2 where id=$1`, [ids.task(7), ids.shipment(8)]));
+    await expect(employee((ctx) => verifyLabel(ctx, { taskId: ids.task(7), scannedValue: tracking(8) }))).rejects.toMatchObject({ code: "GUARD_FAILED" });
+    expect(await employee((ctx) => ctx.db.one(`select status from public.orders where id=$1`, [ids.order(7)]))).toEqual({ status: "LABEL_READY" });
+    expect(await employee((ctx) => ctx.db.query(`select id from public.employee_actions where task_id=$1 and action_type='LABEL_SCANNED'`, [ids.task(7)]))).toHaveLength(0);
+  });
+  it("advances a valid scan exactly once and preserves success audit and evidence gates", async () => {
+    await prepareScan();
+    for (let attempt = 0; attempt < 2; attempt++) {
+      expect((await employee((ctx) => verifyLabel(ctx, { taskId: ids.task(7), scannedValue: tracking(7) }))).passed).toBe(true);
+    }
+    expect(await employee((ctx) => ctx.db.one(`select status from public.orders where id=$1`, [ids.order(7)]))).toEqual({ status: "PACKED" });
+    expect(await employee((ctx) => ctx.db.one(`select status from public.tasks where id=$1`, [ids.task(7)]))).toEqual({ status: "IN_PROGRESS" });
+    expect(await employee((ctx) => ctx.db.query(`select id from public.activity_logs where order_id=$1 and changes->'status'->>'to'='PACKED'`, [ids.order(7)]))).toHaveLength(1);
+    expect(await employee((ctx) => ctx.db.query(`select id from public.activity_logs where order_id=$1 and action='label.scan_passed'`, [ids.order(7)]))).toHaveLength(2);
+    expect((await employee((ctx) => completeTask(ctx, ids.task(7)))).missing).toContain("evidence:PACKAGING_PHOTO");
+  });
+  it("rolls back scan progression and its audit if the transaction later fails", async () => {
+    await prepareScan();
+    await expect(employee(async (ctx) => {
+      await verifyLabel(ctx, { taskId: ids.task(7), scannedValue: tracking(7) });
+      throw new Error("Transaction regression rollback");
+    })).rejects.toThrow("Transaction regression rollback");
+    expect(await employee((ctx) => ctx.db.one(`select status from public.orders where id=$1`, [ids.order(7)]))).toEqual({ status: "LABEL_READY" });
+    expect(await employee((ctx) => ctx.db.query(`select id from public.activity_logs where order_id=$1 and action='label.scan_passed'`, [ids.order(7)]))).toHaveLength(0);
+    expect(await employee((ctx) => ctx.db.one(`select checks_state ? 'LABEL_SCANNED' as scanned from public.tasks where id=$1`, [ids.task(7)]))).toEqual({ scanned: false });
+  });
   it("missing tracking, tracking mismatch and duplicate tracking fail integrity checks", async () => {
     for (const [n, code] of [[13, "TRACKING_PRESENT"], [16, "TRACKING_MATCHES_SHIPMENT"], [17, "TRACKING_UNIQUE"]] as const) {
       const outcome = await system((ctx) => runShipmentVerification(ctx, { shipmentId: ids.shipment(n), raiseExceptions: true }));

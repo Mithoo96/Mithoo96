@@ -135,8 +135,12 @@ export async function verifyLabel(ctx: ServiceContext, raw: z.input<typeof verif
   if (task.type === "PACK_ORDER" && task.checks_state?.ITEMS_CONFIRMED?.passed !== true) {
     throw new DomainError("GUARD_FAILED", "Confirm the items and quantities before scanning the label");
   }
-  if ((await orderStatus(ctx, task.order_id)) === "LABEL_READY") {
-    await transitionOrder(ctx, { orderId: task.order_id, to: "PACKED", reason: "Package packed with label attached" });
+  const shipment = await ctx.db.maybeOne(
+    `select id from public.shipments where id = $1 and order_id = $2 and organization_id = $3 for update`,
+    [task.shipment_id, task.order_id, ctx.organizationId],
+  );
+  if (!shipment) {
+    throw new DomainError("GUARD_FAILED", "The task shipment does not belong to this order");
   }
 
   const outcome = await runShipmentVerification(ctx, {
@@ -148,6 +152,11 @@ export async function verifyLabel(ctx: ServiceContext, raw: z.input<typeof verif
   });
   const scan = outcome.checks.find((c) => c.code === "SCAN_MATCHES_LABEL");
   const passed = scan?.result === "PASS" && outcome.identityVerified;
+  // Verification failures are committed for diagnostics, exceptions and audit.
+  // Only a verified identity may advance operational state in this transaction.
+  if (passed && (await orderStatus(ctx, task.order_id)) === "LABEL_READY") {
+    await transitionOrder(ctx, { orderId: task.order_id, to: "PACKED", reason: "Package packed with label attached" });
+  }
   await recordCheck(ctx, task, "LABEL_SCANNED", {
     passed,
     value: input.scannedValue,
