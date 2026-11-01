@@ -29,6 +29,15 @@ it("protects actual routes and preserves query strings", async () => {
     expect(new URL(response.headers.get("location")!).searchParams.get("next")).toBe(path + "?filter=open");
   }
 });
+it("allows only the public setup and callback routes without opening workspace routes", async () => {
+  for (const path of ["/auth/setup", "/auth/callback?code=fictional-test-code"]) {
+    const response = await proxy(new NextRequest("https://app.example" + path));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toContain("no-store");
+    expect(response.headers.get("referrer-policy")).toBe("no-referrer");
+  }
+  expect((await proxy(new NextRequest("https://app.example/auth/other"))).status).toBe(307);
+});
 it("preserves refreshed cookies and cache headers across login redirects", async () => {
   mock.user = { id: "owner" }; mock.refresh = true;
   const response = await proxy(new NextRequest("https://app.example/login?next=/work"));

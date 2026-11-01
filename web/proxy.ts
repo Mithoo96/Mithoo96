@@ -13,6 +13,10 @@ export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
   response.headers.set("Cache-Control", "private, no-store");
   const isLogin = request.nextUrl.pathname === "/login";
+  if (["/auth/setup", "/auth/callback"].includes(request.nextUrl.pathname)) {
+    response.headers.set("Referrer-Policy", "no-referrer");
+    return response;
+  }
   if (!url || !anonKey) {
     return isLogin ? response : new NextResponse("Authentication is temporarily unavailable", { status: 503 });
   }
