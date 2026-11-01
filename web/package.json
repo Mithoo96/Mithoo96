@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "STATIC_EXPORT=1 next build"
   },
   "dependencies": {
     "lucide-react": "^1.66.0",

@@ -56,7 +56,7 @@ export default function ClientsPage() {
         {list.map((c) => <ClientCard key={c.id} client={c} />)}
         {list.length === 0 && <EmptyState icon={Users} title="No clients match" body="Try a different search or filter." action={<Button onClick={() => { setQ(""); setFilter("all"); setSource("All sources"); }}>Clear filters</Button>} />}
       </Card>
-      <AddClientModal open={adding} onClose={() => setAdding(false)} onCreated={(id) => router.push(`/clients/${id}`)} />
+      <AddClientModal open={adding} onClose={() => setAdding(false)} />
     </Page>
   );
 }
