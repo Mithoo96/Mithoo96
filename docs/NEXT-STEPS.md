@@ -1,3 +1,7 @@
+> Orders & Fulfillment update: screens and service integration are implemented on
+> codex/orders-fulfillment. Hosted employee credentials and database write connectivity
+> block final verification. See ORDERS-CHECKPOINT.md; do not start Exception + Approval Center.
+
 > Phase 2 update: real login/session handling, route protection, workspace identity and
 > the OWNER dashboard read path are implemented on codex/phase-2-auth.
 > See HANDOFF.md and AGENT-DECISIONS.md. Login/home items below are complete;

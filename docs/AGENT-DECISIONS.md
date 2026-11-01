@@ -69,3 +69,76 @@ Orders, live employee task workflows, real approval decisions, exception detail 
 notifications/realtime, organization switching, external providers and deployment. Do not treat
 prototype local actions as operational integrations. No other Auth credentials or account
 attributes were changed during this implementation.
+
+
+# Orders & Fulfillment checkpoint
+
+## Baseline and authorization
+
+Created codex/orders-fulfillment from 017d682 after reading the handoff, architecture,
+next steps, agent decisions, existing services/state machine and Git history. No Orders
+screen existed in the checked-in approved prototype; the existing Work list was a local
+demo. Added Orders and adapted Work using the same Page/Card/Button/Field/shell components.
+No replacement application shell or order lifecycle. No change to the approved UI architecture.
+
+## Reuse and read transport
+
+The HTTPS adapter in server/adapters/fulfillment.ts projects operational data under the
+verified session, following the Phase 2 transport boundary because external PostgreSQL TCP
+is unavailable. SQL/HTTPS lookup share core/shipping/lookup classification and existing
+normalization; task-step progress was extracted from the existing service and shared with
+the read adapter. The existing ranker handles priority/resumption. No customer PII/financial
+fields are selected. OWNER/MANAGER list all authorized orders; employees see their assigned
+context. Source counts prevent a row limit from becoming an unsafe UNIQUE lookup result.
+
+## Writes and fulfillment integrity
+
+New UI commands in existing server/actions/operations.ts resolve workspace server-side and
+call existing memberAction, packing/task/assignment/evidence services. PostgreSQL still sets
+LOCAL ROLE mbos_app and verified identity claims for RLS; no alternate write architecture,
+server-secret database bypass or browser grant was added. A bounded connection timeout
+provides a safe failure when the write path is unavailable. Unexpected error logging now
+records only the error class, not an object that might contain credentials.
+
+Queue operations use an employee-scoped advisory transaction lock, task row locks and the
+existing ranker to prevent concurrent starts and working multiple packages. Legacy seed
+examples with multiple IN_PROGRESS tasks are not normalized in staging: only the canonical
+current one is actionable. Existing ordered workflow tests adjust those examples solely in
+their disposable local fixture so they can start their explicitly chosen test task.
+
+Counts must match exactly, full scans call the shipping verification engine, exceptions use
+existing codes/dedupe keys, and required checks/evidence are checked again at completion.
+Photo uploads are actual files into private Storage after task ownership checks. The public
+registration boundary verifies object existence before delegating to the existing evidence
+service. The server-only Storage capability does not prove RLS; tenant DB writes remain in
+member transactions. No employee-controlled carrier event or SHIPPED shortcut was introduced.
+
+## Necessary new engine migration
+
+Repeated employee label-scan failures exposed a Phase 1 bug: app.raise_exception attempted
+to update an existing exception's protected occurrence/severity columns, so the column guard
+aborted the transaction and lost that scan attempt. New migration
+20261101204654_reuse_protected_employee_exceptions.sql replaces only that existing function.
+For an existing exception and a non-resolver, return its identity/severity without modification;
+packing still records each attempt in employee_actions/activity_logs. Resolvers/system retain
+the original update/escalation behavior. No RLS policy/grant/guard change or historical rewrite.
+This intentionally preserves occurrences for employee repeats; audit entries count attempts.
+Generated through the Supabase migration CLI. Applied by local tests only; not on staging.
+
+## Verification boundaries and blockers
+
+102 tests pass (55 unit/component + 47 integration) on disposable local PostgreSQL, including
+employee restrictions, one-task concurrency, lookup ambiguity, scanner mismatch, deduplication,
+assignment logging, missing/duplicate tracking, unskippable verification and false-shipment
+protection. Existing Phase 1 suites also pass. One gated live read test is skipped in the
+ordinary suite and was run separately with RUN_LIVE_FULFILLMENT_READS=1: PASS. Five live OWNER
+browser tests pass, covering login/session regression plus orders/filter/details/lookup/foreign
+not-found and a 390px mobile order view. Typecheck, lint and production build pass. Static
+client artifacts contain none of the configured private credentials.
+
+The hosted employee rejects the demo password; it was tried once, never reset. The runtime
+has no database TCP destination grants, so hosted writes, actual employee session, Storage
+upload and complete fulfillment are NOT verified. No staging data/migration/credential change
+was made. These are explicit readiness blockers, not an invalid DATABASE_URL. Do not begin
+Exception + Approval Center. A permitted database path and approved existing employee login
+are needed to finish the hosted checkpoint.

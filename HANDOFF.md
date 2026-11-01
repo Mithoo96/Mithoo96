@@ -1,3 +1,52 @@
+# Orders & Fulfillment checkpoint — implemented, hosted verification BLOCKED
+
+Branch: `codex/orders-fulfillment`, based on Phase 2 `017d682`.
+Read `docs/ORDERS-CHECKPOINT.md` for verification boundaries and the exact remaining gates.
+The Phase 1/2 references below remain intact; Orders and Work are no longer prototype screens.
+
+Implemented inside the same shell and design primitives:
+- `/orders`: session/JWT-backed Zile orders, exact total/pagination, status/search filters,
+  employee responsibility, tracking/verification and actionable stored deadlines.
+- `/orders/[id]`: operational items/quantities, shipments/labels, assignments, exceptions,
+  approvals and the latest 100 visible audit entries. No customer contact/address or money
+  columns are queried by these screens. Unauthorized records are not-found under RLS.
+- `/work`: real assigned employee queue; employee home opens this screen. START NEXT ORDER
+  delegates to the Phase 1 task engine. `/work/tasks/[id]` guides product counts, label retrieval,
+  full scan, real photo upload, package confirmation and final server verification.
+- Last-four/full tracking/order/barcode lookup respects the same user's RLS. It returns no
+  candidate when unauthorized, and never guesses between authorized packages. Exact counts
+  detect capped PostgREST lookup results and fail safely rather than claiming uniqueness.
+- Every mutation derives the active tenant on the server, then uses existing memberAction /
+  runAsMember transactions and Phase 1 engines. No service credential proves RLS or writes
+  tenant database records. The existing private Storage gateway mints only a task-authorized
+  upload URL; a real uploaded object is required at the public evidence-registration boundary.
+- Employee queue starts/mutations serialize by employee transaction lock. One canonical
+  in-progress task is selected with the existing ranker; legacy concurrent examples cannot
+  authorize working a second package. No new lifecycle or shipping override was introduced.
+- SHIPPED still requires the original provider/carrier proof or approved override. The UI
+  has no employee 'mark shipped' shortcut. Providers and stored deadlines remain MOCK/MANUAL.
+
+New migration: `web/supabase/migrations/20261101204654_reuse_protected_employee_exceptions.sql`.
+It reuses existing exceptions on repeated employee reports without trying to update protected
+columns. Per-attempt scan failures stay in the audit stream. Resolver/system escalation stays
+unchanged. Existing migrations, RLS policies, grants and guard triggers are untouched.
+The migration has been tested ONLY on the disposable local database, not staging.
+
+Verification: 102 unit/integration tests passed against disposable local PostgreSQL, five live
+OWNER Playwright tests passed, and the opt-in live HTTPS adapter read test passed separately.
+Typecheck, lint (no errors) and production build passed. Safe mobile order screenshots and
+component tests cover the layout and step controls. No configured private credentials occur in
+the static client bundle. No staging business records or employee credentials were modified.
+
+Remaining hosted gates: this runtime still has no database TCP grant for Phase 1 transactions;
+`employee1@zileboutik.demo` rejects the configured DEMO_ACCOUNT_PASSWORD. No password reset was
+attempted. A valid existing employee login and permitted database connection are required to
+apply/verify the migration and test real assignment, scan/exception, photo upload and packing
+completion. No Exception + Approval Center implementation has begun; readiness is NO until
+those live gates pass. See docs/AGENT-DECISIONS.md for decisions.
+
+---
+
 # Phase 2 checkpoint — real OWNER sessions and dashboard
 
 Work is on `codex/phase-2-auth`, based on completed Phase 1 commit `322f9ee`.
