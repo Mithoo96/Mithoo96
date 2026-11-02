@@ -32,7 +32,7 @@ it('composes Tax and Insurance independently without mounting legacy demonstrati
  expect(workspaceRouteEnabled(tax,'/integrations')).toBe(false);
 });
 it('keeps employees out of organization-wide commerce pages',()=>{
- for(const route of ['/integrations','/products','/shipping','/customers','/insights'])expect(workspaceRoleRouteEnabled('EMPLOYEE',route)).toBe(false);
+ for(const route of ['/integrations','/products','/shipping','/customers','/insights','/orders/new'])expect(workspaceRoleRouteEnabled('EMPLOYEE',route)).toBe(false);
  expect(workspaceRoleRouteEnabled('EMPLOYEE','/work/tasks/assigned')).toBe(true);
  expect(visibleNav(mainNav,workspace(metadata,'EMPLOYEE')).map(n=>n.label)).toEqual(['Home','Work','Inbox','Activity']);
 });

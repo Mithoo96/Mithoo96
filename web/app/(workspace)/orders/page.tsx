@@ -10,7 +10,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
   const { client, workspace } = await getWorkspaceForRoute("/orders"); const query = await searchParams;
   if (workspace.profile.viewer.role === "EMPLOYEE") redirect("/work");
   let data; let employees;
-  try { [data, employees] = await Promise.all([getSessionOrders(client, workspace, query), getSessionEmployees(client, workspace)]); }
+  try { [data, employees] = await Promise.all([getSessionOrders(client, workspace, query), workspace.profile.organization.enabledModules.includes("TEAM")?getSessionEmployees(client, workspace):Promise.resolve([])]); }
   catch { return <Page><PageHeader actions={workspace.profile.organization.enabledModules.includes("SHIPPING")?<Link href="/orders/new" className="rounded-full bg-ink px-5 py-3 text-sm text-white">Add manual order</Link>:undefined} title="Orders" subtitle="Your authorized fulfillment queue" /><p role="alert" className="glass rounded-[24px] p-6">Orders are unavailable for this session. Employees can use <Link href="/work" className="underline">Today’s Work</Link>.</p></Page>; }
   const next = new URLSearchParams({ ...(query.search ? { search: query.search } : {}), ...(query.status ? { status: query.status } : {}), ...(query.filter ? { filter: query.filter } : {}), page: String(data.page + 1) });
   const previous = new URLSearchParams(next); previous.set("page", String(Math.max(1, data.page - 1)));

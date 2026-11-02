@@ -5,14 +5,14 @@ import { organizationDayStart, getSessionDashboardSummary } from "@/server/servi
 import { resolveWorkspace, type Workspace } from "@/server/auth/workspace";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-const mock = vi.hoisted(() => ({ user: null as null | { id: string }, refresh: false, error: false }));
+const mock = vi.hoisted(() => ({ user: null as null | { id: string }, refresh: false, error: false, modules:["CORE","COMMERCE","SHIPPING","TEAM"],role:"OWNER" }));
 vi.mock("@supabase/ssr", () => ({ createServerClient: (_url: string, _key: string, options: { cookies: { setAll: (cookies: unknown[], headers: Record<string, string>) => void } }) => ({ auth: { getUser: async () => {
   if (mock.refresh) options.cookies.setAll([{ name: "session", value: "refreshed", options: { path: "/", httpOnly: true } }], { "Cache-Control": "private, no-store", Pragma: "no-cache" });
   return { data: { user: mock.user }, error: mock.error ? { code: "session_not_found" } : null };
-} } }) }));
+} }, from:()=>{const chain:Record<string,unknown>={then:(resolve:(data:unknown)=>unknown)=>Promise.resolve({data:[{role:mock.role,status:"ACTIVE",organizations:{id:"zile",status:"ACTIVE",metadata:{enabled_modules:mock.modules}}}],error:null}).then(resolve)};for(const method of ["select","eq","order"])chain[method]=()=>chain;return chain;} }) }));
 import { proxy } from "@/proxy";
 
-beforeEach(() => { mock.user = null; mock.refresh = false; mock.error = false; vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co"); vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "public-test-key"); });
+beforeEach(() => { mock.user = null; mock.refresh = false; mock.error = false; mock.modules=["CORE","COMMERCE","SHIPPING","TEAM"];mock.role="OWNER"; vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co"); vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "public-test-key"); });
 it("rejects an invalid or expired session even if a stale user is returned", async () => {
   mock.user = { id: "owner" }; mock.error = true;
   expect((await proxy(new NextRequest("https://app.example/orders"))).headers.get("location")).toContain("/login");
@@ -119,3 +119,5 @@ it("does not read revenue for managers and fails on unavailable counts", async (
   await expect(getSessionDashboardSummary(client, w)).rejects.toThrow("Dashboard data is temporarily unavailable.");
 });
 it('uses only a selected active membership and ignores forged workspace selections',async()=>{const other={...member('EMPLOYEE'),organization_id:'other',organizations:{...member().organizations,id:'other',name:'Other authorized workspace'}};const client=workspaceClient([member(),other]);expect((await resolveWorkspace(client,'other'))?.profile.organization.id).toBe('other');expect((await resolveWorkspace(client,'other'))?.profile.viewer.role).toBe('EMPLOYEE');expect((await resolveWorkspace(client,'forged'))?.profile.organization.id).toBe('zile');});
+
+it("rejects disabled modules before rendering a streaming workspace response",async()=>{mock.user={id:"owner"};mock.modules=["CORE"];const r=await proxy(new NextRequest("https://app.example/orders"));expect(r.status).toBe(404);expect(r.headers.get("cache-control")).toContain("no-store");expect((await proxy(new NextRequest("https://app.example/work"))).status).toBe(200);mock.modules=["CORE","COMMERCE","SHIPPING"];mock.role="EMPLOYEE";expect((await proxy(new NextRequest("https://app.example/orders/new"))).status).toBe(404);});
