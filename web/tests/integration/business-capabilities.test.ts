@@ -1,0 +1,10 @@
+import{afterAll,beforeAll,expect,it}from'vitest';
+import{getPool}from'@/server/db/client';import{runAsMember}from'@/server/context';
+import{requireClientCapability}from'@/server/services/business-capabilities';
+import{closeDatabase,describeDb,freshDatabase,ids}from'../helpers/db';
+let tax:string,insurance:string;
+describeDb('organization service capabilities inside the write transaction',()=>{
+ beforeAll(async()=>{await freshDatabase();await getPool().query("update public.organizations set metadata=$2 where id=$1",[ids.org,JSON.stringify({enabled_modules:['CORE','CRM','CLIENTS','DOCUMENTS','TAX']})]);for(const line of ['TAX','INSURANCE']){const r=await getPool().query("insert into public.business_clients(organization_id,display_name,service_line,created_by) values ($1,'TEST ONLY isolated client',$2,$3) returning id",[ids.org,line,ids.owner]);if(line==='TAX')tax=r.rows[0].id;else insurance=r.rows[0].id;}});afterAll(closeDatabase);
+ it('rejects an owned record whose service is disabled and another tenant before document access',async()=>{await runAsMember(ids.owner,ids.org,ctx=>requireClientCapability(ctx,tax));await expect(runAsMember(ids.owner,ids.org,ctx=>requireClientCapability(ctx,insurance))).rejects.toMatchObject({code:'NOT_FOUND'});await expect(runAsMember(ids.otherOwner,ids.org,ctx=>requireClientCapability(ctx,tax))).rejects.toMatchObject({code:'FORBIDDEN'});});
+ it('preserves the combined Tax+Insurance configuration and rechecks capability changes',async()=>{await getPool().query("update public.organizations set metadata=$2 where id=$1",[ids.org,JSON.stringify({enabled_modules:['CORE','CRM','CLIENTS','DOCUMENTS','TAX','INSURANCE']})]);await runAsMember(ids.owner,ids.org,ctx=>requireClientCapability(ctx,insurance));await getPool().query("update public.organizations set metadata=$2 where id=$1",[ids.org,JSON.stringify({enabled_modules:['CORE','CRM','CLIENTS','DOCUMENTS','TAX']})]);await expect(runAsMember(ids.owner,ids.org,ctx=>requireClientCapability(ctx,insurance))).rejects.toMatchObject({code:'NOT_FOUND'});});
+});

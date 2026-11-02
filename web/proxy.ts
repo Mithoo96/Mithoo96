@@ -49,7 +49,7 @@ export async function proxy(request: NextRequest) {
     const memberships=(membership.data??[]).flatMap(m=>{const org=Array.isArray(m.organizations)?m.organizations[0]:m.organizations;return m.status==="ACTIVE"&&isOrgRole(m.role)&&org?.status==="ACTIVE"?[{org,role:m.role}]:[];});
     const selected=memberships.find(m=>m.org.id===request.cookies.get("mithoo_workspace")?.value)??memberships[0];
     if(!selected)destination=new URL("/onboarding",request.url);
-    else if(!workspaceRouteEnabled(organizationModules(selected.org.metadata as Record<string,unknown>),request.nextUrl.pathname)||!workspaceRoleRouteEnabled(selected.role,request.nextUrl.pathname))return unavailable(404,"This module is not available for this workspace or role.");
+    else if(!workspaceRouteEnabled(organizationModules(selected.org.metadata as Record<string,unknown>),request.nextUrl.pathname+request.nextUrl.search)||!workspaceRoleRouteEnabled(selected.role,request.nextUrl.pathname))return unavailable(404,"This module is not available for this workspace or role.");
   }
 
   if (!isLogin && !isSignup && !authenticated) {

@@ -19,8 +19,8 @@ it('fails closed for unknown or unconfigured modules and never inherits sales ch
 });
 it('shows both commerce channels without enabling tax/insurance prototype routes',()=>{
  expect(org.enabledCommerceChannels).toEqual(['SHOPIFY','TIKTOK_SHOP']);
- expect(visibleNav([...mainNav,...bottomNav],workspace()).map(n=>n.label)).toEqual(['Home','Orders','Products','Work','Shipping','Team','Customers','Inbox','Activity','Insights','Integrations','Settings']);
- for(const route of ['/clients','/clients/one','/documents','/appointments','/approvals','/apps','/create','/insights/revenue'])expect(workspaceRouteEnabled(org,route)).toBe(false);
+ expect(visibleNav([...mainNav,...bottomNav],workspace()).map(n=>n.label)).toEqual(['Home','Orders','Products','Work','Shipping','Team','Customers','Create','Inbox','Activity','Insights','Integrations','Settings']);
+ for(const route of ['/clients','/clients/one','/documents','/appointments','/approvals','/apps','/insights/revenue'])expect(workspaceRouteEnabled(org,route)).toBe(false);
  for(const route of ['/orders','/products','/work','/shipping','/customers','/inbox','/insights','/integrations','/settings'])expect(workspaceRouteEnabled(org,route)).toBe(true);
 });
 it('composes Tax and Insurance independently without mounting legacy demonstrations',()=>{

@@ -1,8 +1,8 @@
-import {hasModules} from "@/core/tenancy/modules";
-import {getCoreSummary} from "@/server/adapters/core-workspace";
 import {getWorkspaceForRoute} from '@/server/auth/modules';
-import {hasDocMoisePrototype} from '@/core/tenancy/modules';
-import {getSessionDashboardSummary} from '@/server/services/dashboard';
-import {toPrototypeDashboard} from '@/server/adapters/prototype';
+import {getWorkspaceInsights} from '@/server/adapters/insights';
 import {Page,PageHeader,Card} from '@/components/ui/primitives';
-export default async function InsightsPage(){const{client,workspace}=await getWorkspaceForRoute('/insights');if(hasDocMoisePrototype(workspace.profile.organization)){const{default:Prototype}=await import('@/components/prototype/doc-moise/pages/insights');return <Prototype/>;}if(!hasModules(workspace.profile.organization,["COMMERCE"])){const s=await getCoreSummary(client,workspace);return <Page><PageHeader title="Insights" subtitle="Recorded work counts"/><Card className="p-8">{s.open} active tasks · {s.attention} need attention · {s.completed} completed</Card></Page>;}const summary=await getSessionDashboardSummary(client,workspace);const data=toPrototypeDashboard(summary,[]);if(!hasModules(workspace.profile.organization,["SHIPPING"]))data.stats=data.stats.filter(s=>!["Ready to Pack","Awaiting Verification","Shipped Today","Delivered"].includes(s.label));return <Page><PageHeader title="Insights" subtitle="Recorded commerce and fulfillment activity"/><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{data.stats.map(s=><Card key={s.label} className="p-6"><p className="text-[32px] font-semibold tabular-nums">{s.value}</p><p className="mt-2 text-[14px] text-mute">{s.label}</p></Card>)}</div><p className="mt-5 text-[13px] text-mute">Stored workspace counts · {summary.timezone}. No forecast or unconnected channel activity is assumed.</p></Page>;}
+export default async function InsightsPage(){
+ const{client,workspace}=await getWorkspaceForRoute('/insights');let data;
+ try{data=await getWorkspaceInsights(client,workspace);}catch{return <Page><PageHeader title="Insights"/><Card className="p-8"><p role="alert">Insights are temporarily unavailable. No estimates are shown.</p></Card></Page>;}
+ return <Page><PageHeader title="Insights" subtitle={data.subtitle}/><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{data.metrics.map(m=><Card key={m.label} className="p-6"><p className="text-[32px] font-semibold tabular-nums">{m.value}</p><p className="mt-2 text-sm text-mute">{m.label}</p></Card>)}</div><p className="mt-5 text-[13px] text-mute">Stored workspace counts · {data.timezone}. No forecasts, unconnected channel activity, or unverified outcomes are assumed.</p></Page>;
+}

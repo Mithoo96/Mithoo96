@@ -8,7 +8,7 @@ test('Zile commerce workspace excludes vertical prototypes and exposes truthful 
  await expect(page.locator('body')).not.toContainText(unrelated);
  const nav=page.locator('aside').first();
  for(const label of ['Home','Orders','Products','Work','Shipping','Customers','Inbox','Insights','Integrations','Settings'])await expect(nav.getByRole('link',{name:label,exact:true})).toBeVisible();
- for(const label of ['Clients','Documents','Tax','Insurance','Create','Apps'])await expect(nav.getByRole('link',{name:label,exact:true})).toHaveCount(0);
+ for(const label of ['Clients','Documents','Tax','Insurance','Apps'])await expect(nav.getByRole('link',{name:label,exact:true})).toHaveCount(0);
  await page.screenshot({path:testInfo.outputPath('zile-dashboard.png'),fullPage:true});
  for(const route of ['/products','/shipping','/customers','/inbox','/insights','/settings','/integrations']){
   const response=await page.goto(route);expect(response?.status()).toBe(200);await page.keyboard.press('Escape');await expect(page.locator('body')).not.toContainText(unrelated);await expect(page.getByRole('heading',{name:/Something went wrong|Application error/i})).toHaveCount(0);
@@ -17,7 +17,7 @@ test('Zile commerce workspace excludes vertical prototypes and exposes truthful 
  await page.screenshot({path:testInfo.outputPath('sales-channels.png'),fullPage:true});
  await page.getByRole('button',{name:'Search',exact:true}).first().click();await expect(page.getByRole('dialog')).not.toContainText(unrelated);await page.keyboard.press('Escape');
  await page.getByRole('button',{name:'Notifications',exact:true}).first().click();await expect(page.getByRole('dialog')).not.toContainText(unrelated);await page.keyboard.press('Escape');
- for(const route of ['/documents','/clients','/clients/demo','/apps','/approvals','/appointments','/create','/create/campaign','/insights/revenue']){
+ for(const route of ['/documents','/clients','/clients/demo','/apps','/approvals','/appointments','/insights/revenue']){
   const response=await page.goto(route);expect(response?.status()).toBe(404);await expect(page.locator('body')).not.toContainText(unrelated);
  }
  await page.goto('/integrations');await page.keyboard.press('Escape');await page.setViewportSize({width:390,height:844});await expect(page.getByRole('heading',{name:'Integrations',exact:true})).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.getByRole('button',{name:'Open menu',exact:true}).click();await expect(page.getByRole('dialog').getByRole('link',{name:'Integrations',exact:true})).toBeVisible();await expect(page.getByRole('dialog').getByRole('link',{name:'Documents',exact:true})).toHaveCount(0);await page.keyboard.press('Escape');await page.screenshot({path:testInfo.outputPath('sales-channels-mobile.png'),fullPage:true});

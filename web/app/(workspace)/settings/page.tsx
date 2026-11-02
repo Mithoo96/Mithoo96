@@ -1,11 +1,9 @@
 import {WorkspaceSelection} from "@/components/team-setup";
 import { getWorkspaceForRoute } from '@/server/auth/modules';
-import { hasDocMoisePrototype } from '@/core/tenancy/modules';
 import { Page,PageHeader,Card } from '@/components/ui/primitives';
 import { getSessionEmployees } from '@/server/adapters/fulfillment';
 export default async function SettingsPage(){
  const {client,workspace}=await getWorkspaceForRoute('/settings');
- if(hasDocMoisePrototype(workspace.profile.organization)){const{default:Prototype}=await import('@/components/prototype/doc-moise/pages/settings');return <Prototype/>;}
  const p=workspace.profile;
  let employees:Awaited<ReturnType<typeof getSessionEmployees>>=[];
  if(p.organization.enabledModules.includes('TEAM')&&(p.viewer.role==='OWNER'||p.viewer.role==='MANAGER'))employees=await getSessionEmployees(client,workspace);
