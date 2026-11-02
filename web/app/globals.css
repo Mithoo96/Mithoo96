@@ -84,6 +84,13 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 }
 
 /* ---------- App motion ---------- */
+/* Operational content must remain visible even if welcome handoff is delayed.
+   Keep the entrance movement; never make the entire workspace opacity depend
+   on an animation or the global launching flag. Hero/welcome motion is separate. */
+@keyframes workspace-enter { from { transform: translateY(8px); } to { transform: none; } }
+.workspace-enter { opacity: 1; animation: workspace-enter .5s cubic-bezier(.2,.7,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .workspace-enter { animation: none; } }
+
 @keyframes page-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 .page-enter { animation: page-enter .5s cubic-bezier(.2,.7,.2,1) both; }
 .launching .page-enter { animation-play-state: paused; }
