@@ -1,7 +1,7 @@
 import 'server-only';
 import type {Db} from '@/server/db/client';
 /** Only Vault operations elevate the server connection role. All business queries resume mbos_app with the verified user's claims; never grant Vault access to API roles. */
-async function vault<T>(db:Db,fn:()=>Promise<T>):Promise<T>{await db.query('SET LOCAL ROLE NONE');try{return await fn();}finally{await db.query('SET LOCAL ROLE mbos_app');}}
+async function vault<T>(db:Db,fn:()=>Promise<T>):Promise<T>{await db.query('SET LOCAL ROLE NONE');try{const result=await fn();await db.query('SET LOCAL ROLE mbos_app');return result;}catch(error){await db.query('SET LOCAL ROLE mbos_app').catch(()=>undefined);throw error;}}
 export async function putPrivateSecret(db:Db,name:string,value:string){return vault(db,async()=>{
  await db.query("delete from vault.secrets where starts_with(name,'MBOS_TIKTOK_STATE_') and created_at < now()-interval '10 minutes'");
  await db.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[name]);

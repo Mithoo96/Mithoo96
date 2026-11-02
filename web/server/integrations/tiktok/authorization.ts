@@ -1,6 +1,6 @@
 import 'server-only';
 import {z} from 'zod';
-import {DomainError} from '@/core/errors';
+import {DomainError,isDomainError} from '@/core/errors';
 import {organizationModules,requireModules} from '@/core/tenancy/modules';
 import {runAsMember,requirePermission,type UserServiceContext} from '@/server/context';
 import {logActivity} from '@/server/services/activity';
@@ -10,9 +10,9 @@ import type {TikTokConfig} from './config';
 const stateSchema=z.object({userId:z.string().uuid(),organizationId:z.string().uuid(),expiresAt:z.number(),issuedAt:z.number(),redirectUri:z.string(),appKey:z.string()});
 export type AuthorizationState=z.infer<typeof stateSchema>;
 export async function requireTikTokOwner(ctx:UserServiceContext){requirePermission(ctx,'integrations.manage');const org=await ctx.db.one<{metadata:Record<string,unknown>}>('select metadata from public.organizations where id=$1',[ctx.organizationId]);requireModules(organizationModules(org.metadata),['CORE','COMMERCE','INTEGRATIONS','TIKTOK_SHOP']);}
-export async function beginAuthorization(userId:string,organizationId:string,config:TikTokConfig){return runAsMember(userId,organizationId,async ctx=>{
- await requireTikTokOwner(ctx);const state=newOAuthState();const now=Date.now();await putPrivateSecret(ctx.db,stateName(state),JSON.stringify({userId,organizationId,issuedAt:now,expiresAt:now+STATE_TTL*1000,redirectUri:config.redirectUri,appKey:config.appKey}));return state;
- });}
+export async function beginAuthorization(userId:string,organizationId:string,config:TikTokConfig){let stage='MEMBERSHIP';try{return await runAsMember(userId,organizationId,async ctx=>{
+ stage='CAPABILITY';await requireTikTokOwner(ctx);const state=newOAuthState();const now=Date.now();stage='STATE_STORAGE';await putPrivateSecret(ctx.db,stateName(state),JSON.stringify({userId,organizationId,issuedAt:now,expiresAt:now+STATE_TTL*1000,redirectUri:config.redirectUri,appKey:config.appKey}));return state;
+ });}catch(error){throw new DomainError(isDomainError(error)?error.code:'INTEGRATION_ERROR','Authorization could not be started safely',{stage});}}
 /** Atomic removal commits before the network call: concurrent/replayed callbacks cannot exchange or attach credentials twice. */
 export async function consumeAuthorization(userId:string,organizationId:string,state:string,config:TikTokConfig):Promise<AuthorizationState>{return runAsMember(userId,organizationId,async ctx=>{
  await requireTikTokOwner(ctx);const raw=await takePrivateState(ctx.db,stateName(state));const result=stateSchema.safeParse(raw?JSON.parse(raw):null);
