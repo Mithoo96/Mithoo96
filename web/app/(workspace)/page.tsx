@@ -1,3 +1,5 @@
+import {CoreHome} from "@/components/core-workspace";
+import {getCoreSummary,getCoreActivity} from "@/server/adapters/core-workspace";
 import { redirect } from "next/navigation";
 import { Hero } from "@/components/hero";
 import { TodayCard, AiActivity, QuickActions, Approvals, NeedsAttention } from "@/components/sections";
@@ -17,7 +19,7 @@ export default async function Home() {
   if (!isOrgRole(role) || !resolvePermissions(role, workspace.extraPermissions).has("dashboard.read")) {
     return <Page><Hero /><p className="glass rounded-[28px] p-8">{role === "EMPLOYEE" ? "Your employee workspace is active. Guided task integration is coming next; owner dashboard access is restricted." : "No active organization workspace is available. Contact your organization administrator."}</p></Page>;
   }
-  if (!hasModules(workspace.profile.organization, ["CORE", "COMMERCE", "SHIPPING", "TEAM"])) return <Page><Hero /><p className="glass rounded-[28px] p-8">No commerce operations are enabled for this workspace.</p></Page>;
+  if (!hasModules(workspace.profile.organization, ["COMMERCE"])) return <CoreHome summary={await getCoreSummary(client,workspace)} activity={await getCoreActivity(client,workspace)} />;
   let summary; let activity;
   try { [summary, activity] = await Promise.all([
     getSessionDashboardSummary(client, workspace),
@@ -25,6 +27,7 @@ export default async function Home() {
   ]); }
   catch { return <Page><Hero /><p role="alert" className="glass rounded-[28px] p-8">Dashboard data could not be loaded. Refresh to try again. No sample values are shown.</p></Page>; }
   const data = toPrototypeDashboard(summary, []);
+  if(!hasModules(workspace.profile.organization,["SHIPPING"]))data.stats=data.stats.filter(s=>!["Ready to Pack","Awaiting Verification","Shipped Today","Delivered"].includes(s.label));
   data.attention.unshift(...[
     { title: `${summary.orders.needAttention} orders need attention`, detail: "Open order exceptions", href: "/orders?filter=attention", tone: "rose" as const },
     { title: `${summary.orders.atRisk} orders at risk`, detail: "High or critical risk and at-risk exceptions", href: "/orders?filter=at-risk", tone: "amber" as const },

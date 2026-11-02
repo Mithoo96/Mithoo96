@@ -12,7 +12,8 @@ import { rankTasksForEmployee, taskStepProgress } from "@/core/tasks/rules";
 import type { EmployeeTaskDetail } from "../services/tasks";
 import { TASK_CATALOG, TASK_TYPES, TASK_PRIORITIES, TASK_STATUSES, type TaskCheck } from "@/core/tasks/catalog";
 import { organizationDayStart } from "../services/dashboard";
-import { requireModules } from "@/core/tenancy/modules";
+import {viewScope} from "./workspace-views";
+import { hasModules, requireModules } from "@/core/tenancy/modules";
 
 const orderSchema = z.object({ id: z.string(), order_number: z.string(), status: z.enum(ORDER_STATUSES), channel: z.string(), placed_at: z.string(), ship_by_at: z.string().nullable(), risk_level: z.string(), exception_state: z.string().nullable() });
 const shipmentSchema = z.object({ id: z.string(), order_id: z.string(), carrier: z.string().nullable(), tracking_number: z.string().nullable(), status: z.string(), verification_status: z.string(), carrier_accepted_at: z.string().nullable() });
@@ -31,7 +32,7 @@ const TASK_COLUMNS = "id,order_id,shipment_id,type,title,status,priority,assigne
 export function fulfillmentScope(workspace: Workspace) {
   const role = workspace.profile.viewer.role;
   if (!isOrgRole(role) || !workspace.profile.organization.id) throw new DomainError("FORBIDDEN", "An active organization membership is required");
-  requireModules(workspace.profile.organization, ["CORE", "COMMERCE", "SHIPPING", "TEAM"]);
+  requireModules(workspace.profile.organization, ["CORE", "COMMERCE"]);
   return { org: workspace.profile.organization.id, user: workspace.profile.viewer.userId, role, permissions: resolvePermissions(role, workspace.extraPermissions) };
 }
 async function read<T>(query: PromiseLike<{ data: unknown; error: unknown }>, schema: z.ZodType<T>): Promise<T> {
@@ -64,7 +65,7 @@ export async function getSessionOrders(client: SupabaseClient, workspace: Worksp
   if (result.error || result.count === null) throw new DomainError("INTEGRATION_ERROR", "Orders could not be loaded. Please retry.");
   const orders = z.array(orderSchema).parse(result.data);
   const ids = orders.map((o) => o.id);
-  const [shipments, tasks] = ids.length ? await Promise.all([
+  const [shipments, tasks] = ids.length && hasModules(workspace.profile.organization,["SHIPPING"]) ? await Promise.all([
     read(client.from("shipments").select(SHIPMENT_COLUMNS).eq("organization_id", org).in("order_id", ids).neq("status", "CANCELLED").limit(1000), z.array(shipmentSchema)),
     read(client.from("tasks").select(TASK_COLUMNS).eq("organization_id", org).in("order_id", ids).not("status", "in", "(COMPLETED,CANCELLED)").limit(1000), z.array(taskSchema)),
   ]) : [[], []];
@@ -76,11 +77,12 @@ export async function getSessionOrderDetail(client: SupabaseClient, workspace: W
   const { org } = fulfillmentScope(workspace);
   const order = await read(client.from("orders").select(ORDER_COLUMNS).eq("organization_id", org).eq("id", orderId).maybeSingle(), orderSchema.nullable());
   if (!order) throw notFound("Order");
+  const shippingEnabled=hasModules(workspace.profile.organization,["SHIPPING"]);
   // Explicitly exclude customer/contact/address, financial and arbitrary metadata columns.
   const [items, shipments, labels, tasks, exceptions, approvals, timeline] = await Promise.all([
     read(client.from("order_items").select("id,sku,name,quantity,product_id").eq("organization_id", org).eq("order_id", orderId).order("id").limit(201), z.array(itemSchema)),
-    read(client.from("shipments").select(SHIPMENT_COLUMNS).eq("organization_id", org).eq("order_id", orderId).order("created_at", { ascending: false }).limit(100), z.array(shipmentSchema)),
-    read(client.from("shipping_labels").select("id,shipment_id,carrier,tracking_number,status,source").eq("organization_id", org).eq("order_id", orderId).order("created_at", { ascending: false }).limit(100), z.array(labelSchema)),
+    shippingEnabled?read(client.from("shipments").select(SHIPMENT_COLUMNS).eq("organization_id", org).eq("order_id", orderId).order("created_at", { ascending: false }).limit(100), z.array(shipmentSchema)):Promise.resolve([]),
+    shippingEnabled?read(client.from("shipping_labels").select("id,shipment_id,carrier,tracking_number,status,source").eq("organization_id", org).eq("order_id", orderId).order("created_at", { ascending: false }).limit(100), z.array(labelSchema)):Promise.resolve([]),
     read(client.from("tasks").select(TASK_COLUMNS).eq("organization_id", org).eq("order_id", orderId).order("created_at", { ascending: false }).limit(100), z.array(taskSchema)),
     read(client.from("exceptions").select("id,type,title,severity,status,recommended_action,deadline_at").eq("organization_id", org).eq("order_id", orderId).order("detected_at", { ascending: false }).limit(100), z.array(exceptionSchema)),
     read(client.from("approvals").select("id,action_type,status,required_role").eq("organization_id", org).eq("order_id", orderId).order("requested_at", { ascending: false }).limit(100), z.array(approvalSchema)),
@@ -93,7 +95,8 @@ export type OperationalDetail = Awaited<ReturnType<typeof getSessionOrderDetail>
 
 /** OWNER/MANAGER workspace activity: only persisted audit records under the user's JWT. */
 export async function getSessionWorkspaceActivity(client: SupabaseClient, workspace: Workspace) {
-  const { org, permissions } = fulfillmentScope(workspace);
+  const org=viewScope(workspace,["CORE"]);
+  const permissions=resolvePermissions(workspace.profile.viewer.role as "OWNER",workspace.extraPermissions);
   if (!permissions.has("activity.read")) throw new DomainError("FORBIDDEN", "Workspace activity is not permitted for this role");
   return read(client.from("activity_logs").select("id,action,occurred_at,summary,order_id")
     .eq("organization_id", org).order("occurred_at", { ascending: false }).order("id").limit(25),
@@ -113,6 +116,7 @@ export async function getSessionEmployees(client: SupabaseClient, workspace: Wor
 }
 
 export async function lookupSessionPackages(client: SupabaseClient, workspace: Workspace, input: unknown) {
+  requireModules(workspace.profile.organization,["SHIPPING"]);
   const { org } = fulfillmentScope(workspace);
   const key = packageLookupKey(input);
   const shipQuery = client.from("shipments").select(SHIPMENT_COLUMNS, { count: "exact" }).eq("organization_id", org).neq("status", "CANCELLED");
@@ -142,6 +146,7 @@ export async function lookupSessionPackages(client: SupabaseClient, workspace: W
 }
 
 export async function getSessionEmployeeWork(client: SupabaseClient, workspace: Workspace) {
+  requireModules(workspace.profile.organization,["SHIPPING"]);
   const { org, user } = fulfillmentScope(workspace);
   const allTasks = await read(client.from("tasks").select(TASK_COLUMNS).eq("organization_id", org).eq("assigned_to", user).in("status", ["OPEN", "IN_PROGRESS", "BLOCKED", "AWAITING_VERIFICATION"]).order("created_at").limit(201), z.array(taskSchema));
   const tasks = allTasks.filter((task) => TASK_CATALOG[task.type].employeeVisible || fulfillmentScope(workspace).permissions.has("tasks.read_all"));
@@ -151,6 +156,7 @@ export async function getSessionEmployeeWork(client: SupabaseClient, workspace: 
 }
 
 export async function getSessionPackingTask(client: SupabaseClient, workspace: Workspace, taskId: string): Promise<EmployeeTaskDetail> {
+  requireModules(workspace.profile.organization,["SHIPPING"]);
   const { org, user } = fulfillmentScope(workspace);
   z.string().uuid().parse(taskId);
   const task = await read(client.from("tasks").select(TASK_COLUMNS).eq("organization_id", org).eq("id", taskId).eq("assigned_to", user).maybeSingle(), taskSchema.nullable());

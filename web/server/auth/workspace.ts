@@ -1,4 +1,5 @@
 import "server-only";
+import {cookies} from "next/headers";
 import { cache } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
@@ -13,7 +14,7 @@ export interface Workspace {
 }
 
 /** Every lookup uses the verified user's cookie-bound client, with RLS. */
-export async function resolveWorkspace(client: SupabaseClient): Promise<Workspace | null> {
+export async function resolveWorkspace(client: SupabaseClient,selectedOrganizationId?:string): Promise<Workspace | null> {
   const { data: { user }, error } = await client.auth.getUser();
   if (error || !user) return null;
   const [membership, profile, admin] = await Promise.all([
@@ -27,7 +28,7 @@ export async function resolveWorkspace(client: SupabaseClient): Promise<Workspac
     return m.status === "ACTIVE" && org && org.status === "ACTIVE" && isOrgRole(m.role) ? [{ org, role: m.role, extra: (m.extra_permissions as string[] | null) ?? [] }] : [];
   });
   // Deterministic active membership, never a client-provided org or role.
-  const selected = memberships[0];
+  const selected = memberships.find(m=>m.org.id===selectedOrganizationId) ?? memberships[0];
   const org = selected?.org;
   const role = selected?.role ?? (admin.data ? "PLATFORM_ADMIN" : "NO_MEMBERSHIP");
   return {
@@ -39,7 +40,8 @@ export async function resolveWorkspace(client: SupabaseClient): Promise<Workspac
 
 export const getWorkspace = cache(async () => {
   const client = await createSupabaseServerClient();
-  const workspace = await resolveWorkspace(client);
+  const workspace = await resolveWorkspace(client,(await cookies()).get("mithoo_workspace")?.value);
   if (!workspace) redirect("/login");
+  if (!workspace.profile.organization.id && workspace.profile.viewer.role !== "PLATFORM_ADMIN") redirect("/onboarding");
   return { client, workspace };
 });

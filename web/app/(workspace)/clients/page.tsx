@@ -1,6 +1,1 @@
-import { getWorkspaceForRoute } from "@/server/auth/modules";
-export default async function ModulePage() {
-  await getWorkspaceForRoute("/clients");
-  const { default: Page } = await import("@/components/prototype/doc-moise/pages/clients");
-  return <Page />;
-}
+import {businessRecords} from '@/server/adapters/business-records';import {ClientsView} from '@/components/business-records';export default async function View(){const{clients}=await businessRecords('/clients');return <ClientsView clients={clients}/>;}

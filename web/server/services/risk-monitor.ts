@@ -171,7 +171,7 @@ export async function runRiskScan(ctx: ServiceContext): Promise<RiskScanResult> 
 }
 
 export async function runRiskScanForAllOrganizations(now?: () => Date): Promise<RiskScanResult[]> {
-  const orgs = await getPool().query<{ id: string }>(`select id from public.organizations where status = 'ACTIVE' order by created_at`);
+  const orgs = await getPool().query<{ id: string }>(`select id from public.organizations where status = 'ACTIVE' and metadata->'enabled_modules' ?& array['COMMERCE','SHIPPING'] order by created_at`);
   const results: RiskScanResult[] = [];
   for (const org of orgs.rows) {
     // One transaction per organization: a failure in one tenant never blocks another.

@@ -1,3 +1,6 @@
+import {hasModules} from "@/core/tenancy/modules";
+import {getCoreTasks} from "@/server/adapters/core-workspace";
+import {CoreWork} from "@/components/core-workspace";
 import Link from "next/link";
 import { getWorkspaceForRoute } from "@/server/auth/modules";
 import { getSessionEmployeeWork } from "@/server/adapters/fulfillment";
@@ -6,6 +9,7 @@ import { StartNextOrder } from "@/components/fulfillment/packing";
 import { PackageLookup } from "@/components/fulfillment/lookup";
 export default async function WorkPage() {
   const { client, workspace } = await getWorkspaceForRoute("/work"); let work;
+  if(!hasModules(workspace.profile.organization,["COMMERCE","SHIPPING"]))return <CoreWork tasks={await getCoreTasks(client,workspace)} />;
   try { work = await getSessionEmployeeWork(client, workspace); }
   catch { return <Page><PageHeader title="Today’s Work" /><p role="alert">Your task queue could not be loaded. Please retry.</p></Page>; }
   return <Page><PageHeader title="Today’s Work" subtitle={`${workspace.profile.organization.name} · One task at a time`} />

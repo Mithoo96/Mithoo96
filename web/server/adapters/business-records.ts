@@ -1,0 +1,3 @@
+import 'server-only';
+import {getWorkspaceForRoute} from '../auth/modules';
+export async function businessRecords(path:string,line?:'TAX'|'INSURANCE'){const{client,workspace}=await getWorkspaceForRoute(path);let query=client.from('business_clients').select('id,display_name,service_line,status,notes').eq('organization_id',workspace.profile.organization.id).order('created_at',{ascending:false}).limit(100);if(line)query=query.eq('service_line',line);const result=await query;if(result.error)throw new Error('Client records unavailable');return {workspace,clients:result.data as {id:string;display_name:string;service_line:string;status:string;notes:string}[]};}

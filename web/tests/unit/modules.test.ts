@@ -19,21 +19,22 @@ it('fails closed for unknown or unconfigured modules and never inherits sales ch
 });
 it('shows both commerce channels without enabling tax/insurance prototype routes',()=>{
  expect(org.enabledCommerceChannels).toEqual(['SHOPIFY','TIKTOK_SHOP']);
- expect(visibleNav([...mainNav,...bottomNav],workspace()).map(n=>n.label)).toEqual(['Home','Orders','Products','Work','Shipping','Customers','Inbox','Insights','Integrations','Settings']);
+ expect(visibleNav([...mainNav,...bottomNav],workspace()).map(n=>n.label)).toEqual(['Home','Orders','Products','Work','Shipping','Team','Customers','Inbox','Activity','Insights','Integrations','Settings']);
  for(const route of ['/clients','/clients/one','/documents','/appointments','/approvals','/apps','/create','/insights/revenue'])expect(workspaceRouteEnabled(org,route)).toBe(false);
  for(const route of ['/orders','/products','/work','/shipping','/customers','/inbox','/insights','/integrations','/settings'])expect(workspaceRouteEnabled(org,route)).toBe(true);
 });
-it('preserves the mixed vertical prototype only behind explicit vertical configuration',()=>{
- const vertical={enabled_modules:['CORE','CRM','TAX','INSURANCE'],prototype_profile:'doc-moise'};
- expect(hasDocMoisePrototype(organizationModules(vertical))).toBe(true);
- expect(workspaceRouteEnabled(organizationModules(vertical),'/documents')).toBe(true);
- expect(workspaceRouteEnabled(organizationModules(vertical),'/integrations')).toBe(false);
- expect(hasDocMoisePrototype(organizationModules({...vertical,enabled_modules:['CORE','CRM','TAX']}))).toBe(false);
+it('composes Tax and Insurance independently without mounting legacy demonstrations',()=>{
+ const tax=organizationModules({enabled_modules:['CORE','CRM','CLIENTS','DOCUMENTS','TAX'],prototype_profile:'doc-moise'});
+ expect(hasDocMoisePrototype(tax)).toBe(false);
+ expect(workspaceRouteEnabled(tax,'/tax')).toBe(true);
+ expect(workspaceRouteEnabled(tax,'/insurance')).toBe(false);
+ expect(workspaceRouteEnabled(tax,'/documents')).toBe(true);
+ expect(workspaceRouteEnabled(tax,'/integrations')).toBe(false);
 });
 it('keeps employees out of organization-wide commerce pages',()=>{
  for(const route of ['/integrations','/products','/shipping','/customers','/insights'])expect(workspaceRoleRouteEnabled('EMPLOYEE',route)).toBe(false);
  expect(workspaceRoleRouteEnabled('EMPLOYEE','/work/tasks/assigned')).toBe(true);
- expect(visibleNav(mainNav,workspace(metadata,'EMPLOYEE')).map(n=>n.label)).toEqual(['Home','Work','Inbox']);
+ expect(visibleNav(mainNav,workspace(metadata,'EMPLOYEE')).map(n=>n.label)).toEqual(['Home','Work','Inbox','Activity']);
 });
 it('rejects disabled loaders before any database query',async()=>{
  const from=vi.fn();const client={from} as unknown as SupabaseClient;

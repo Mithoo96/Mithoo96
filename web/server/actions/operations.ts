@@ -56,20 +56,20 @@ import { memberAction, toActionError } from "./result";
 
 type In<F> = F extends (ctx: never, input: infer I, ...rest: never[]) => unknown ? I : never;
 const uuid = z.string().uuid();
-const fulfillmentMemberAction: typeof memberAction = (org, fn) => memberAction(org, fn, ["CORE", "COMMERCE", "SHIPPING", "TEAM"]);
+const fulfillmentMemberAction: typeof memberAction = (org, fn) => memberAction(org, fn, ["CORE", "COMMERCE", "SHIPPING"]);
 
 // Dashboard & orders
 export async function getDashboardSummary(organizationId: string) {
-  return fulfillmentMemberAction(organizationId, (ctx) => getDashboardSummarySvc(ctx));
+  return memberAction(organizationId, (ctx) => getDashboardSummarySvc(ctx), ["CORE","COMMERCE"]);
 }
 export async function getOrders(organizationId: string, query: In<typeof getOrdersSvc> = {}) {
-  return fulfillmentMemberAction(organizationId, (ctx) => getOrdersSvc(ctx, query));
+  return memberAction(organizationId, (ctx) => getOrdersSvc(ctx, query), ["CORE","COMMERCE"]);
 }
 export async function getOrderDetails(organizationId: string, orderId: string) {
-  return fulfillmentMemberAction(organizationId, (ctx) => getOrderDetailsSvc(ctx, orderId));
+  return memberAction(organizationId, (ctx) => getOrderDetailsSvc(ctx, orderId), ["CORE","COMMERCE"]);
 }
 export async function getOrdersAtRisk(organizationId: string, withinHours?: number) {
-  return fulfillmentMemberAction(organizationId, (ctx) => getOrdersAtRiskSvc(ctx, { withinHours }));
+  return memberAction(organizationId, (ctx) => getOrdersAtRiskSvc(ctx, { withinHours }), ["CORE","COMMERCE"]);
 }
 export async function transitionOrder(organizationId: string, input: In<typeof transitionOrderSvc>) {
   return fulfillmentMemberAction(organizationId, (ctx) => transitionOrderSvc(ctx, input));

@@ -1,0 +1,1 @@
+import {businessRecords} from '@/server/adapters/business-records';import {ClientsView} from '@/components/business-records';export default async function View(){const{clients}=await businessRecords('/insurance','INSURANCE');return <ClientsView clients={clients} line="INSURANCE"/>;}

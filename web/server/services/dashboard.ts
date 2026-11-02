@@ -165,7 +165,7 @@ export async function getSessionDashboardSummary(
   if (!isOrgRole(role)) throw new Error("An active organization membership is required.");
   const permissions = resolvePermissions(role, workspace.extraPermissions);
   if (!permissions.has("dashboard.read")) throw new Error("Dashboard access is not permitted for this role.");
-  requireModules(workspace.profile.organization, ["CORE", "COMMERCE", "SHIPPING", "TEAM"]);
+  requireModules(workspace.profile.organization, ["CORE", "COMMERCE"]);
   const org = workspace.profile.organization.id;
   const tz = workspace.profile.organization.timezone;
   const start = organizationDayStart(now, tz);

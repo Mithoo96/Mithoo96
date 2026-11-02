@@ -12,13 +12,14 @@ export async function proxy(request: NextRequest) {
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   let response = NextResponse.next({ request });
   response.headers.set("Cache-Control", "private, no-store");
+  const isSignup = request.nextUrl.pathname === "/signup";
   const isLogin = request.nextUrl.pathname === "/login";
   if (["/auth/setup", "/auth/callback"].includes(request.nextUrl.pathname)) {
     response.headers.set("Referrer-Policy", "no-referrer");
     return response;
   }
   if (!url || !anonKey) {
-    return isLogin ? response : new NextResponse("Authentication is temporarily unavailable", { status: 503 });
+    return isLogin || isSignup ? response : new NextResponse("Authentication is temporarily unavailable", { status: 503 });
   }
 
   const supabase = createServerClient(url, anonKey, {
@@ -39,7 +40,7 @@ export async function proxy(request: NextRequest) {
   const { data, error } = await supabase.auth.getUser();
   const authenticated = !error && !!data.user;
   let destination: URL | null = null;
-  if (!isLogin && !authenticated) {
+  if (!isLogin && !isSignup && !authenticated) {
     const login = request.nextUrl.clone();
     login.pathname = "/login";
     login.search = "";

@@ -1,6 +1,1 @@
-import { getWorkspaceForRoute } from "@/server/auth/modules";
-export default async function ModulePage() {
-  await getWorkspaceForRoute("/documents");
-  const { default: Page } = await import("@/components/prototype/doc-moise/pages/documents");
-  return <Page />;
-}
+import {businessRecords} from '@/server/adapters/business-records';import {getWorkspaceForRoute} from '@/server/auth/modules';import {DocumentsView} from '@/components/business-records';export default async function Documents(){const{client,workspace}=await getWorkspaceForRoute('/documents');const{clients}=await businessRecords('/clients');const r=await client.from('business_documents').select('id,name,status,client_id').eq('organization_id',workspace.profile.organization.id).order('created_at',{ascending:false}).limit(100);if(r.error)throw new Error('Documents unavailable');return <DocumentsView clients={clients} documents={r.data}/>;}

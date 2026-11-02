@@ -118,3 +118,4 @@ it("does not read revenue for managers and fails on unavailable counts", async (
   failed = true;
   await expect(getSessionDashboardSummary(client, w)).rejects.toThrow("Dashboard data is temporarily unavailable.");
 });
+it('uses only a selected active membership and ignores forged workspace selections',async()=>{const other={...member('EMPLOYEE'),organization_id:'other',organizations:{...member().organizations,id:'other',name:'Other authorized workspace'}};const client=workspaceClient([member(),other]);expect((await resolveWorkspace(client,'other'))?.profile.organization.id).toBe('other');expect((await resolveWorkspace(client,'other'))?.profile.viewer.role).toBe('EMPLOYEE');expect((await resolveWorkspace(client,'forged'))?.profile.organization.id).toBe('zile');});

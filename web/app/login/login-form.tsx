@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 export function LoginForm({ next }: { next: string }) {
@@ -26,7 +27,7 @@ export function LoginForm({ next }: { next: string }) {
       <label className="mt-5 block text-[14px]">Password<input name="password" type="password" autoComplete="current-password" required disabled={pending} className="mt-2 h-12 w-full rounded-2xl bg-white px-4 ring-1 ring-hair" /></label>
       {error && <p role="alert" className="mt-4 text-[14px] text-rose-600">{error}</p>}
       <button disabled={pending} aria-busy={pending} className="mt-7 h-12 w-full rounded-full bg-ink text-[15px] font-medium text-white disabled:opacity-60">{pending ? "Signing in…" : "Sign in"}</button>
-      <p className="mt-6 text-center text-[11px] text-mute">Powered by Mithoo</p>
+      <Link href="/signup" className="mt-5 block text-center text-sm underline">Create an account</Link><p className="mt-6 text-center text-[11px] text-mute">Powered by Mithoo</p>
     </form>
   </main>;
 }
