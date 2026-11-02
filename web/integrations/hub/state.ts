@@ -2,7 +2,7 @@ import {hasModules,type ModuleAccess} from '@/core/tenancy/modules';
 import type {IntegrationProvider,IntegrationAction} from './catalog';
 export type ConnectionState='Connected'|'Not Connected'|'Needs Attention'|'Coming Soon';
 export interface HubConnection{provider:string;status:string;is_mock:boolean;verified_at:string|null;last_sync_at:string|null;expires_at?:string|null}
-export interface HubAction{type:IntegrationAction|'coming-soon';label:string;disabled:boolean;href?:string}
+export interface HubAction{type:IntegrationAction|'coming-soon';label:string;disabled:boolean;href?:string;formAction?:string}
 export function providerConnectionState(provider:IntegrationProvider,access:ModuleAccess,connections:readonly HubConnection[]):ConnectionState{
  if(!hasModules(access,provider.requiredCapabilities))return 'Coming Soon';
  const real=connections.filter(c=>!c.is_mock&&!c.provider.endsWith('_MOCK')&&c.provider===provider.id);
