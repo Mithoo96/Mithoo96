@@ -1,28 +1,31 @@
+import {orderActionAccess} from '@/server/adapters/order-action-access';
+import {orderRenderInspection} from '@/server/adapters/order-render-inspection';
+import {OrderRenderInspectionPanel} from '@/components/fulfillment/order-render-inspection';
 import {RefreshAlerts} from '@/components/fulfillment/refresh-alerts';
 import {getOrderManagement} from '@/server/adapters/order-management';
 import {OrderOperations} from '@/components/fulfillment/order-operations';
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getWorkspaceForRoute } from "@/server/auth/modules";
-import { getSessionOrderDetail, getSessionEmployees, fulfillmentScope } from "@/server/adapters/fulfillment";
+import { getSessionOrderDetail, getSessionEmployees } from "@/server/adapters/fulfillment";
 import { Page, PageHeader, Card, StatusBadge } from "@/components/ui/primitives";
 import { Assignment } from "@/components/fulfillment/assignment";
 import { Deadline, OrderState } from "@/components/fulfillment/status";
-export default async function OrderDetail({ params }: { params: Promise<{ id: string }> }) {
+export default async function OrderDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams?:Promise<{orderUiCheck?:string}> }) {
   const { client, workspace } = await getWorkspaceForRoute("/orders"); const { id } = await params;
   let detail; let employees;
   try { [detail, employees] = await Promise.all([getSessionOrderDetail(client, workspace, id), workspace.profile.organization.enabledModules.includes("TEAM")?getSessionEmployees(client, workspace):Promise.resolve([])]); }
   catch (error) { if (error instanceof Error && (error.name === "ZodError" || "code" in error && error.code === "NOT_FOUND")) notFound(); return <Page><PageHeader title="Order unavailable" /><p role="alert">We could not load this order. Please retry.</p></Page>; }
-  const shippingEnabled=workspace.profile.organization.enabledModules.includes("SHIPPING");
-  const canAssign = fulfillmentScope(workspace).permissions.has("tasks.assign");
-  const canOperate=['OWNER','MANAGER'].includes(workspace.profile.viewer.role)&&fulfillmentScope(workspace).permissions.has('orders.write')&&fulfillmentScope(workspace).permissions.has('orders.transition');
+  const {shippingEnabled,canAssign,canOperate}=orderActionAccess(workspace);
+  const inspecting=(await searchParams)?.orderUiCheck==='1';
   let management:Awaited<ReturnType<typeof getOrderManagement>>|null=null;
   if(canOperate){try{management=await getOrderManagement(client,workspace,id);}catch{/* Optional context must not hide the primary next action. */}}
   return <Page><PageHeader title={detail.order.order_number} subtitle="Operational order details" back={<Link href={canAssign ? "/orders" : "/work"} className="mb-3 inline-block text-[13px] text-mute">← {canAssign ? "Orders" : "Today’s Work"}</Link>} actions={<OrderState status={detail.order.status} />} />
+    {inspecting&&<OrderRenderInspectionPanel orderId={id} server={orderRenderInspection(workspace,detail.order,canAssign?employees.length:null)}/>}
     {(detail.order.demo==='true'||detail.order.test_only==='true'||/^TEST/i.test(detail.order.order_number))&&<p className="mb-5 text-sm text-amber-800">Fictional demo/test order — not a live customer transaction.</p>}
     {shippingEnabled&&canOperate&&<OrderOperations orderId={id} status={detail.order.status} userId={workspace.profile.viewer.userId} employees={employees} tasks={detail.tasks} data={management}/>}
     {shippingEnabled&&canOperate&&<RefreshAlerts orderId={id}/>}
-    {shippingEnabled&&workspace.profile.viewer.role==='EMPLOYEE'&&<Card className="mb-5 space-y-3 p-6"><h2 className="text-lg font-semibold">Next Action</h2><p className="text-sm">Current state: {detail.order.status.replaceAll('_',' ')}</p><p className="text-sm">Responsible: You, for your assigned work only. Follow the guided packing checks; a genuine package photo is required before completion.</p>{detail.tasks.filter(t=>t.assigned_to===workspace.profile.viewer.userId&&!['COMPLETED','CANCELLED'].includes(t.status)).map(t=><Link key={t.id} href={`/work/tasks/${t.id}`} className="inline-flex rounded-full bg-ink px-5 py-3 text-sm text-white">Open assigned packing task</Link>)}</Card>}
+    {shippingEnabled&&workspace.profile.viewer.role==='EMPLOYEE'&&<Card className="mb-5 space-y-3 p-6"><h2 data-order-next-action className="text-lg font-semibold">Next Action</h2><p className="text-sm">Current state: {detail.order.status.replaceAll('_',' ')}</p><p className="text-sm">Responsible: You, for your assigned work only. Follow the guided packing checks; a genuine package photo is required before completion.</p>{detail.tasks.filter(t=>t.assigned_to===workspace.profile.viewer.userId&&!['COMPLETED','CANCELLED'].includes(t.status)).map(t=><Link key={t.id} href={`/work/tasks/${t.id}`} className="inline-flex rounded-full bg-ink px-5 py-3 text-sm text-white">Open assigned packing task</Link>)}</Card>}
     {shippingEnabled&&<Card className="mb-5 p-6"><h2 className="mb-3 text-[18px] font-semibold">Shipping deadline</h2><Deadline at={detail.order.ship_by_at} status={detail.order.status} timezone={workspace.profile.organization.timezone} /><p className="mt-3 text-[12px] text-mute">{detail.order.channel} · stored deadline · Stored provider/manual context. Live connection status is shown in Integrations.</p></Card>}
     <Card className="mb-5 p-6"><h2 className="mb-3 text-[18px] font-semibold">Products & quantities</h2>{detail.items.map((item) => <div key={item.id} className="flex min-h-12 items-center justify-between gap-4 border-b border-hair py-3"><div><p className="font-medium">{item.name}</p><p className="text-[13px] text-mute">{item.sku}</p></div><span className="text-[20px] font-semibold">× {item.quantity}</span></div>)}</Card>
     <Card className="mb-5 p-6"><h2 id="employee-responsibility" className="mb-3 text-[18px] font-semibold">Employee responsibility</h2>{detail.tasks.length === 0 && <p>No task assigned.</p>}{detail.tasks.map((task) => {
