@@ -10,7 +10,7 @@ function visible(element:HTMLElement|null){
 export function OrderRenderInspectionPanel({orderId,server}:{orderId:string;server:OrderRenderInspection}){
  const[report,setReport]=useState<Record<string,unknown>|null>(null);const[checks,setChecks]=useState(0);
  useEffect(()=>{let cancelled=false;async function inspect(){
- let fresh:unknown;try{const r=await fetch(`/api/health/order-access?orderId=${encodeURIComponent(orderId)}`,{cache:'no-store',credentials:'same-origin'});fresh=await r.json();}catch{fresh={error:'READ_ONLY_CHECK_UNAVAILABLE'};}
+ let fresh:unknown;try{const r=await fetch(`/api/health/order-access?orderId=${encodeURIComponent(orderId)}${server.deployment!=='UNAVAILABLE'?'&dpl='+encodeURIComponent(server.deployment):''}`,{cache:'no-store',credentials:'same-origin'});fresh=await r.json();}catch{fresh={error:'READ_ONLY_CHECK_UNAVAILABLE'};}
  await new Promise(resolve=>setTimeout(resolve,750));
  const marker=document.querySelector<HTMLElement>('[data-order-next-action]');const button=document.querySelector<HTMLElement>('[data-order-verify]');
  if(!cancelled)setReport({page:server,freshRequest:fresh,pathMatches:location.pathname===`/orders/${orderId}`,nextActionPresent:!!marker,nextActionVisible:visible(marker),verifyButtonPresent:!!button,verifyButtonVisible:visible(button),verifyButtonDisabled:button instanceof HTMLButtonElement?button.disabled:null});
