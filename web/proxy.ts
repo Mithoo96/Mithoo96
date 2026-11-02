@@ -76,5 +76,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/|favicon.ico|images/|api/webhooks/|api/cron/|api/health).*)"],
+  matcher: ["/((?!_next/|favicon.ico|images/|api/webhooks/|api/cron/|api/health|api/integrations/tiktok/).*)"],
 };

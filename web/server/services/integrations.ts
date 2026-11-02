@@ -75,7 +75,7 @@ export async function getIntegrationConnections(ctx: ServiceContext) {
     isMock: r.is_mock,
     externalAccountId: r.external_account_id,
     // Expose only whether a secret is configured, never the value or reference name.
-    secretConfigured: integrationSecret(r.credentials_ref) !== null,
+    secretConfigured: /^VAULT_[A-F0-9]{32}$/.test(r.credentials_ref??'') || integrationSecret(r.credentials_ref) !== null,
     lastSyncAt: r.last_sync_at?.toISOString() ?? null,
     lastError: r.last_error,
   }));

@@ -20,12 +20,14 @@ never count as live, even if an inconsistent row sets is_mock=false. Connected
 requires a ready, live implementation plus real ACTIVE records with valid
 server-recorded connection verification timestamps. ERROR, unverified ACTIVE
 or unsupported ACTIVE records are Needs Attention. Planned integrations are
-Coming Soon. Shopify/TikTok keep Not Connected because their adapter boundaries
-and connection storage exist, but connection setup is explicitly disabled.
+Coming Soon. Shopify remains Not Connected with setup disabled. TikTok Shop now has seller
+authorization routes; setup is available only when server app configuration is
+valid. Connected additionally requires an unexpired authorization. Authorization
+does not enable the unimplemented order-sync adapter.
 Available means an executable authorized connection action, not a roadmap card.
 
-No live OAuth or credential capture is implemented here. All current providers
-remain unavailable for connection. View Details explains status/access; Connect,
+TikTok Shop seller authorization is implemented separately from commerce sync;
+all other current providers remain unavailable for connection. View Details explains status/access; Connect,
 Manage and Reconnect can only appear when a ready provider registers implemented
 internal routes and matching actions. Those future routes must authenticate,
 reauthorize capabilities/permissions and verify OAuth/credential state server-side

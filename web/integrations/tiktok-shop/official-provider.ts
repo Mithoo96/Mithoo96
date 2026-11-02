@@ -1,11 +1,12 @@
 /**
- * Official TikTok Shop Open API adapter — NOT IMPLEMENTED.
+ * Official TikTok Shop business-resource adapter — NOT IMPLEMENTED.
+ * Seller authorization is implemented separately in server/integrations/tiktok.
  *
  * Implement against TikTok Shop Partner Center documentation once the
  * business has an approved app (app key/secret, shop authorization via OAuth).
  * Requirements for the implementer:
  *   * Use only the official API; no scraping, browser sessions or cookies.
- *   * Read the app secret / access tokens via integrationSecret(credentials_ref).
+ *   * Resolve credentials_ref through server-only storage (Vault for authorized shops).
  *   * Implement TikTok's documented webhook signature scheme in verifyWebhook.
  *   * Map TikTok order/package statuses into ImportedOrder.platformStatus.
  */

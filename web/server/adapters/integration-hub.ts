@@ -1,4 +1,5 @@
 import 'server-only';
+import {tikTokConfig} from '@/server/integrations/tiktok/config';
 import type {SupabaseClient} from '@supabase/supabase-js';
 import {z} from 'zod';
 import type {Workspace} from '../auth/workspace';
@@ -9,16 +10,16 @@ import {visibleProviders,prioritizedCategories} from '@/integrations/hub/catalog
 import {providerConnectionState,providerPrimaryAction} from '@/integrations/hub/state';
 import {providerLogo} from '@/integrations/hub/logos';
 import {DomainError} from '@/core/errors';
-const connectionSchema=z.object({provider:z.string(),status:z.enum(['ACTIVE','PENDING','ERROR','DISABLED']),is_mock:z.boolean(),verified_at:z.string().nullable(),last_sync_at:z.string().nullable()});
+const connectionSchema=z.object({provider:z.string(),status:z.enum(['ACTIVE','PENDING','ERROR','DISABLED']),is_mock:z.boolean(),verified_at:z.string().nullable(),last_sync_at:z.string().nullable(),expires_at:z.string().nullable().optional()});
 export async function getIntegrationHub(client:SupabaseClient,workspace:Workspace){
  const org=viewScope(workspace,['CORE'],'integrations.read');
  const access=workspace.profile.organization;
- const providers=visibleProviders(access);
+ const providers=visibleProviders(access).map(p=>p.id==='TIKTOK_SHOP'&&!tikTokConfig()?{...p,implementation:{...p.implementation,liveImplemented:false}}:p);
  const eligible=providers.filter(p=>hasModules(access,p.requiredCapabilities));
  const ids=eligible.flatMap(p=>[p.id,...p.aliases??[]]);
  let connections:z.infer<typeof connectionSchema>[]=[];
  if(ids.length){
-  const result=await client.from('integration_connections').select('provider,status,is_mock,last_sync_at,verified_at:metadata->>connection_verified_at').eq('organization_id',org).in('provider',ids).limit(501);
+  const result=await client.from('integration_connections').select('provider,status,is_mock,last_sync_at,verified_at:metadata->>connection_verified_at,expires_at:metadata->>authorization_expires_at').eq('organization_id',org).in('provider',ids).limit(501);
   if(result.error)throw new DomainError('INTEGRATION_ERROR','Connection status is temporarily unavailable');
   connections=z.array(connectionSchema).parse(result.data);
   if(connections.length>500)throw new DomainError('VALIDATION_FAILED','Connection status requires administrator review');
