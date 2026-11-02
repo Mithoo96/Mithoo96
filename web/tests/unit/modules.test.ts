@@ -15,7 +15,7 @@ it('fails closed for unknown or unconfigured modules and never inherits sales ch
  expect(organizationModules({}).enabledModules).toEqual(['CORE']);
  expect(organizationModules({}).enabledCommerceChannels).toEqual([]);
  expect(organizationModules({enabled_modules:['CORE','unknown'],commerce_channels:['other']}).enabledModules).toEqual(['CORE']);
- for(const route of ['/orders','/products','/shipping','/integrations','/documents'])expect(workspaceRouteEnabled(organizationModules({}),route)).toBe(false);
+ for(const route of ['/orders','/products','/shipping','/documents'])expect(workspaceRouteEnabled(organizationModules({}),route)).toBe(false);
 });
 it('shows both commerce channels without enabling tax/insurance prototype routes',()=>{
  expect(org.enabledCommerceChannels).toEqual(['SHOPIFY','TIKTOK_SHOP']);
@@ -29,7 +29,7 @@ it('composes Tax and Insurance independently without mounting legacy demonstrati
  expect(workspaceRouteEnabled(tax,'/tax')).toBe(true);
  expect(workspaceRouteEnabled(tax,'/insurance')).toBe(false);
  expect(workspaceRouteEnabled(tax,'/documents')).toBe(true);
- expect(workspaceRouteEnabled(tax,'/integrations')).toBe(false);
+ expect(workspaceRouteEnabled(tax,'/integrations')).toBe(true);
 });
 it('keeps employees out of organization-wide commerce pages',()=>{
  for(const route of ['/integrations','/products','/shipping','/customers','/insights','/orders/new'])expect(workspaceRoleRouteEnabled('EMPLOYEE',route)).toBe(false);

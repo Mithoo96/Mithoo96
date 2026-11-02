@@ -18,7 +18,7 @@ export function requireModules(access:ModuleAccess,required:readonly Organizatio
 export function hasDocMoisePrototype(access:ModuleAccess){void access;return false;}
 export const ROUTE_CAPABILITIES:Record<string,readonly OrganizationModule[]>={
  "/":["CORE"],"/settings":["CORE"],"/work":["CORE"],"/inbox":["CORE"],"/activity":["CORE"],"/insights":["CORE"],
- "/orders":["CORE","COMMERCE"],"/products":["CORE","COMMERCE"],"/customers":["CORE","COMMERCE"],"/shipping":["CORE","COMMERCE","SHIPPING"],"/integrations":["CORE","COMMERCE","INTEGRATIONS"],"/team":["CORE","TEAM"],
+ "/orders":["CORE","COMMERCE"],"/products":["CORE","COMMERCE"],"/customers":["CORE","COMMERCE"],"/shipping":["CORE","COMMERCE","SHIPPING"],"/integrations":["CORE"],"/team":["CORE","TEAM"],
  "/clients":["CORE","CRM","CLIENTS"],"/documents":["CORE","DOCUMENTS"],"/tax":["CORE","CRM","CLIENTS","TAX"],"/insurance":["CORE","CRM","CLIENTS","INSURANCE"]};
 export function workspaceRouteEnabled(access:ModuleAccess,path:string){const clean=path.split("?")[0];const root="/"+(clean.split("/").filter(Boolean)[0]??"");if(root==="/insights"&&clean!=="/insights")return false;if(clean==="/orders/new")return hasModules(access,["CORE","COMMERCE","SHIPPING"]);const required=ROUTE_CAPABILITIES[root];return !!required&&hasModules(access,required);}
 export function workspaceRoleRouteEnabled(role:string,path:string){if(role==="OWNER"||role==="MANAGER")return true;if(role!=="EMPLOYEE")return path==="/"||path==="/settings";if(path==="/orders/new")return false;return path==="/"||["/work","/orders","/inbox","/settings","/activity"].some(root=>path===root||path.startsWith(root+"/"));}

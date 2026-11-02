@@ -13,7 +13,7 @@ test('Zile commerce workspace excludes vertical prototypes and exposes truthful 
  for(const route of ['/products','/shipping','/customers','/inbox','/insights','/settings','/integrations']){
   const response=await page.goto(route);expect(response?.status()).toBe(200);await page.keyboard.press('Escape');await expect(page.locator('body')).not.toContainText(unrelated);await expect(page.getByRole('heading',{name:/Something went wrong|Application error/i})).toHaveCount(0);
  }
- await expect(page.getByRole('heading',{name:'Shopify',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'TikTok Shop',exact:true})).toBeVisible();await expect(page.getByText('Not Connected',{exact:true})).toHaveCount(2);await expect(page.getByText('Connected',{exact:true})).toHaveCount(0);
+ await expect(page.getByRole('heading',{name:'Shopify',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'TikTok Shop',exact:true})).toBeVisible();await expect(page.locator('[data-testid=integration-status][data-state="Not Connected"]')).toHaveCount(2);await expect(page.locator('[data-testid=integration-status][data-state="Connected"]')).toHaveCount(0);
  await page.screenshot({path:testInfo.outputPath('sales-channels.png'),fullPage:true});
  await page.getByRole('button',{name:'Search',exact:true}).first().click();await expect(page.getByRole('dialog')).not.toContainText(unrelated);await page.keyboard.press('Escape');
  await page.getByRole('button',{name:'Notifications',exact:true}).first().click();await expect(page.getByRole('dialog')).not.toContainText(unrelated);await page.keyboard.press('Escape');

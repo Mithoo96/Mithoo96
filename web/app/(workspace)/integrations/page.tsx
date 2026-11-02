@@ -1,5 +1,11 @@
 import {getWorkspaceForRoute} from '@/server/auth/modules';
-import {getWorkspaceConnections} from '@/server/adapters/workspace-views';
-import {commerceProviders,commerceConnectionState} from '@/integrations/commerce/catalog';
+import {getIntegrationHub} from '@/server/adapters/integration-hub';
+import {IntegrationHub} from '@/components/integration-hub';
 import {Page,PageHeader,Card} from '@/components/ui/primitives';
-export default async function Integrations(){const{client,workspace}=await getWorkspaceForRoute('/integrations');const rows=await getWorkspaceConnections(client,workspace);return <Page><PageHeader title="Integrations" subtitle="Sales channels · one normalized commerce and fulfillment engine"/><div className="grid gap-5 md:grid-cols-2">{workspace.profile.organization.enabledCommerceChannels.map(channel=><Card key={channel} className="p-6"><h2 className="text-xl font-semibold">{commerceProviders[channel].name}</h2><p className="mt-3 text-sm font-medium">{commerceConnectionState(channel,rows)}</p><p className="mt-2 text-sm text-mute">Live connection setup is not enabled in this preview. No channel credentials are requested.</p><ul className="mt-5 space-y-2 text-sm text-mute">{commerceProviders[channel].planned.map(item=><li key={item}>{item}</li>)}</ul></Card>)}</div><p className="mt-5 text-sm text-mute">Demo adapters do not represent live store connections. Imported orders retain their channel and external reference; fulfillment remains provider-neutral.</p></Page>;}
+export default async function Integrations(){
+ const{client,workspace}=await getWorkspaceForRoute('/integrations');
+ let data;
+ try{data=await getIntegrationHub(client,workspace);}
+ catch{return <Page><PageHeader title="Integrations" subtitle="Your tools, one workspace."/><Card className="p-8"><p role="alert">Connection status is temporarily unavailable. Refresh to try again.</p></Card></Page>;}
+ return <IntegrationHub data={data}/>;
+}
