@@ -15,7 +15,7 @@ import { organizationDayStart } from "../services/dashboard";
 import {viewScope} from "./workspace-views";
 import { hasModules, requireModules } from "@/core/tenancy/modules";
 
-const orderSchema = z.object({ id: z.string(), order_number: z.string(), status: z.enum(ORDER_STATUSES), channel: z.string(), placed_at: z.string(), ship_by_at: z.string().nullable(), risk_level: z.string(), exception_state: z.string().nullable() });
+const orderSchema = z.object({ id: z.string(), order_number: z.string(), status: z.enum(ORDER_STATUSES), channel: z.string(), placed_at: z.string(), ship_by_at: z.string().nullable(), risk_level: z.string(), exception_state: z.string().nullable(), demo: z.string().nullable().optional(), test_only: z.string().nullable().optional() });
 const shipmentSchema = z.object({ id: z.string(), order_id: z.string(), carrier: z.string().nullable(), tracking_number: z.string().nullable(), status: z.string(), verification_status: z.string(), carrier_accepted_at: z.string().nullable() });
 const taskSchema = z.object({ id: z.string(), order_id: z.string().nullable(), shipment_id: z.string().nullable(), type: z.enum(TASK_TYPES), title: z.string(), status: z.enum(TASK_STATUSES), priority: z.enum(TASK_PRIORITIES), assigned_to: z.string().nullable(), due_at: z.string().nullable(), created_at: z.string(), required_evidence: z.array(z.string()), required_checks: z.array(z.string()), instructions: z.array(z.object({ key: z.string(), text: z.string(), check: z.string().nullable() })), checks_state: z.record(z.string(), z.object({ passed: z.boolean(), value: z.string().nullable().optional() }).passthrough()).nullable(), verification_status: z.string() });
 const itemSchema = z.object({ id: z.string(), sku: z.string(), name: z.string(), quantity: z.number(), product_id: z.string().nullable() });
@@ -25,7 +25,7 @@ const approvalSchema = z.object({ id: z.string(), action_type: z.string(), statu
 const activitySchema = z.object({ id: z.string(), action: z.string(), occurred_at: z.string(), summary: z.string() });
 export type OperationalOrder = z.infer<typeof orderSchema>;
 export type OperationalTask = z.infer<typeof taskSchema>;
-const ORDER_COLUMNS = "id,order_number,status,channel,placed_at,ship_by_at,risk_level,exception_state";
+const ORDER_COLUMNS = "id,order_number,status,channel,placed_at,ship_by_at,risk_level,exception_state,demo:metadata->>source_is_mock,test_only:metadata->>test_only";
 const SHIPMENT_COLUMNS = "id,order_id,carrier,tracking_number,status,verification_status,carrier_accepted_at";
 const TASK_COLUMNS = "id,order_id,shipment_id,type,title,status,priority,assigned_to,due_at,created_at,required_evidence,required_checks,instructions,checks_state,verification_status";
 

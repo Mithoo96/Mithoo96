@@ -105,6 +105,9 @@ const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? o
 export function toPrototypeDashboard(summary: DashboardSummary, exceptions: readonly ExceptionView[], now: Date = new Date()): PrototypeDashboard {
   const o = summary.orders;
   const stats: PrototypeStat[] = [
+    {label:"Ready to Ship",value:o.readyToShip,href:"/orders?status=READY_TO_SHIP"},
+    {label:"Open Exceptions",value:summary.exceptions.open,href:"/inbox"},
+    {label:"Overdue Tasks",value:summary.tasks.overdue,href:"/team"},
     { label: "Orders Today", value: o.today, href: "/orders?filter=today" },
     { label: "Processing", value: o.inPacking, href: "/orders?filter=processing" },
     { label: "Employee Tasks", value: summary.tasks.open + summary.tasks.inProgress + summary.tasks.awaitingSignoff, href: "/work" },

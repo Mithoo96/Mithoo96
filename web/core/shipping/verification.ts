@@ -29,7 +29,9 @@ export type ShipmentVerificationStatus = (typeof SHIPMENT_VERIFICATION_STATUSES)
 
 export const TRACKING_EVENT_SOURCES = ["CARRIER_API", "PLATFORM", "WEBHOOK", "MANUAL", "MOCK"] as const;
 export type TrackingEventSource = (typeof TRACKING_EVENT_SOURCES)[number];
-export const CARRIER_PROOF_SOURCES: readonly TrackingEventSource[] = ["CARRIER_API", "PLATFORM", "WEBHOOK", "MOCK"];
+export const LIVE_CARRIER_PROOF_SOURCES: readonly TrackingEventSource[] = ["CARRIER_API", "PLATFORM", "WEBHOOK"];
+/** Explicit mock adapters retain their test semantics; live analytics/alerts exclude them. */
+export const CARRIER_PROOF_SOURCES: readonly TrackingEventSource[] = [...LIVE_CARRIER_PROOF_SOURCES, "MOCK"];
 
 export const TRACKING_NORMALIZED_STATUSES = [
   "LABEL_CREATED",

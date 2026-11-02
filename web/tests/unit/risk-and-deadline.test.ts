@@ -30,14 +30,14 @@ const order = (o: Partial<OrderRiskSnapshot["order"]> = {}): OrderRiskSnapshot["
   id: "o1", orderNumber: "ZB-1", status: "READY_TO_PACK", statusChangedAt: inMin(-10), shipByAt: inMin(48 * 60), readyToShipAt: null, platformFlags: {}, ...o,
 });
 const shipment = (o: Partial<NonNullable<OrderRiskSnapshot["shipment"]>> = {}) => ({
-  id: "s1", carrier: "USPS", expectedCarrier: "USPS", trackingNormalized: "9400", verificationStatus: "UNVERIFIED", duplicateOfOrderNumbers: [], carrierAccepted: false, ...o,
+  id: "s1", carrier: "USPS", expectedCarrier: "USPS", trackingNormalized: "9400", verificationStatus: "UNVERIFIED", duplicateOfOrderNumbers: [], carrierAccepted: false, carrierDataAvailable: true, ...o,
 });
 const types = (s: OrderRiskSnapshot) => detectOrderRisks(s, NOW, config).map((c) => c.type);
 
 describe("risk rules", () => {
-  it("raises deadline risk for unverified packages only", () => {
+  it("keeps a shipping deadline open until actual shipment", () => {
     expect(types({ order: order({ shipByAt: inMin(120) }), shipment: shipment() })).toContain("SHIPMENT_DEADLINE_APPROACHING");
-    expect(types({ order: order({ status: "READY_TO_SHIP", shipByAt: inMin(120), readyToShipAt: inMin(-5) }), shipment: shipment({ verificationStatus: "AWAITING_CARRIER" }) })).not.toContain("SHIPMENT_DEADLINE_APPROACHING");
+    expect(types({ order: order({ status: "READY_TO_SHIP", shipByAt: inMin(120), readyToShipAt: inMin(-5) }), shipment: shipment({ verificationStatus: "AWAITING_CARRIER" }) })).toContain("SHIPMENT_DEADLINE_APPROACHING");
   });
 
   it("detects missing and duplicate tracking", () => {
@@ -50,6 +50,12 @@ describe("risk rules", () => {
     expect(types({ order: order({ status: "PACKED", statusChangedAt: inMin(-5) }), shipment: shipment() })).not.toContain("LABEL_NOT_VERIFIED");
     expect(types({ order: order({ status: "READY_TO_SHIP", readyToShipAt: inMin(-300) }), shipment: shipment({ verificationStatus: "AWAITING_CARRIER" }) })).toContain("CARRIER_NOT_RECEIVED");
     expect(types({ order: order({ status: "READY_TO_SHIP", readyToShipAt: inMin(-300) }), shipment: shipment({ verificationStatus: "CARRIER_ACCEPTED", carrierAccepted: true }) })).not.toContain("CARRIER_NOT_RECEIVED");
+  });
+
+  it("does not invent carrier non-acceptance without real provider observations", () => {
+    const ready = order({ status: "READY_TO_SHIP", readyToShipAt: inMin(-900) });
+    expect(types({order: ready, shipment: shipment({carrierDataAvailable: false})})).not.toContain("CARRIER_NOT_RECEIVED");
+    expect(types({order: ready, shipment: shipment({carrierDataAvailable: undefined})})).not.toContain("CARRIER_NOT_RECEIVED");
   });
 
   it("raises platform flags (refund risk)", () => {

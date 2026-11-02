@@ -49,10 +49,12 @@ export interface OrderRiskSnapshot {
     readonly verificationStatus: string;
     readonly duplicateOfOrderNumbers: readonly string[];
     readonly carrierAccepted: boolean;
+    /** A real carrier/platform observation exists; manual/mock timestamps are not proof. */
+    readonly carrierDataAvailable?: boolean;
   } | null;
 }
 
-const DONE: readonly OrderStatus[] = ["READY_TO_SHIP", "SHIPPED", "DELIVERED", "CANCELLED"];
+const DONE: readonly OrderStatus[] = ["SHIPPED", "DELIVERED", "CANCELLED"];
 
 function candidate(
   type: ExceptionType,
@@ -190,7 +192,7 @@ export function detectOrderRisks(snapshot: OrderRiskSnapshot, now: Date, config:
   }
 
   // Ready to ship (or marked shipped) but no carrier acceptance in carrier data.
-  if ((order.status === "READY_TO_SHIP" || order.status === "SHIPPED") && !shipment.carrierAccepted) {
+  if ((order.status === "READY_TO_SHIP" || order.status === "SHIPPED") && shipment.carrierDataAvailable === true && !shipment.carrierAccepted) {
     const since = order.readyToShipAt ?? order.statusChangedAt;
     const waited = Math.floor((now.getTime() - since.getTime()) / 60_000);
     if (waited >= config.carrierAcceptanceGraceMinutes) {

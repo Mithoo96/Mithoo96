@@ -1,2 +1,21 @@
 import {beforeAll,afterAll,it,expect} from 'vitest';import {runAsMember} from '@/server/context';import {createManualOrder} from '@/server/services/manual-orders';import {closeDatabase,describeDb,freshDatabase,ids} from '../helpers/db';
 describeDb('manual commerce entry',()=>{beforeAll(freshDatabase);afterAll(closeDatabase);it('creates one normalized manual order and a legal packing task without carrier proof',async()=>{const input={requestId:crypto.randomUUID(),orderNumber:'TEST-ONLY-MANUAL',customerName:'TEST ONLY Customer',address:'1 Fictional Avenue',city:'Test City',postalCode:'00000',country:'US',items:[{sku:'TEST-SKU',name:'Test product',quantity:2}],carrier:'USPS',tracking:'9400000000000000009988',labelConfirmed:true,assigneeId:ids.emp2};const first=await runAsMember(ids.owner,ids.org,ctx=>createManualOrder(ctx,input));const repeated=await runAsMember(ids.owner,ids.org,ctx=>createManualOrder(ctx,input));expect(repeated.id).toBe(first.id);const order=await runAsMember(ids.owner,ids.org,ctx=>ctx.db.one("select channel,status,shipped_at from public.orders where id=$1",[first.id]));expect(order).toEqual({channel:'MANUAL',status:'READY_TO_PACK',shipped_at:null});const shipment=await runAsMember(ids.owner,ids.org,ctx=>ctx.db.one("select carrier_accepted_at,status from public.shipments where order_id=$1",[first.id]));expect(shipment).toEqual({carrier_accepted_at:null,status:'LABEL_READY'});await expect(runAsMember(ids.emp1,ids.org,ctx=>createManualOrder(ctx,{...input,requestId:crypto.randomUUID()}))).rejects.toMatchObject({code:'FORBIDDEN'});});});
+
+describeDb('operational manual intake guards',()=>{
+ beforeAll(freshDatabase);afterAll(closeDatabase);
+ const make=(extra:Record<string,unknown>={})=>({requestId:crypto.randomUUID(),orderNumber:`TEST-ONLY-${crypto.randomUUID()}`,channel:'SHOPIFY',externalOrderNumber:`EXT-${crypto.randomUUID()}`,customerName:'TEST ONLY Recipient',customerEmail:'fictional@example.invalid',customerPhone:'0000000000',address:'1 Fictional Avenue',city:'Test City',postalCode:'00000',country:'US',items:[{sku:'TEST-A',name:'Test item A',quantity:2},{sku:'TEST-B',name:'Test item B',quantity:1}],total:'129.50',currency:'USD',shippingMethod:'Ground',shipByAt:'2030-01-01T12:00:00Z',notes:'Fictional operational regression',testOnly:true,...extra});
+ it('records source/contact/items/amount without requiring a label or connecting a provider',async()=>{
+  const input=make();const created=await runAsMember(ids.owner,ids.org,ctx=>createManualOrder(ctx,input));
+  const data=await runAsMember(ids.owner,ids.org,async ctx=>({order:await ctx.db.one('select status,channel,external_order_id,total_amount,notes,metadata from public.orders where id=$1',[created.id]),items:await ctx.db.query('select quantity from public.order_items where order_id=$1',[created.id]),shipments:await ctx.db.query('select id from public.shipments where order_id=$1',[created.id])}));
+  expect(data.order).toMatchObject({status:'NEW',channel:'SHOPIFY',external_order_id:input.externalOrderNumber,total_amount:'129.50',notes:input.notes,metadata:{manual_entry:true,test_only:true}});expect(data.items).toHaveLength(2);expect(data.shipments).toHaveLength(0);
+ });
+ it('rejects duplicate tracking before creating any partial customer/order/task',async()=>{
+  const snapshot=()=>runAsMember(ids.owner,ids.org,ctx=>ctx.db.one("select (select count(*) from public.orders) as orders,(select count(*) from public.customers) as customers,(select count(*) from public.tasks) as tasks"));
+  const before=await snapshot();await expect(runAsMember(ids.owner,ids.org,ctx=>createManualOrder(ctx,make({tracking:'9400000000000000000007'})))).rejects.toMatchObject({code:'CONFLICT'});expect(await snapshot()).toEqual(before);
+ });
+ it('allows manager intake and rejects employee creation or cross-tenant membership',async()=>{
+  const result=await runAsMember(ids.manager,ids.org,ctx=>createManualOrder(ctx,make({channel:'TIKTOK_SHOP'})));expect(result.id).toBeTruthy();
+  await expect(runAsMember(ids.emp1,ids.org,ctx=>createManualOrder(ctx,make()))).rejects.toMatchObject({code:'FORBIDDEN'});
+  await expect(runAsMember(ids.otherOwner,ids.org,ctx=>createManualOrder(ctx,make()))).rejects.toMatchObject({code:'FORBIDDEN'});
+ });
+});

@@ -26,7 +26,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
       const task = data.tasks.find((t) => t.order_id === order.id);
       const employee = employees.find((e) => e.id === task?.assigned_to);
       return <Link key={order.id} href={`/orders/${order.id}`} className="grid gap-4 rounded-2xl p-5 transition-colors hover:bg-[#f7f7fa] md:grid-cols-[1fr_1fr_1fr]">
-        <div><p className="text-[17px] font-semibold">{order.order_number}</p><div className="mt-2"><OrderState status={order.status} /></div><p className="mt-2 text-[13px] text-mute">{employee?.display_name ?? employee?.full_name ?? (task?.assigned_to ? "Assigned employee" : "Unassigned")}</p></div>
+        <div><p className="text-[17px] font-semibold">{order.order_number}</p><p className="text-xs text-mute">{order.channel}{(order.demo==='true'||order.test_only==='true'||/^TEST/i.test(order.order_number)) ? ' · Fictional demo/test' : ''}</p><div className="mt-2"><OrderState status={order.status} /></div><p className="mt-2 text-[13px] text-mute">{employee?.display_name ?? employee?.full_name ?? (task?.assigned_to ? "Assigned employee" : "Unassigned")}</p></div>
         <div className="space-y-2 text-[13px]"><p>{shipment?.carrier ?? "Carrier not stored"} · {shipment?.tracking_number ?? "Tracking missing"}</p><p>{shipment?.verification_status.replaceAll("_", " ") ?? "Not verified"}</p>{order.exception_state && <p className="font-medium text-rose-600">{order.exception_state.replaceAll("_", " ")} · {order.risk_level}</p>}</div>
         <Deadline at={order.ship_by_at} status={order.status} timezone={workspace.profile.organization.timezone} />
       </Link>;

@@ -9,7 +9,7 @@ import { EXCEPTION_CATALOG, type ExceptionCandidate, type ExceptionType } from "
 import type { OrderStatus } from "@/core/orders/state-machine";
 import { detectOrderRisks, detectTaskRisks, type PlatformFlags } from "@/core/risk/rules";
 import { formatDuration } from "@/core/risk/deadline";
-import { CARRIER_PROOF_SOURCES } from "@/core/shipping/verification";
+import { LIVE_CARRIER_PROOF_SOURCES } from "@/core/shipping/verification";
 import { runAsSystem, type ServiceContext } from "../context";
 import { getPool } from "../db/client";
 import { autoResolveExceptions, raiseException } from "./exceptions";
@@ -38,7 +38,7 @@ export interface RiskScanResult {
   tasksReprioritized: number;
 }
 
-export async function runRiskScan(ctx: ServiceContext): Promise<RiskScanResult> {
+export async function runRiskScan(ctx: ServiceContext, scope: {orderId?: string} = {}): Promise<RiskScanResult> {
   if (ctx.actor.kind !== "SYSTEM") throw new Error("Risk scan must run as SYSTEM");
   const config = await getRiskConfig(ctx);
   const now = ctx.now();
@@ -47,7 +47,7 @@ export async function runRiskScan(ctx: ServiceContext): Promise<RiskScanResult> 
   const orders = await ctx.db.query<{
     id: string; order_number: string; status: OrderStatus; status_changed_at: Date; ship_by_at: Date | null; ready_to_ship_at: Date | null;
     metadata: Record<string, unknown>; shipment_id: string | null; carrier: string | null; expected_carrier: string | null;
-    tracking_number_normalized: string | null; verification_status: string | null; duplicate_orders: string[] | null; carrier_accepted: boolean;
+    tracking_number_normalized: string | null; verification_status: string | null; duplicate_orders: string[] | null; carrier_accepted: boolean; carrier_data_available: boolean;
   }>(
     `select o.id, o.order_number, o.status, o.status_changed_at, o.ship_by_at, o.ready_to_ship_at, o.metadata,
             s.id as shipment_id, s.carrier, s.expected_carrier, s.tracking_number_normalized, s.verification_status,
@@ -55,14 +55,15 @@ export async function runRiskScan(ctx: ServiceContext): Promise<RiskScanResult> 
               where s2.organization_id = o.organization_id and s2.id <> s.id and s2.status <> 'CANCELLED' and o2.status <> 'CANCELLED'
                 and s2.tracking_number_normalized = s.tracking_number_normalized) as duplicate_orders,
             exists (select 1 from public.tracking_events t where t.shipment_id = s.id and t.source = any($2)
-                     and t.normalized_status in ('ACCEPTED','IN_TRANSIT','OUT_FOR_DELIVERY','DELIVERED')) as carrier_accepted
+                     and t.normalized_status in ('ACCEPTED','IN_TRANSIT','OUT_FOR_DELIVERY','DELIVERED')) as carrier_accepted,
+            exists (select 1 from public.tracking_events t where t.shipment_id = s.id and t.source = any($2)) as carrier_data_available
        from public.orders o
        left join lateral (
          select * from public.shipments s where s.order_id = o.id and s.status <> 'CANCELLED' order by s.created_at desc limit 1
        ) s on true
-      where o.organization_id = $1 and o.status <> 'CANCELLED'
+      where o.organization_id = $1 and ($3::uuid is null or o.id=$3) and o.status <> 'CANCELLED'
         and (o.status <> 'DELIVERED' or coalesce(o.metadata->'platform_flags', '{}'::jsonb) <> '{}'::jsonb)`,
-    [org, CARRIER_PROOF_SOURCES],
+    [org, LIVE_CARRIER_PROOF_SOURCES, scope.orderId ?? null],
   );
 
   const candidates: ExceptionCandidate[] = [];
@@ -81,6 +82,7 @@ export async function runRiskScan(ctx: ServiceContext): Promise<RiskScanResult> 
                 verificationStatus: o.verification_status ?? "UNVERIFIED",
                 duplicateOfOrderNumbers: o.duplicate_orders ?? [],
                 carrierAccepted: o.carrier_accepted,
+                carrierDataAvailable: o.carrier_data_available,
               }
             : null,
         },
@@ -92,8 +94,8 @@ export async function runRiskScan(ctx: ServiceContext): Promise<RiskScanResult> 
 
   const tasks = await ctx.db.query<{ id: string; title: string; status: string; due_at: Date | null; order_id: string | null; assigned_to: string | null }>(
     `select id, title, status, due_at, order_id, assigned_to from public.tasks
-      where organization_id = $1 and status in ('OPEN','IN_PROGRESS','BLOCKED') and due_at is not null`,
-    [org],
+      where organization_id = $1 and ($2::uuid is null or order_id=$2) and status in ('OPEN','IN_PROGRESS','BLOCKED') and due_at is not null`,
+    [org, scope.orderId ?? null],
   );
   for (const t of tasks) {
     candidates.push(...detectTaskRisks({ id: t.id, title: t.title, status: t.status, dueAt: t.due_at, orderId: t.order_id, assignedTo: t.assigned_to }, now, config));
@@ -135,9 +137,9 @@ export async function runRiskScan(ctx: ServiceContext): Promise<RiskScanResult> 
   const active = new Set(candidates.map((c) => c.dedupeKey));
   const open = await ctx.db.query<{ dedupe_key: string }>(
     `select dedupe_key from public.exceptions
-      where organization_id = $1 and source = 'SYSTEM_RULE' and auto_resolvable and type = any($2)
+      where organization_id = $1 and ($3::uuid is null or order_id=$3) and source = 'SYSTEM_RULE' and auto_resolvable and type = any($2)
         and status in ('OPEN','ACKNOWLEDGED','IN_PROGRESS')`,
-    [org, MONITORED_TYPES],
+    [org, MONITORED_TYPES, scope.orderId ?? null],
   );
   const cleared = open.map((e) => e.dedupe_key).filter((k) => !active.has(k));
   const resolved = await autoResolveExceptions(ctx, cleared, "Condition no longer detected by risk monitor");
@@ -147,7 +149,7 @@ export async function runRiskScan(ctx: ServiceContext): Promise<RiskScanResult> 
     `with target as (
        select t.id, case when o.ship_by_at < now() + interval '2 hours' then 'URGENT' else 'HIGH' end as priority
          from public.tasks t join public.orders o on o.id = t.order_id
-        where t.organization_id = $1 and t.type = 'PACK_ORDER' and t.status in ('OPEN','IN_PROGRESS')
+        where t.organization_id = $1 and ($2::uuid is null or o.id=$2) and t.type = 'PACK_ORDER' and t.status in ('OPEN','IN_PROGRESS')
           and o.ship_by_at < now() + interval '8 hours'
      )
      update public.tasks t set priority = target.priority
@@ -156,7 +158,7 @@ export async function runRiskScan(ctx: ServiceContext): Promise<RiskScanResult> 
         and (case target.priority when 'URGENT' then 0 else 1 end)
           < (case t.priority when 'URGENT' then 0 when 'HIGH' then 1 when 'NORMAL' then 2 else 3 end)
       returning t.id`,
-    [org],
+    [org, scope.orderId ?? null],
   );
 
   return {

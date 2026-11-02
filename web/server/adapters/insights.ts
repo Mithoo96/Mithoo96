@@ -1,4 +1,6 @@
 import 'server-only';
+import {LIVE_CARRIER_PROOF_SOURCES} from '@/core/shipping/verification';
+import {getCommerceAnalytics} from './commerce-analytics';
 import type {SupabaseClient} from '@supabase/supabase-js';
 import type {Workspace} from '../auth/workspace';
 import {viewScope} from './workspace-views';
@@ -16,10 +18,14 @@ export async function getWorkspaceInsights(client:SupabaseClient,workspace:Works
   metrics.push(...stats.map(s=>({label:s.label,value:String(s.value)})));
   if(hasModules(access,['SHIPPING'])){
    const[accepted,overdue]=await Promise.all([
-    exact(client.from('shipments').select('id',{head:true,count:'exact'}).eq('organization_id',org).not('carrier_accepted_at','is',null)),
+    exact(client.from('tracking_events').select('id',{head:true,count:'exact'}).eq('organization_id',org).in('source',[...LIVE_CARRIER_PROOF_SOURCES]).eq('normalized_status','ACCEPTED')),
     exact(client.from('orders').select('id',{head:true,count:'exact'}).eq('organization_id',org).lt('ship_by_at',new Date().toISOString()).not('status','in','(SHIPPED,DELIVERED,CANCELLED)')),
-   ]);metrics.push({label:'Recorded Carrier Acceptance',value:accepted},{label:'Overdue Shipping Deadlines',value:overdue});
+   ]);metrics.push({label:'Real Carrier Acceptance Events',value:accepted},{label:'Overdue Shipping Deadlines',value:overdue});
   }
+  const analytics=await getCommerceAnalytics(workspace);
+  for(const row of analytics.money){const format=(value:string)=>new Intl.NumberFormat('en-US',{style:'currency',currency:row.currency}).format(Number(value));metrics.push({label:`Recorded Order Value (${row.currency})`,value:format(row.total)},{label:`Average Recorded Order Value (${row.currency})`,value:format(row.average)});}
+  if(analytics.financialAccess&&!analytics.money.length)metrics.push({label:'Recorded Order Value / Average',value:'Unavailable — no non-demo recorded amounts'});
+  metrics.push({label:'Recorded On-time Shipments',value:analytics.timing.on_time},{label:'Recorded Late Shipments',value:analytics.timing.late},{label:'Average Time to Shipment',value:analytics.timing.hours===null?'Unavailable':`${Number(analytics.timing.hours).toFixed(1)} hours`});
  }else{
   const taskCount=(statuses:string[])=>exact(client.from('tasks').select('id',{head:true,count:'exact'}).eq('organization_id',org).eq('type','GENERIC').in('status',statuses));
   const[active,blocked,completed]=await Promise.all([taskCount(['OPEN','IN_PROGRESS','BLOCKED','AWAITING_VERIFICATION']),taskCount(['BLOCKED']),taskCount(['COMPLETED'])]);
