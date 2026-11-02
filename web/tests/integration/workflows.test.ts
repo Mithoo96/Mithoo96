@@ -157,7 +157,7 @@ describeDb("operations workflows", () => {
     const d = await runAsMember(ids.owner, ids.org, (ctx) => getDashboardSummary(ctx));
     expect(d.orders.needAttention).toBeGreaterThan(0);
     expect(d.approvals.pending).toBeGreaterThan(0);
-    expect(d.revenueAtRisk?.[0]?.currency).toBe("USD");
+    expect(d.revenueAtRisk).toBeNull(); // Seeded mock amounts are not operational revenue.
     const m = await runAsMember(ids.manager, ids.org, (ctx) => getDashboardSummary(ctx));
     expect(m.revenueAtRisk).toBeNull(); // managers lack revenue.read
     const risk = await runAsMember(ids.manager, ids.org, (ctx) => getOrdersAtRisk(ctx));

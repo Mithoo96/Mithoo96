@@ -14,7 +14,7 @@ export async function getWorkspaceInsights(client:SupabaseClient,workspace:Works
  const metrics:{label:string;value:string}[]=[];
  if(hasModules(access,['COMMERCE'])){
   const summary=await getSessionDashboardSummary(client,workspace);let stats=toPrototypeDashboard(summary,[]).stats;
-  if(!hasModules(access,['SHIPPING']))stats=stats.filter(s=>!['Ready to Pack','Awaiting Verification','Shipped Today','Delivered'].includes(s.label));
+  if(!hasModules(access,['SHIPPING']))stats=stats.filter(s=>!['Ready to Pack','Ready to Ship','Awaiting Verification','Shipped Today','Delivered'].includes(s.label));
   metrics.push(...stats.map(s=>({label:s.label,value:String(s.value)})));
   if(hasModules(access,['SHIPPING'])){
    const[accepted,overdue]=await Promise.all([

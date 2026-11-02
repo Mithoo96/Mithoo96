@@ -107,6 +107,7 @@ export async function getDashboardSummary(ctx: ServiceContext): Promise<Dashboar
       `select currency, sum(total_amount)::text as amount, count(*)::int as n
          from public.orders
         where organization_id = $1 and status not in ('DELIVERED','CANCELLED')
+          and coalesce(metadata->>'source_is_mock','false') <> 'true' and coalesce(metadata->>'test_only','false') <> 'true' and order_number not ilike 'TEST%'
           and (exception_state is not null or risk_level in ('HIGH','CRITICAL'))
           and total_amount is not null
         group by currency order by currency`,
@@ -115,6 +116,7 @@ export async function getDashboardSummary(ctx: ServiceContext): Promise<Dashboar
     const missing = await ctx.db.one<{ n: number }>(
       `select count(*)::int as n from public.orders
         where organization_id = $1 and status not in ('DELIVERED','CANCELLED')
+          and coalesce(metadata->>'source_is_mock','false') <> 'true' and coalesce(metadata->>'test_only','false') <> 'true' and order_number not ilike 'TEST%'
           and (exception_state is not null or risk_level in ('HIGH','CRITICAL')) and total_amount is null`,
       [org],
     );
@@ -200,10 +202,11 @@ export async function getSessionDashboardSummary(
     missing = 0;
     // Explicit pagination avoids PostgREST's row cap silently truncating revenue.
     for (let offset = 0; ; offset += 500) {
-      const { data, error } = await client.from("orders").select("id,currency,total_amount").eq("organization_id", org)
+      const { data, error } = await client.from("orders").select("id,order_number,currency,total_amount,demo:metadata->>source_is_mock,test_only:metadata->>test_only").eq("organization_id", org)
         .not("status", "in", "(DELIVERED,CANCELLED)").or("exception_state.not.is.null,risk_level.in.(HIGH,CRITICAL)").order("id").range(offset, offset + 499);
       if (error) throw new Error("Revenue data is temporarily unavailable.");
       for (const row of data ?? []) {
+        if(row.demo === "true" || row.test_only === "true" || /^TEST/i.test(row.order_number ?? "")) continue;
         if (row.total_amount === null) { missing++; continue; }
         const amount = String(row.total_amount);
         if (!/^-?\d+(\.\d{1,2})?$/.test(amount)) throw new Error("Revenue amount could not be calculated safely.");

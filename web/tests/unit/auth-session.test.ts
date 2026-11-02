@@ -92,8 +92,8 @@ it("counts under the selected organization and sums only stored monetary values"
   const filters: unknown[][] = [];
   const client = { from: (table: string) => {
     let revenue = false;
-    const chain: Record<string, unknown> = { then: (resolve: (r: unknown) => unknown) => Promise.resolve(revenue ? { data: [{ currency: "USD", total_amount: "0.10" }, { currency: "USD", total_amount: "0.20" }, { currency: "USD", total_amount: null }], error: null } : { count: 3, error: null }).then(resolve) };
-    for (const method of ["select", "eq", "not", "or", "gte", "lt", "in", "is", "order", "range"]) chain[method] = (...args: unknown[]) => { filters.push([table, method, ...args]); if (method === "select" && args[0] === "id,currency,total_amount") revenue = true; return chain; };
+    const chain: Record<string, unknown> = { then: (resolve: (r: unknown) => unknown) => Promise.resolve(revenue ? { data: [{ currency: "USD", total_amount: "0.10" }, { currency: "USD", total_amount: "0.20" }, { currency: "USD", total_amount: "999.00", demo: "true" }, { currency: "USD", total_amount: "999.00", test_only: "true" }, { currency: "USD", total_amount: "999.00", order_number: "TEST-ONLY" }, { currency: "USD", total_amount: null }], error: null } : { count: 3, error: null }).then(resolve) };
+    for (const method of ["select", "eq", "not", "or", "gte", "lt", "in", "is", "order", "range"]) chain[method] = (...args: unknown[]) => { filters.push([table, method, ...args]); if (method === "select" && typeof args[0] === "string" && args[0].startsWith("id,order_number,currency,total_amount")) revenue = true; return chain; };
     return chain;
   } } as unknown as SupabaseClient;
   const summary = await getSessionDashboardSummary(client, w, new Date("2026-11-01T18:00:00Z"));

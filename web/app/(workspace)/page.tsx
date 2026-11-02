@@ -27,7 +27,7 @@ export default async function Home() {
   ]); }
   catch { return <Page><Hero /><p role="alert" className="glass rounded-[28px] p-8">Dashboard data could not be loaded. Refresh to try again. No sample values are shown.</p></Page>; }
   const data = toPrototypeDashboard(summary, []);
-  if(!hasModules(workspace.profile.organization,["SHIPPING"]))data.stats=data.stats.filter(s=>!["Ready to Pack","Awaiting Verification","Shipped Today","Delivered"].includes(s.label));
+  if(!hasModules(workspace.profile.organization,["SHIPPING"]))data.stats=data.stats.filter(s=>!["Ready to Pack","Ready to Ship","Awaiting Verification","Shipped Today","Delivered"].includes(s.label));
   data.attention.unshift(...[
     { title: `${summary.orders.needAttention} orders need attention`, detail: "Open order exceptions", href: "/orders?filter=attention", tone: "rose" as const },
     { title: `${summary.orders.atRisk} orders at risk`, detail: "High or critical risk and at-risk exceptions", href: "/orders?filter=at-risk", tone: "amber" as const },
