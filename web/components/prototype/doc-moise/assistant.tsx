@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { ArrowUp, Mic, Sparkles, X } from "lucide-react";
 import { useDerived, useOs } from "@/lib/store";
-import { metrics } from "@/lib/mock";
+import { metrics } from "@/lib/prototype/doc-moise";
 import { formatValue, timeLabel } from "@/lib/format";
 import { BrandStack } from "@/components/brand-icon";
 import { useToast } from "@/components/ui/toast";

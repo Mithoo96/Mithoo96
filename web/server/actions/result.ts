@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import { isDomainError, type DomainErrorCode } from "@/core/errors";
 import { runAsMember, type UserServiceContext } from "../context";
 import { getSessionUserId } from "../auth/session";
+import { organizationModules, requireModules, type OrganizationModule } from "@/core/tenancy/modules";
 
 export type ActionResult<T> =
   | { readonly ok: true; readonly data: T }
@@ -13,10 +14,14 @@ export type ActionResult<T> =
  * organization membership in an RLS-scoped transaction, converts errors to a
  * safe shape (no stack traces or SQL reach the client).
  */
-export async function memberAction<T>(organizationId: string, fn: (ctx: UserServiceContext) => Promise<T>): Promise<ActionResult<T>> {
+export async function memberAction<T>(organizationId: string, fn: (ctx: UserServiceContext) => Promise<T>, modules: readonly OrganizationModule[] = ["CORE"]): Promise<ActionResult<T>> {
   try {
     const userId = await getSessionUserId();
-    const data = await runAsMember(userId, organizationId, fn, { requestId: crypto.randomUUID() });
+    const data = await runAsMember(userId, organizationId, async (ctx) => {
+      const org = await ctx.db.one<{ metadata: Record<string, unknown> }>(`select metadata from public.organizations where id=$1`, [organizationId]);
+      requireModules(organizationModules(org.metadata), modules);
+      return fn(ctx);
+    }, { requestId: crypto.randomUUID() });
     return { ok: true, data };
   } catch (err) {
     return toActionError(err);

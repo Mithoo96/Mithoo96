@@ -68,7 +68,7 @@ function workspaceClient(rows: unknown[], user: { id: string } | null = { id: "o
   });
   return { auth: { getUser: async () => ({ data: { user }, error: null }) }, from } as unknown as SupabaseClient;
 }
-const member = (role = "OWNER", status = "ACTIVE") => ({ organization_id: "zile", role, status: "ACTIVE", extra_permissions: [], organizations: { id: "zile", name: "Zile Boutik", slug: "zile", timezone: "America/New_York", status, metadata: {} } });
+const member = (role = "OWNER", status = "ACTIVE") => ({ organization_id: "zile", role, status: "ACTIVE", extra_permissions: [], organizations: { id: "zile", name: "Zile Boutik", slug: "zile", timezone: "America/New_York", status, metadata: {enabled_modules:["CORE","COMMERCE","SHIPPING","TEAM","INTEGRATIONS"],commerce_channels:["SHOPIFY","TIKTOK_SHOP"]} } });
 it("resolves active organization and role from verified membership rows", async () => {
   const w = await resolveWorkspace(workspaceClient([member()]));
   expect(w?.profile.viewer.userId).toBe("owner"); expect(w?.profile.viewer.role).toBe("OWNER");

@@ -7,7 +7,7 @@ import { getSessionOrders, getSessionOrderDetail, getSessionWorkspaceActivity } 
 const id = "e0000000-0000-4000-8000-000000000007";
 const order = { id, order_number: "TEST-7", status: "LABEL_READY", channel: "MANUAL", placed_at: "2026-11-01T12:00:00Z", ship_by_at: null, risk_level: "NONE", exception_state: null };
 function workspace(role = "OWNER"): Workspace {
-  return { profile: toWorkspaceProfile({ id: "org-a", name: "Test organization", slug: "test", timezone: "America/New_York", metadata: {} }, null, "user-a", role), memberships: [], extraPermissions: [] };
+  return { profile: toWorkspaceProfile({ id: "org-a", name: "Test organization", slug: "test", timezone: "America/New_York", metadata: {enabled_modules:["CORE","COMMERCE","SHIPPING","TEAM","INTEGRATIONS"],commerce_channels:["SHOPIFY","TIKTOK_SHOP"]} }, null, "user-a", role), memberships: [], extraPermissions: [] };
 }
 function client(rows: Record<string, unknown[]> = {}) {
   const calls: unknown[][] = [];

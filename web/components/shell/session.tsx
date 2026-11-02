@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Sun, Lock } from "lucide-react";
-import { business } from "@/lib/config/business";
+import { sessionPolicy } from "@/lib/config/session";
 import { useWorkspace } from "./workspace";
 import { OwnerAvatar } from "@/components/owner-avatar";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -23,7 +23,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const toast = useToast();
   const [status, setStatus] = useState<Status>("active");
   const [awake, setAwake] = useState(false);
-  const [idleMinutes, setIdleMinutes] = useState<number>(business.session.idleMinutes);
+  const [idleMinutes, setIdleMinutes] = useState<number>(sessionPolicy.idleMinutes);
   const [prompt, setPrompt] = useState(false);
   const last = useRef(0);
 
@@ -86,7 +86,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
 function AwakePrompt({ onStay, onLock }: { onStay: () => void; onLock: () => void }) {
   const { profile } = useWorkspace();
-  const total = business.session.answerSeconds;
+  const total = sessionPolicy.answerSeconds;
   const [left, setLeft] = useState<number>(total);
   useEffect(() => {
     const t = setInterval(() => setLeft((l) => l - 1), 1000);

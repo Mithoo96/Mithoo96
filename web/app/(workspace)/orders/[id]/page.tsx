@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getWorkspace } from "@/server/auth/workspace";
+import { getWorkspaceForRoute } from "@/server/auth/modules";
 import { getSessionOrderDetail, getSessionEmployees, fulfillmentScope } from "@/server/adapters/fulfillment";
 import { Page, PageHeader, Card, StatusBadge } from "@/components/ui/primitives";
 import { Assignment } from "@/components/fulfillment/assignment";
 import { Deadline, OrderState } from "@/components/fulfillment/status";
 export default async function OrderDetail({ params }: { params: Promise<{ id: string }> }) {
-  const { client, workspace } = await getWorkspace(); const { id } = await params;
+  const { client, workspace } = await getWorkspaceForRoute("/orders"); const { id } = await params;
   let detail; let employees;
   try { [detail, employees] = await Promise.all([getSessionOrderDetail(client, workspace, id), getSessionEmployees(client, workspace)]); }
   catch (error) { if (error instanceof Error && (error.name === "ZodError" || "code" in error && error.code === "NOT_FOUND")) notFound(); return <Page><PageHeader title="Order unavailable" /><p role="alert">We could not load this order. Please retry.</p></Page>; }
   const canAssign = fulfillmentScope(workspace).permissions.has("tasks.assign");
   return <Page><PageHeader title={detail.order.order_number} subtitle="Operational order details" back={<Link href={canAssign ? "/orders" : "/work"} className="mb-3 inline-block text-[13px] text-mute">← {canAssign ? "Orders" : "Today’s Work"}</Link>} actions={<OrderState status={detail.order.status} />} />
-    <Card className="mb-5 p-6"><h2 className="mb-3 text-[18px] font-semibold">Shipping deadline</h2><Deadline at={detail.order.ship_by_at} status={detail.order.status} timezone={workspace.profile.organization.timezone} /><p className="mt-3 text-[12px] text-mute">{detail.order.channel} · stored deadline · MOCK/MANUAL provider boundary. No live TikTok connection.</p></Card>
+    <Card className="mb-5 p-6"><h2 className="mb-3 text-[18px] font-semibold">Shipping deadline</h2><Deadline at={detail.order.ship_by_at} status={detail.order.status} timezone={workspace.profile.organization.timezone} /><p className="mt-3 text-[12px] text-mute">{detail.order.channel} · stored deadline · Stored provider/manual context. Live connection status is shown in Integrations.</p></Card>
     <Card className="mb-5 p-6"><h2 className="mb-3 text-[18px] font-semibold">Products & quantities</h2>{detail.items.map((item) => <div key={item.id} className="flex min-h-12 items-center justify-between gap-4 border-b border-hair py-3"><div><p className="font-medium">{item.name}</p><p className="text-[13px] text-mute">{item.sku}</p></div><span className="text-[20px] font-semibold">× {item.quantity}</span></div>)}</Card>
     <Card className="mb-5 p-6"><h2 className="mb-3 text-[18px] font-semibold">Employee responsibility</h2>{detail.tasks.length === 0 && <p>No task assigned.</p>}{detail.tasks.map((task) => {
       const employee = employees.find((e) => e.id === task.assigned_to);

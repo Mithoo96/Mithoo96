@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getWorkspace } from "@/server/auth/workspace";
+import { getWorkspaceForRoute } from "@/server/auth/modules";
 import { getSessionOrders, getSessionEmployees } from "@/server/adapters/fulfillment";
 import { ORDER_STATUSES } from "@/core/orders/state-machine";
 import { Page, PageHeader, Card } from "@/components/ui/primitives";
 import { PackageLookup } from "@/components/fulfillment/lookup";
 import { Deadline, OrderState } from "@/components/fulfillment/status";
 export default async function OrdersPage({ searchParams }: { searchParams: Promise<{ search?: string; status?: string; page?: string; filter?: string }> }) {
-  const { client, workspace } = await getWorkspace(); const query = await searchParams;
+  const { client, workspace } = await getWorkspaceForRoute("/orders"); const query = await searchParams;
   if (workspace.profile.viewer.role === "EMPLOYEE") redirect("/work");
   let data; let employees;
   try { [data, employees] = await Promise.all([getSessionOrders(client, workspace, query), getSessionEmployees(client, workspace)]); }
@@ -32,6 +32,6 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
       </Link>;
     })}</Card>
     <div className="mt-5 flex min-h-12 items-center justify-between text-[14px]">{data.page > 1 ? <Link href={`/orders?${previous}`}>← Previous</Link> : <span />}{data.page * 50 < data.total && <Link href={`/orders?${next}`}>Next →</Link>}</div>
-    <p className="mt-3 text-[12px] text-mute">Deadlines are stored provider/manual data. TikTok and carrier integrations remain MOCK/MANUAL.</p>
+    <p className="mt-3 text-[12px] text-mute">Deadlines are stored provider/manual data. Live connection status is shown in Integrations.</p>
   </Page>;
 }

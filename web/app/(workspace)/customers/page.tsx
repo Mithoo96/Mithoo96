@@ -1,0 +1,4 @@
+import {getWorkspaceForRoute} from '@/server/auth/modules';
+import {getWorkspaceCustomers} from '@/server/adapters/workspace-views';
+import {Page,PageHeader,Card} from '@/components/ui/primitives';
+export default async function View(){const{client,workspace}=await getWorkspaceForRoute('/customers');const rows=await getWorkspaceCustomers(client,workspace);return <Page><PageHeader title="Customers" subtitle="Your organization’s recorded operational data"/><Card className="overflow-x-auto p-6">{rows.length?<table className="w-full text-left text-sm"><thead><tr><th className="p-3">Display Name</th><th className="p-3">Channel</th></tr></thead><tbody>{rows.map(r=><tr key={r.id} className="border-t border-hair"><td className="p-3">{r.display_name??"—"}</td><td className="p-3">{r.channel??"—"}</td></tr>)}</tbody></table>:<p className="text-mute">No recorded customers yet.</p>}</Card></Page>;}

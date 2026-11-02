@@ -2,6 +2,9 @@
  * Integration service: order import (idempotent upsert), webhook intake
  * (signature → idempotency ledger → retry-safe processing), carrier sync.
  */
+import {organizationModules,requireModules} from "@/core/tenancy/modules";
+import {providerChannel} from "@/integrations/commerce/catalog";
+import type {Db} from "../db/client";
 import { DomainError, notFound } from "@/core/errors";
 import { exceptionDedupeKey } from "@/core/exceptions/catalog";
 import { getCarrierProvider, getCommerceProvider } from "@/integrations/registry";
@@ -27,6 +30,14 @@ interface ConnectionRow {
   last_sync_at: Date | null;
 }
 
+async function requireCommerceChannel(db:Db, org:string, provider:string) {
+  const row=await db.one<{metadata:Record<string,unknown>}>("select metadata from public.organizations where id = $1",[org]);
+  const access=organizationModules(row.metadata);
+  requireModules(access,["CORE","COMMERCE","INTEGRATIONS"]);
+  const channel=providerChannel(provider);
+  if(!channel||!access.enabledCommerceChannels.includes(channel))throw new DomainError("FORBIDDEN","This sales channel is not enabled for the organization");
+}
+
 function toConnectionContext(c: ConnectionRow): ConnectionContext {
   return {
     connectionId: c.id,
@@ -44,6 +55,7 @@ async function loadConnection(ctx: ServiceContext, connectionId: string): Promis
     [connectionId, ctx.organizationId],
   );
   if (!c) throw notFound("Integration connection");
+  if(c.kind==="COMMERCE_CHANNEL")await requireCommerceChannel(ctx.db,ctx.organizationId,c.provider);
   return c;
 }
 
@@ -76,6 +88,8 @@ export async function getIntegrationConnections(ctx: ServiceContext) {
 export async function upsertImportedOrder(ctx: ServiceContext, conn: ConnectionRow, imported: ImportedOrder, channel: string): Promise<{ orderId: string; created: boolean }> {
   if (ctx.actor.kind !== "SYSTEM") throw new DomainError("FORBIDDEN", "Imports run as the system");
   const org = ctx.organizationId;
+  if(conn.organization_id!==org)throw new DomainError("FORBIDDEN","Integration belongs to another organization");
+  await requireCommerceChannel(ctx.db,org,conn.provider);
 
   const customer = await ctx.db.one<{ id: string }>(
     `insert into public.customers (organization_id, channel, external_ref, display_name, email, phone)
@@ -210,7 +224,7 @@ export async function importOrdersFromConnection(organizationId: string, connect
 export type WebhookOutcome =
   | { httpStatus: 200; status: "PROCESSED" | "DUPLICATE" | "IGNORED"; eventId: string }
   | { httpStatus: 202; status: "IN_PROGRESS"; eventId: string }
-  | { httpStatus: 401 | 404 | 400 | 503; status: "REJECTED"; reason: string }
+  | { httpStatus: 403 | 401 | 404 | 400 | 503; status: "REJECTED"; reason: string }
   | { httpStatus: 500; status: "FAILED"; eventId: string };
 
 const MAX_ATTEMPTS = 5;
@@ -230,6 +244,8 @@ export async function receiveWebhook(provider: string, connectionId: string, req
     db.maybeOne<ConnectionRow>(`select * from public.integration_connections where id = $1 and provider = $2`, [connectionId, provider]),
   );
   if (!conn || conn.status === "DISABLED") return { httpStatus: 404, status: "REJECTED", reason: "unknown connection" };
+
+  try { await withSystemTransaction("webhook:capabilities",db=>requireCommerceChannel(db,conn.organization_id,conn.provider)); } catch { return {httpStatus:403,status:"REJECTED",reason:"sales channel unavailable"}; }
 
   let adapter;
   try {

@@ -60,4 +60,19 @@ describeDb("webhooks & integrations (MOCK TikTok Shop)", () => {
     expect(a.imported).toBe(3);
     expect(b.created).toBe(0);
   });
+  it("rejects disabled organization channels before importing or recording webhook attempts",async()=>{
+    const before=await runAsSystem(ids.org,"test:entitlements",async ctx=>{
+      const metadata=await ctx.db.one<{metadata:Record<string,unknown>}>("select metadata from public.organizations where id=$1",[ids.org]);
+      const counts=await ctx.db.one<{orders:number;events:number}>("select (select count(*)::int from public.orders) orders,(select count(*)::int from public.integration_events) events");
+      await ctx.db.query("update public.organizations set metadata=jsonb_set(metadata,'{commerce_channels}','[]'::jsonb) where id=$1",[ids.org]);
+      return {metadata:metadata.metadata,counts};
+    });
+    try {
+      await expect(importOrdersFromConnection(ids.org,ids.conn)).rejects.toMatchObject({code:"FORBIDDEN"});
+      expect(await receiveWebhook("TIKTOK_SHOP_MOCK",ids.conn,signed({...event,event_id:"disabled-channel-event"}))).toMatchObject({httpStatus:403,status:"REJECTED"});
+      const after=await runAsSystem(ids.org,"test:counts",ctx=>ctx.db.one<{orders:number;events:number}>("select (select count(*)::int from public.orders) orders,(select count(*)::int from public.integration_events) events"));
+      expect(after).toEqual(before.counts);
+    } finally { await runAsSystem(ids.org,"test:restore",ctx=>ctx.db.query("update public.organizations set metadata=$2 where id=$1",[ids.org,JSON.stringify(before.metadata)])); }
+  });
+
 });

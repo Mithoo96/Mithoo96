@@ -1,32 +1,32 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from "react";
-import * as mock from "@/lib/mock";
+import type * as PrototypeData from "@/lib/prototype/doc-moise";
 import type { Approval, ApprovalStatus, Appointment, BusinessMode, Client, ClientDocument, Conversation, DocStatus, Integration, LineKey, Note, Notification, Payment, Task, TeamMember, TimelineEvent } from "@/lib/types";
 import { nowTime, uid } from "@/lib/format";
-import { business } from "@/lib/config/business";
+
 
 type Map<T> = Record<string, T[]>;
-const byClient = <T,>(fn: (c: Client) => T[]) => Object.fromEntries(mock.clients.map((c) => [c.id, fn(c)])) as Map<T>;
+const byClient = <T,>(data: typeof PrototypeData | null, fn: ((c: Client) => T[]) | undefined) => Object.fromEntries((data?.clients ?? []).map((c) => [c.id, fn?.(c) ?? []])) as Map<T>;
 
 /**
  * Frontend-only state for the prototype. Every action mutates local state so the UI
  * behaves like the real product. Swap these implementations for API calls later.
  */
-function useOsState() {
-  const [clients, setClients] = useState<Client[]>(mock.clients);
-  const [timelines, setTimelines] = useState<Map<TimelineEvent>>(() => byClient(mock.seedTimeline));
-  const [documents, setDocuments] = useState<ClientDocument[]>(mock.documents);
+function useOsState(mock: typeof PrototypeData | null, viewerName: string) {
+  const [clients, setClients] = useState<Client[]>(mock?.clients ?? []);
+  const [timelines, setTimelines] = useState<Map<TimelineEvent>>(() => byClient(mock, mock?.seedTimeline));
+  const [documents, setDocuments] = useState<ClientDocument[]>(mock?.documents ?? []);
   const [mode, setMode] = useState<BusinessMode>("all");
-  const [payments] = useState<Map<Payment>>(() => byClient(mock.seedPayments));
-  const [notes, setNotes] = useState<Map<Note>>(() => byClient(mock.seedNotes));
-  const [tasks, setTasks] = useState<Task[]>(mock.tasks);
-  const [appointments, setAppointments] = useState<Appointment[]>(mock.appointments);
-  const [conversations, setConversations] = useState<Conversation[]>(mock.conversations);
-  const [approvals, setApprovals] = useState<Approval[]>(mock.approvals);
-  const [notifications, setNotifications] = useState<Notification[]>(mock.notifications);
-  const [team, setTeam] = useState<TeamMember[]>(mock.team);
-  const [integrations, setIntegrations] = useState<Integration[]>(mock.integrations);
+  const [payments] = useState<Map<Payment>>(() => byClient(mock, mock?.seedPayments));
+  const [notes, setNotes] = useState<Map<Note>>(() => byClient(mock, mock?.seedNotes));
+  const [tasks, setTasks] = useState<Task[]>(mock?.tasks ?? []);
+  const [appointments, setAppointments] = useState<Appointment[]>(mock?.appointments ?? []);
+  const [conversations, setConversations] = useState<Conversation[]>(mock?.conversations ?? []);
+  const [approvals, setApprovals] = useState<Approval[]>(mock?.approvals ?? []);
+  const [notifications, setNotifications] = useState<Notification[]>(mock?.notifications ?? []);
+  const [team, setTeam] = useState<TeamMember[]>(mock?.team ?? []);
+  const [integrations, setIntegrations] = useState<Integration[]>(mock?.integrations ?? []);
   const replyIdx = useRef(0);
 
   const addTimeline = useCallback((clientId: string, e: Omit<TimelineEvent, "id" | "when"> & { when?: string }) =>
@@ -55,7 +55,7 @@ function useOsState() {
       setDocuments((l) => l.map((d) => (d.id === id ? { ...d, status: "review", date: `Uploaded just now · ${fileName}`, size: `${Math.max(1, Math.round(size / 1024))} KB` } : d)));
     },
     addNote: (clientId: string, text: string) => {
-      setNotes((m) => ({ ...m, [clientId]: [{ id: uid("n"), text, when: "Just now", author: business.owner.name }, ...(m[clientId] ?? [])] }));
+      setNotes((m) => ({ ...m, [clientId]: [{ id: uid("n"), text, when: "Just now", author: viewerName }, ...(m[clientId] ?? [])] }));
       addTimeline(clientId, { kind: "note", title: "Note added", detail: text, by: "team" });
     },
     addTask: (t: Omit<Task, "id" | "notes">) => { const id = uid("t"); setTasks((l) => [{ ...t, id, notes: [] }, ...l]); return id; },
@@ -63,7 +63,7 @@ function useOsState() {
     toggleTask: (id: string) => setTasks((l) => l.map((t) => t.id !== id ? t
       : t.bucket === "completed" ? { ...t, bucket: t.previousBucket ?? "today", previousBucket: undefined }
       : { ...t, previousBucket: t.bucket, bucket: "completed" })),
-    addTaskNote: (id: string, text: string) => setTasks((l) => l.map((t) => (t.id === id ? { ...t, notes: [{ id: uid("n"), text, when: "Just now", author: business.owner.name }, ...t.notes] } : t))),
+    addTaskNote: (id: string, text: string) => setTasks((l) => l.map((t) => (t.id === id ? { ...t, notes: [{ id: uid("n"), text, when: "Just now", author: viewerName }, ...t.notes] } : t))),
     setApprovalStatus: (id: string, status: ApprovalStatus) => setApprovals((l) => l.map((a) => (a.id === id ? { ...a, status } : a))),
     updateApproval: (id: string, patch: Partial<Approval>) => setApprovals((l) => l.map((a) => (a.id === id ? { ...a, ...patch } : a))),
     addApproval: (a: Omit<Approval, "id" | "status" | "when">) => setApprovals((l) => [{ ...a, id: uid("ap"), status: "pending", when: "Just now" }, ...l]),
@@ -83,7 +83,7 @@ function useOsState() {
       setTimeout(() => setConversations((l) => l.map((c) => c.id !== convId ? c : { ...c, messages: c.messages.map((m) => (m.id === msgId ? { ...m, status: "delivered" } : m)) })), 900);
       // Simulated reply so the conversation feels alive.
       setTimeout(() => setConversations((l) => l.map((c) => {
-        if (c.id !== convId || c.channel === "internal") return c;
+        if (c.id !== convId || c.channel === "internal" || !mock?.cannedReplies.length) return c;
         const reply = mock.cannedReplies[replyIdx.current++ % mock.cannedReplies.length];
         return { ...c, messages: [...c.messages, { id: uid("m"), from: "them", text: reply, time: nowTime() }] };
       })), 3200);
@@ -111,8 +111,8 @@ function useOsState() {
 type OsState = ReturnType<typeof useOsState>;
 const Ctx = createContext<OsState | null>(null);
 
-export function OsProvider({ children }: { children: ReactNode }) {
-  const state = useOsState();
+export function OsProvider({ children, prototype = null, viewerName = "Workspace member" }: { children: ReactNode; prototype?: typeof PrototypeData | null; viewerName?: string }) {
+  const state = useOsState(prototype, viewerName);
   return <Ctx.Provider value={state}>{children}</Ctx.Provider>;
 }
 

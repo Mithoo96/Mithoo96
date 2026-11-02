@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { getWorkspace } from "@/server/auth/workspace";
+import { getWorkspaceForRoute } from "@/server/auth/modules";
 import { getSessionEmployeeWork } from "@/server/adapters/fulfillment";
 import { Page, PageHeader, Card } from "@/components/ui/primitives";
 import { StartNextOrder } from "@/components/fulfillment/packing";
 import { PackageLookup } from "@/components/fulfillment/lookup";
 export default async function WorkPage() {
-  const { client, workspace } = await getWorkspace(); let work;
+  const { client, workspace } = await getWorkspaceForRoute("/work"); let work;
   try { work = await getSessionEmployeeWork(client, workspace); }
   catch { return <Page><PageHeader title="Today’s Work" /><p role="alert">Your task queue could not be loaded. Please retry.</p></Page>; }
   return <Page><PageHeader title="Today’s Work" subtitle={`${workspace.profile.organization.name} · One task at a time`} />

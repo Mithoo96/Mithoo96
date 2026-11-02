@@ -7,8 +7,10 @@ import type { CarrierProvider, CommerceChannelProvider } from "./types";
 import { MockTikTokShopProvider } from "./tiktok-shop/mock-provider";
 import { OfficialTikTokShopProvider } from "./tiktok-shop/official-provider";
 import { UspsCarrierProvider } from "./shipping/usps/provider";
+import { OfficialShopifyProvider } from "./shopify/official-provider";
 
 const commerceFactories: Record<string, () => CommerceChannelProvider> = {
+  SHOPIFY: () => new OfficialShopifyProvider(),
   TIKTOK_SHOP_MOCK: () => new MockTikTokShopProvider(),
   TIKTOK_SHOP: () => new OfficialTikTokShopProvider(),
 };

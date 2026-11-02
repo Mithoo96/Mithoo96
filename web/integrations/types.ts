@@ -81,6 +81,11 @@ export interface CommerceChannelProvider {
   getPlatformIssues(conn: ConnectionContext): Promise<PlatformIssue[]>;
   verifyWebhook(conn: ConnectionContext, req: WebhookRequest, now: Date): WebhookVerification;
   parseWebhook(req: WebhookRequest): NormalizedWebhookEvent;
+  /** Optional provider-neutral boundaries; absence means unavailable, never simulated success. */
+  getProducts?(conn: ConnectionContext): Promise<readonly { externalRef: string; sku: string; name: string }[]>;
+  getFulfillment?(conn: ConnectionContext, externalOrderId: string): Promise<PlatformTracking | null>;
+  getReturns?(conn: ConnectionContext, externalOrderId: string): Promise<readonly { externalRef: string; status: string }[]>;
+  requestRefund?(conn: ConnectionContext, input: { externalOrderId: string; amount: number; currency: string; authorizationReference: string }): Promise<{ accepted: boolean; externalRef: string | null }>;
 }
 
 /** A shipping carrier (USPS, UPS, ...). */

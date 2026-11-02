@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ArrowLeft, ArrowDownRight, ArrowUpRight, ChartLine } from "lucide-react";
-import { metrics } from "@/lib/mock";
+import { metrics } from "@/lib/prototype/doc-moise";
 import type { Range } from "@/lib/types";
 import { dateFromOffset, formatValue } from "@/lib/format";
 import { AreaChart, ShareBars } from "@/components/ui/charts";

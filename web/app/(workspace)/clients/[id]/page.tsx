@@ -1,9 +1,7 @@
-import { clients } from "@/lib/mock";
-import { ClientProfile } from "@/components/pages/client-profile";
-
-export function generateStaticParams() { return clients.map((c) => ({ id: c.id })); }
-
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  return <ClientProfile id={id} />;
+import { getWorkspaceForRoute } from "@/server/auth/modules";
+import type PrototypePage from "@/components/prototype/doc-moise/pages/client-detail";
+export default async function ModulePage(props: Parameters<typeof PrototypePage>[0]) {
+  await getWorkspaceForRoute("/clients");
+  const { default: Page } = await import("@/components/prototype/doc-moise/pages/client-detail");
+  return <Page {...props} />;
 }

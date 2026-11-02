@@ -2,24 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Briefcase, Inbox, Sparkles, CircleCheck } from "lucide-react";
-import { useShell } from "./ui-context";
+import { useWorkspace } from "./workspace";
+import { visibleNav, mainNav, bottomNav } from "./nav";
 import { Drawer } from "@/components/ui/overlay";
 import { NavList } from "./sidebar";
 
-const items = [
-  { label: "Home", icon: Home, href: "/" },
-  { label: "Work", icon: Briefcase, href: "/work" },
-  { label: "Approvals", icon: CircleCheck, href: "/approvals" },
-  { label: "Inbox", icon: Inbox, href: "/inbox" },
-];
 
 export function MobileNav() {
-  const path = usePathname(); const { openAssistant } = useShell();
+  const path = usePathname(); const workspace = useWorkspace();
+  const items = visibleNav([...mainNav, ...bottomNav], workspace).filter((i) => ["/", "/orders", "/work", "/inbox", "/settings"].includes(i.href));
   const badge: Record<string, number> = {}; // Never show prototype counts in authenticated chrome.
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-hair bg-white/85 backdrop-blur-xl md:hidden" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-      <div className="grid grid-cols-5">
+      <div className="grid" style={{ gridTemplateColumns: `repeat(${items.length || 1}, minmax(0, 1fr))` }}>
         {items.map((i) => {
           const active = i.href === "/" ? path === "/" : path.startsWith(i.href);
           return (
@@ -29,9 +24,7 @@ export function MobileNav() {
             </Link>
           );
         })}
-        <button onClick={() => openAssistant()} className="flex flex-col items-center gap-1 py-2.5 text-[11px] text-mute">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-[#e6edff] via-[#efe9ff] to-[#f6eedd]"><Sparkles size={12} className="text-iris" /></span>Ask
-        </button>
+
       </div>
     </nav>
   );

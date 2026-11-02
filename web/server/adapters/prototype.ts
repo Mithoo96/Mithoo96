@@ -15,6 +15,7 @@ import { formatDuration } from "@/core/risk/deadline";
 import { requireUser, type ServiceContext } from "../context";
 import type { DashboardSummary } from "../services/dashboard";
 import type { ExceptionView } from "../services/exceptions";
+import { organizationModules, type ModuleAccess } from "@/core/tenancy/modules";
 
 /** Mirrors the local types in lib/mock/dashboard.ts (keep in sync). */
 export type PrototypeStat = { label: string; value: number; href: string };
@@ -30,7 +31,7 @@ export interface WorkspaceProfile {
   /** The product brand never changes; the organization is the client instance. */
   product: "Mithoo Business OS";
   poweredBy: "Mithoo";
-  organization: { id: string; name: string; shortName: string; monogram: string; slug: string; timezone: string; logoUrl: string | null };
+  organization: { id: string; name: string; shortName: string; monogram: string; slug: string; timezone: string; logoUrl: string | null } & ModuleAccess;
   viewer: { userId: string; name: string | null; firstName: string | null; role: string; avatarUrl: string | null };
   owner: { name: string | null; firstName: string | null };
 }
@@ -80,6 +81,7 @@ export function toWorkspaceProfile(
     product: "Mithoo Business OS",
     poweredBy: "Mithoo",
     organization: {
+      ...organizationModules(meta),
       id: org.id,
       name: org.name,
       shortName: typeof meta.short_name === "string" ? meta.short_name : org.name,

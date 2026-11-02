@@ -1,9 +1,7 @@
-import { metrics } from "@/lib/mock";
-import { MetricReport } from "@/components/pages/metric-report";
-
-export function generateStaticParams() { return metrics.map((m) => ({ metric: m.key })); }
-
-export default async function Page({ params }: { params: Promise<{ metric: string }> }) {
-  const { metric } = await params;
-  return <MetricReport metricKey={metric} />;
+import { getWorkspaceForRoute } from "@/server/auth/modules";
+import type PrototypePage from "@/components/prototype/doc-moise/pages/insight-detail";
+export default async function ModulePage(props: Parameters<typeof PrototypePage>[0]) {
+  await getWorkspaceForRoute("/insights/detail");
+  const { default: Page } = await import("@/components/prototype/doc-moise/pages/insight-detail");
+  return <Page {...props} />;
 }

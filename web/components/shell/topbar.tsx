@@ -10,14 +10,14 @@ import { useSession, AwakeIndicator } from "./session";
 import { Logo } from "./sidebar";
 import { useShell } from "./ui-context";
 
-export function Topbar() {
+export function Topbar({unread=0}:{unread?:number}) {
   const { openSearch, openNotifications, openMenu } = useShell();
-  const unread = 0; // Notification integration is a later checkpoint; never show prototype counts.
+
   return (
     <>
       {/* Desktop: floating utilities, top-right, leaving the hero untouched */}
       <div className="absolute right-6 top-6 z-20 hidden items-center gap-2 lg:flex md:right-12">
-        <button onClick={openSearch} className="glass flex h-10 items-center gap-2.5 rounded-full pl-4 pr-2 text-[13px] text-mute transition-all hover:text-ink">
+        <button aria-label="Search" onClick={openSearch} className="glass flex h-10 items-center gap-2.5 rounded-full pl-4 pr-2 text-[13px] text-mute transition-all hover:text-ink">
           <Search size={15} strokeWidth={1.7} />Search
           <kbd className="rounded-md bg-[#f2f2f6] px-1.5 py-0.5 font-sans text-[11px] text-mute">⌘K</kbd>
         </button>
@@ -44,7 +44,7 @@ export function Topbar() {
 
 function BellButton({ unread, onClick, plain }: { unread: number; onClick: () => void; plain?: boolean }) {
   return (
-    <button onClick={onClick} aria-label="Notifications · prototype preview" className={`relative flex h-10 w-10 items-center justify-center rounded-full text-ink-soft transition-all hover:text-ink ${plain ? "hover:bg-[#f4f4f8]" : "glass"}`}>
+    <button onClick={onClick} aria-label="Notifications" className={`relative flex h-10 w-10 items-center justify-center rounded-full text-ink-soft transition-all hover:text-ink ${plain ? "hover:bg-[#f4f4f8]" : "glass"}`}>
       <Bell size={17} strokeWidth={1.7} />
       {unread > 0 && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-gradient-to-br from-sky to-iris ring-2 ring-white" />}
     </button>

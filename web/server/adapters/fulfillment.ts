@@ -12,6 +12,7 @@ import { rankTasksForEmployee, taskStepProgress } from "@/core/tasks/rules";
 import type { EmployeeTaskDetail } from "../services/tasks";
 import { TASK_CATALOG, TASK_TYPES, TASK_PRIORITIES, TASK_STATUSES, type TaskCheck } from "@/core/tasks/catalog";
 import { organizationDayStart } from "../services/dashboard";
+import { requireModules } from "@/core/tenancy/modules";
 
 const orderSchema = z.object({ id: z.string(), order_number: z.string(), status: z.enum(ORDER_STATUSES), channel: z.string(), placed_at: z.string(), ship_by_at: z.string().nullable(), risk_level: z.string(), exception_state: z.string().nullable() });
 const shipmentSchema = z.object({ id: z.string(), order_id: z.string(), carrier: z.string().nullable(), tracking_number: z.string().nullable(), status: z.string(), verification_status: z.string(), carrier_accepted_at: z.string().nullable() });
@@ -30,6 +31,7 @@ const TASK_COLUMNS = "id,order_id,shipment_id,type,title,status,priority,assigne
 export function fulfillmentScope(workspace: Workspace) {
   const role = workspace.profile.viewer.role;
   if (!isOrgRole(role) || !workspace.profile.organization.id) throw new DomainError("FORBIDDEN", "An active organization membership is required");
+  requireModules(workspace.profile.organization, ["CORE", "COMMERCE", "SHIPPING", "TEAM"]);
   return { org: workspace.profile.organization.id, user: workspace.profile.viewer.userId, role, permissions: resolvePermissions(role, workspace.extraPermissions) };
 }
 async function read<T>(query: PromiseLike<{ data: unknown; error: unknown }>, schema: z.ZodType<T>): Promise<T> {
@@ -100,8 +102,11 @@ export async function getSessionWorkspaceActivity(client: SupabaseClient, worksp
 export type WorkspaceActivity = Awaited<ReturnType<typeof getSessionWorkspaceActivity>>;
 
 export async function getSessionEmployees(client: SupabaseClient, workspace: Workspace) {
-  const { org, permissions } = fulfillmentScope(workspace);
-  if (!permissions.has("members.read")) return [];
+  const {role,userId}=workspace.profile.viewer;
+  const org=workspace.profile.organization.id;
+  if(!isOrgRole(role)||!org||!userId)throw new DomainError("FORBIDDEN","An active organization membership is required");
+  requireModules(workspace.profile.organization,["CORE","TEAM"]);
+  if (!resolvePermissions(role,workspace.extraPermissions).has("members.read")) return [];
   const members = await read(client.from("organization_members").select("user_id").eq("organization_id", org).eq("status", "ACTIVE").eq("role", "EMPLOYEE"), z.array(z.object({ user_id: z.string() })));
   if (!members.length) return [];
   return read(client.from("profiles").select("id,display_name,full_name").in("id", members.map((m) => m.user_id)), z.array(z.object({ id: z.string(), display_name: z.string().nullable(), full_name: z.string().nullable() })));

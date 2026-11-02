@@ -131,6 +131,7 @@ push(`insert into public.platform_admins (user_id, notes) values (${q(users.admi
 push(`insert into public.organizations (id, name, slug, timezone, default_currency, created_by) values
   (${q(ORG)}, 'Zile Boutik', 'zile-boutik', 'America/New_York', 'USD', ${q(users.owner.id)}),
   (${q(ORG_B)}, 'Northwind Test Co (isolation demo)', 'northwind-test', 'America/Chicago', 'USD', ${q(users.otherOwner.id)});`);
+push(`update public.organizations set metadata = metadata || '{"enabled_modules":["CORE","COMMERCE","SHIPPING","TEAM","INTEGRATIONS"],"commerce_channels":["SHOPIFY","TIKTOK_SHOP"]}'::jsonb where id in (${q(ORG)},${q(ORG_B)});`);
 push(`insert into public.organization_members (organization_id, user_id, role, title) values
   (${q(ORG)}, ${q(users.owner.id)}, 'OWNER', 'Owner'),
   (${q(ORG)}, ${q(users.manager.id)}, 'MANAGER', 'Operations Manager'),

@@ -8,16 +8,21 @@ import { Topbar } from "./topbar";
 import { MobileNav, MenuDrawer } from "./mobile-nav";
 import { SearchModal } from "./search";
 import { NotificationsDrawer } from "./notifications";
-import { AssistantPanel, CommandBar } from "./assistant";
+import dynamic from "next/dynamic";
+import {hasDocMoisePrototype,workspaceRouteEnabled,workspaceRoleRouteEnabled,hasModules} from "@/core/tenancy/modules";
+import type {WorkspaceNotice} from "@/server/adapters/workspace-views";
+const AssistantPanel=dynamic(()=>import("@/components/prototype/doc-moise/assistant").then(m=>m.AssistantPanel));
+const CommandBar=dynamic(()=>import("@/components/prototype/doc-moise/assistant").then(m=>m.CommandBar));
 import { ShellCtx } from "./ui-context";
 import { SessionProvider } from "./session";
 import { HeroGlow } from "@/components/hero";
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ children, notices }: { children: ReactNode; notices:WorkspaceNotice[] }) {
   const path = usePathname();
   const { profile } = useWorkspace();
   const fulfillmentRoute = path === "/work" || path.startsWith("/work/") || path === "/orders" || path.startsWith("/orders/");
-  const operational = profile.viewer.role === "OWNER" || profile.viewer.role === "MANAGER";
+  const legacy=hasDocMoisePrototype(profile.organization);
+  const ai=legacy&&hasModules(profile.organization,["AI"]);
   const [assistant, setAssistant] = useState<{ open: boolean; prompt?: string }>({ open: false });
   const [search, setSearch] = useState(false);
   const [notifs, setNotifs] = useState(false);
@@ -36,18 +41,18 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const [pageKey, setPageKey] = useState(0);
   useEffect(() => { const r = () => setPageKey((k) => k + 1); window.addEventListener("mithoo:replay-launch", r); return () => window.removeEventListener("mithoo:replay-launch", r); }, []);
-  const showCommandBar = !path.startsWith("/inbox");
+  const showCommandBar = ai && !path.startsWith("/inbox");
   return (
     <SessionProvider>
     <ShellCtx.Provider value={ui}>
       <div className="flex min-h-screen bg-white">
         <Sidebar />
         <main className="relative flex min-w-0 flex-1 flex-col overflow-x-clip pb-20 md:pb-0">
-          <Topbar />
+          <Topbar unread={notices.filter(n=>!n.read_at).length} />
           <HeroGlow />
           <div key={pageKey} className="relative flex-1">
-            {path !== "/" && !fulfillmentRoute && <p role="status" className="mx-6 mt-20 rounded-2xl bg-[#f7f7fa] p-4 text-[13px] text-mute">Prototype preview · this module is not connected to your organization. Changes here are local demonstrations.</p>}
-            {operational || path === "/" || (profile.viewer.role === "EMPLOYEE" && fulfillmentRoute) ? children : <p className="p-8 text-mute">This module is not available for your role. Contact your organization administrator.</p>}
+            {legacy && path !== "/" && !fulfillmentRoute && <p role="status" className="mx-6 mt-20 rounded-2xl bg-[#f7f7fa] p-4 text-[13px] text-mute">Prototype preview · this module is not connected to your organization. Changes here are local demonstrations.</p>}
+            {workspaceRouteEnabled(profile.organization,path) && workspaceRoleRouteEnabled(profile.viewer.role,path) ? children : <p className="p-8 text-mute">This module is not available for your role. Contact your organization administrator.</p>}
           </div>
           {showCommandBar && <CommandBar onOpen={ui.openAssistant} />}
         </main>
@@ -55,8 +60,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       <MobileNav />
       <MenuDrawer open={menu} onClose={() => setMenu(false)} />
       <SearchModal open={search} onClose={closeSearch} />
-      <NotificationsDrawer open={notifs} onClose={() => setNotifs(false)} />
-      <AssistantPanel key={String(assistant.open)} open={assistant.open} initialPrompt={assistant.prompt} onClose={closeAssistant} />
+      <NotificationsDrawer notices={notices} open={notifs} onClose={() => setNotifs(false)} />
+      {ai && <AssistantPanel key={String(assistant.open)} open={assistant.open} initialPrompt={assistant.prompt} onClose={closeAssistant} />}
     </ShellCtx.Provider>
     </SessionProvider>
   );

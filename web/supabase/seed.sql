@@ -51,6 +51,7 @@ insert into public.platform_admins (user_id, notes) values ('a0000000-0000-4000-
 insert into public.organizations (id, name, slug, timezone, default_currency, created_by) values
   ('b0000000-0000-4000-8000-000000000001', 'Zile Boutik', 'zile-boutik', 'America/New_York', 'USD', 'a0000000-0000-4000-8000-000000000002'),
   ('b0000000-0000-4000-8000-000000000002', 'Northwind Test Co (isolation demo)', 'northwind-test', 'America/Chicago', 'USD', 'a0000000-0000-4000-8000-000000000006');
+update public.organizations set metadata = metadata || '{"enabled_modules":["CORE","COMMERCE","SHIPPING","TEAM","INTEGRATIONS"],"commerce_channels":["SHOPIFY","TIKTOK_SHOP"]}'::jsonb where id in ('b0000000-0000-4000-8000-000000000001','b0000000-0000-4000-8000-000000000002');
 insert into public.organization_members (organization_id, user_id, role, title) values
   ('b0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000002', 'OWNER', 'Owner'),
   ('b0000000-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000003', 'MANAGER', 'Operations Manager'),

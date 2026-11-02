@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWorkspace } from "./workspace";
-import { bottomNav, isActive, mainNav, type NavItem } from "./nav";
+import { bottomNav, isActive, mainNav, visibleNav, type NavItem } from "./nav";
 
 function NavLink({ item, active, badge, onClick }: { item: NavItem; active: boolean; badge?: number; onClick?: () => void }) {
   const Icon = item.icon;
@@ -43,13 +43,14 @@ export function PoweredBy() {
 
 export function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const path = usePathname();
+  const workspace = useWorkspace();
   return (
     <>
       <nav className="flex flex-col gap-1">
-        {mainNav.map((i) => <NavLink key={i.label} item={i} active={isActive(i, path)}  onClick={onNavigate} />)}
+        {visibleNav(mainNav, workspace).map((i) => <NavLink key={i.label} item={i} active={isActive(i, path)}  onClick={onNavigate} />)}
       </nav>
       <nav className="mt-auto flex flex-col gap-1 pt-6">
-        {bottomNav.map((i) => <NavLink key={i.label} item={i} active={isActive(i, path)} onClick={onNavigate} />)}
+        {visibleNav(bottomNav, workspace).map((i) => <NavLink key={i.label} item={i} active={isActive(i, path)} onClick={onNavigate} />)}
         <PoweredBy />
       </nav>
     </>

@@ -27,6 +27,10 @@ export class OfficialTikTokShopProvider implements CommerceChannelProvider {
   getTracking = async () => notImplemented();
   updateTracking = async () => notImplemented();
   getPlatformIssues = async () => notImplemented();
+  getProducts = async () => notImplemented();
+  getFulfillment = async () => notImplemented();
+  getReturns = async () => notImplemented();
+  requestRefund = async () => notImplemented();
   verifyWebhook = () => ({ valid: false as const, reason: "official TikTok Shop webhook verification not implemented" });
   parseWebhook = () => notImplemented();
 }
