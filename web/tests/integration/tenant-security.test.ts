@@ -30,7 +30,7 @@ describeDb("tenant isolation & authorization", () => {
 
   it("employees only see orders they have a task on, and no customers", async () => {
     const visible = await withUserTransaction(ids.emp1, (db) => db.query<{ order_number: string }>(`select order_number from public.orders order by order_number`));
-    expect(visible.map((r) => r.order_number)).toEqual(["ZB-1007", "ZB-1008", "ZB-1014", "ZB-1016", "ZB-1018"]);
+    expect(visible.map((r) => r.order_number)).toEqual(["TEST-1007", "TEST-1008", "TEST-1014", "TEST-1016", "TEST-1018"]);
     const customers = await withUserTransaction(ids.emp1, (db) => db.one<{ n: number }>(`select count(*)::int as n from public.customers`));
     expect(customers.n).toBe(0);
     await expect(runAsMember(ids.emp1, ids.org, (ctx) => getOrders(ctx))).rejects.toMatchObject({ code: "FORBIDDEN" });

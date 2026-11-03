@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { Pool } from "pg";
 import { describe } from "vitest";
 import { configurePool, getPool } from "@/server/db/client";
@@ -8,8 +9,9 @@ export const TEST_DB = process.env.TEST_DATABASE_URL;
 export const describeDb = TEST_DB ? describe : describe.skip;
 
 export async function freshDatabase(): Promise<void> {
-  await resetLocalDatabase(TEST_DB!, { seed: true });
+  await resetLocalDatabase(TEST_DB!, { seed: false });
   configurePool(() => new Pool({ connectionString: TEST_DB, max: 4 }));
+  await getPool().query(readFileSync(new URL("../fixtures/operations.sql", import.meta.url), "utf8"));
 }
 export async function closeDatabase(): Promise<void> {
   await getPool().end();

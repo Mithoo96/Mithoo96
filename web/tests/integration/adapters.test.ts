@@ -12,9 +12,9 @@ describeDb("prototype UI adapters", () => {
   it("greets the authenticated viewer by first name, under the Mithoo product brand", async () => {
     const p = await runAsMember(ids.owner, ids.org, (ctx) => getWorkspaceProfile(ctx));
     expect(p.product).toBe("Mithoo Business OS");
-    expect(p.organization.name).toBe("Zile Boutik");
-    expect(p.organization.monogram).toBe("ZB");
-    expect(p.viewer.firstName).toBe("Zile");
+    expect(p.organization.name).toBe("Operations Test Tenant");
+    expect(p.organization.monogram).toBe("OT");
+    expect(p.viewer.firstName).toBe("Test");
     const m = await runAsMember(ids.manager, ids.org, (ctx) => getWorkspaceProfile(ctx));
     expect(m.viewer.firstName).toBe("Morgan");
   });

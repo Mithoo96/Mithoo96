@@ -56,7 +56,7 @@ describeDb("phase 1 readiness", () => {
     // Integrations: manager can view status, never secret values or references.
     const conns = await runAsMember(ids.manager, ids.org, (ctx) => getIntegrationConnections(ctx));
     expect(conns[0]).toMatchObject({ provider: "TIKTOK_SHOP_MOCK", isMock: true });
-    expect(JSON.stringify(conns)).not.toMatch(/ZILE_TIKTOK_MOCK|credentials/);
+    expect(JSON.stringify(conns)).not.toMatch(/TEST_TIKTOK_MOCK|credentials/);
     await expect(runAsMember(ids.emp1, ids.org, (ctx) => getIntegrationConnections(ctx))).rejects.toMatchObject({ code: "FORBIDDEN" });
     // Membership changes: managers cannot grant roles.
     await expect(

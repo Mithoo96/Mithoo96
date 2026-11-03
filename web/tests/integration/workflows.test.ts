@@ -145,7 +145,7 @@ describeDb("operations workflows", () => {
     expect(today.headline).toMatch(/Orders? to Pack/);
     const next = await runAsMember(ids.emp2, ids.org, (ctx) => startNextTask(ctx));
     expect(next?.status).toBe("IN_PROGRESS");
-    expect(next?.order?.orderNumber).toBe("ZB-1015"); // in-progress task resumes first
+    expect(next?.order?.orderNumber).toBe("TEST-1015"); // in-progress task resumes first
   });
 
   it("dashboard contract has real numbers and no invented revenue", async () => {

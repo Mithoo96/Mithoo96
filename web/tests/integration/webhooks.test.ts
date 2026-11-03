@@ -14,7 +14,7 @@ function signed(body: object, secret = SECRET) {
 
 describeDb("webhooks & integrations (MOCK TikTok Shop)", () => {
   beforeAll(async () => {
-    process.env.INTEGRATION_SECRET_ZILE_TIKTOK_MOCK = SECRET;
+    process.env.INTEGRATION_SECRET_TEST_TIKTOK_MOCK = SECRET;
     await freshDatabase();
   });
   afterAll(closeDatabase);

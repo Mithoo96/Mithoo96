@@ -1,10 +1,10 @@
-> **Agency Phase 2 / Batch 1 update:** The commercial priority is Tax, Life Insurance and Health Insurance. TikTok/Zile Boutik is deferred. See [Agency Batch 1](AGENCY-BATCH-1.md) for implemented scope, setup, security, verification and remaining gates. Stop at Batch 1; historical Phase 1 instructions below do not authorize commerce work.
+> **Agency Phase 2 / Batch 1 update:** The commercial priority is Tax, Life Insurance and Health Insurance. Agency OS is the only active product scope. See [Agency Batch 1](AGENCY-BATCH-1.md) for implemented scope, setup, security, verification and remaining gates. Stop at Batch 1; historical Phase 1 instructions below do not authorize commerce work.
 
 # Mithoo Business OS — Architecture
 
 > **Product:** Mithoo Business OS — *"Your business doesn't stop because you're not there."*
-> **First client organization:** Zile Boutik (TikTok Shop orders + shipping operations).
-> Zile Boutik is a **tenant**, not the product. Doc Moise Enterprises (the prototype's current
+> **Active scope:** Agency OS (Tax, Life Insurance and Health Insurance).
+> Organizations are data-driven tenants. Doc Moise Enterprises (the prototype's current
 > sample config) is another tenant of the same product.
 
 The operating loop the software controls: **DETECT → ASSIGN → GUIDE → VERIFY → ESCALATE → APPROVE → RECORD.**
@@ -29,7 +29,7 @@ Humans do the physical work; the system decides what happens next, checks it, an
   integrations/        provider adapters (TikTok Shop MOCK, USPS stub, notifications)
   lib/supabase/        Supabase clients (browser, server, service-role admin)
   supabase/migrations/ SQL schema, RLS, triggers, functions (source of truth)
-  supabase/seed.sql    generated demo data (Zile Boutik + isolation-test tenant)
+  supabase/seed.sql    empty default seed; test fixtures are isolated under tests/fixtures
   scripts/db/          local DB reset + seed generator
   tests/               unit (pure) + integration (real Postgres, RLS on)
 ```
@@ -80,7 +80,7 @@ able to trigger without broad rights: `claim_task`, `claim_next_task`, `claimabl
 `enqueue_notification`. Each checks membership/permission itself.
 
 **Secrets:** never in the database or code. `integration_connections.credentials_ref`
-(e.g. `ZILE_TIKTOK_MOCK`) resolves to env var `INTEGRATION_SECRET_ZILE_TIKTOK_MOCK`.
+(e.g. `TEST_TIKTOK_MOCK`) resolves to env var `INTEGRATION_SECRET_TEST_TIKTOK_MOCK`.
 
 **Errors:** `translatePgError` maps Postgres errors to safe `DomainError` codes; server actions
 return `{ ok:false, error:{ code, message } }` — no SQL or stack traces reach the client.
@@ -146,7 +146,7 @@ NEW → VERIFIED → READY_TO_PACK → PACKING → LABEL_READY → PACKED → AW
   to the activity log with actor + reason — no code path can skip the audit.
 * `SHIPPED` requires carrier/platform acceptance data **or** an approved `MANUAL_SHIP_OVERRIDE`.
 
-## 6. Zile Boutik shipping workflow (PACK_ORDER)
+## 6. Legacy operational shipping workflow (PACK_ORDER)
 
 | Step | Service call | Effect |
 |---|---|---|

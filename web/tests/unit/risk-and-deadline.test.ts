@@ -27,7 +27,7 @@ describe("deadline engine", () => {
 });
 
 const order = (o: Partial<OrderRiskSnapshot["order"]> = {}): OrderRiskSnapshot["order"] => ({
-  id: "o1", orderNumber: "ZB-1", status: "READY_TO_PACK", statusChangedAt: inMin(-10), shipByAt: inMin(48 * 60), readyToShipAt: null, platformFlags: {}, ...o,
+  id: "o1", orderNumber: "TEST-1", status: "READY_TO_PACK", statusChangedAt: inMin(-10), shipByAt: inMin(48 * 60), readyToShipAt: null, platformFlags: {}, ...o,
 });
 const shipment = (o: Partial<NonNullable<OrderRiskSnapshot["shipment"]>> = {}) => ({
   id: "s1", carrier: "USPS", expectedCarrier: "USPS", trackingNormalized: "9400", verificationStatus: "UNVERIFIED", duplicateOfOrderNumbers: [], carrierAccepted: false, ...o,
@@ -42,7 +42,7 @@ describe("risk rules", () => {
 
   it("detects missing and duplicate tracking", () => {
     expect(types({ order: order(), shipment: shipment({ trackingNormalized: null }) })).toContain("TRACKING_MISSING");
-    expect(types({ order: order(), shipment: shipment({ duplicateOfOrderNumbers: ["ZB-2"] }) })).toContain("DUPLICATE_TRACKING");
+    expect(types({ order: order(), shipment: shipment({ duplicateOfOrderNumbers: ["TEST-2"] }) })).toContain("DUPLICATE_TRACKING");
   });
 
   it("detects unverified labels and carrier non-receipt after grace", () => {

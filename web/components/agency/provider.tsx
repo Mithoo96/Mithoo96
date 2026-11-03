@@ -62,6 +62,8 @@ export function AgencyProvider({ children }: { children: ReactNode }) {
   const sessionUserId = session?.user.id;
   useEffect(() => {
     if (!client) return;
+    let active = true;
+    let authEventReceived = false;
     const acceptSession = (s: Session | null) => {
       const id = s?.user.id ?? null;
       if (authIdentity.current !== id) {
@@ -71,18 +73,35 @@ export function AgencyProvider({ children }: { children: ReactNode }) {
         setProfile(null);
         setOrganizations([]);
         setOrg("");
+        setError("");
+        setBusy(false);
+        setLoading(!!s);
       }
+      if (!s) setLoading(false);
       setSession(s);
     };
     const {
       data: { subscription },
-    } = client.auth.onAuthStateChange((_event, s) => acceptSession(s));
-    void client.auth.getSession().then(({ data, error: e }) => {
-      if (e) setError(e.message);
-      acceptSession(data.session);
-      setLoading(false);
+    } = client.auth.onAuthStateChange((_event, s) => {
+      if (!active) return;
+      authEventReceived = true;
+      acceptSession(s);
     });
-    return () => subscription.unsubscribe();
+    void client.auth.getSession()
+      .then(({ data, error: e }) => {
+        if (!active || authEventReceived) return;
+        acceptSession(data.session);
+        if (e) setError(e.message);
+      })
+      .catch(() => {
+        if (!active || authEventReceived) return;
+        setError("Unable to restore your session. Please sign in again.");
+        setLoading(false);
+      });
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
   }, [client]);
   useEffect(() => {
     let current = true;
@@ -94,10 +113,16 @@ export function AgencyProvider({ children }: { children: ReactNode }) {
           setOrganizations(r.data);
           setLoading(r.data.length > 0);
           setOrg(r.data[0]?.id ?? "");
-        } else setError(r.error.message);
+        } else {
+          setError(r.error.message);
+          setLoading(false);
+        }
       })
       .catch(() => {
-        if (current) setError("Unable to load organizations");
+        if (current) {
+          setError("Unable to load organizations");
+          setLoading(false);
+        }
       });
     return () => {
       current = false;
@@ -134,18 +159,21 @@ export function AgencyProvider({ children }: { children: ReactNode }) {
     setProfile(r.data.profile);
   }, [org]);
   const run = async <T,>(fn: () => Promise<ActionResult<T>>) => {
+    const generation = epoch.current;
     setBusy(true);
     setError("");
     try {
       const r = await fn();
+      if (generation !== epoch.current) return false;
       if (!r.ok) throw new Error(r.error.message);
       await refresh();
-      return true;
+      return generation === epoch.current;
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Operation failed");
+      if (generation === epoch.current)
+        setError(e instanceof Error ? e.message : "Operation failed");
       return false;
     } finally {
-      setBusy(false);
+      if (generation === epoch.current) setBusy(false);
     }
   };
   const value: AgencyContext = {
@@ -159,7 +187,9 @@ export function AgencyProvider({ children }: { children: ReactNode }) {
     configured: !!client,
     busy,
     selectOrg: (id) => {
+      if (id === org || !organizations.some((item) => item.id === id)) return;
       epoch.current += 1;
+      setBusy(false);
       setLoading(true);
       setError("");
       setWorkspace(null);

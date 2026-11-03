@@ -1,5 +1,5 @@
 /**
- * PACK_ORDER workflow — the Zile Boutik shipping pilot.
+ * PACK_ORDER workflow — the Operations Test Tenant shipping pilot.
  *
  *   startTask        READY_TO_PACK → PACKING
  *   confirmItems     check ITEMS_CONFIRMED (exact quantities)

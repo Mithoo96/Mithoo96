@@ -13,8 +13,8 @@
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
     "db:reset:local": "tsx scripts/db/reset-local.ts --seed",
-    "db:seed:generate": "tsx scripts/db/generate-seed.ts",
     "db:demo-passwords": "tsx scripts/db/set-demo-passwords.ts",
+    "db:audit:hosted": "tsx scripts/db/audit-hosted.ts",
     "db:agency-demo": "tsx scripts/db/seed-agency.ts"
   },
   "dependencies": {
@@ -30,12 +30,14 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^26.6.6",
     "@types/pg": "^8.23.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.3",
+    "happy-dom": "^21.0.4",
     "postcss": "^8.5.32",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",

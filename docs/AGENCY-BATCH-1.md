@@ -61,6 +61,8 @@ Conversion is a narrowly scoped function in the private `app` schema, executable
 
 ## Demo data
 
+The default SQL seed is empty. Legacy operational fixtures are isolated in `web/tests/fixtures/operations.sql` and loaded only by disposable local integration tests. The commerce seed generator and its package command have been removed. No hosted tenant data has been deleted.
+
 Local development only; never production. No hosted DB was changed for this batch.
 
 ```sh
