@@ -1,3 +1,5 @@
+> **Agency Phase 2 / Batch 1 update:** The commercial priority is Tax, Life Insurance and Health Insurance. TikTok/Zile Boutik is deferred. See [Agency Batch 1](AGENCY-BATCH-1.md) for implemented scope, setup, security, verification and remaining gates. Stop at Batch 1; historical Phase 1 instructions below do not authorize commerce work.
+
 # Mithoo Business OS — Architecture
 
 > **Product:** Mithoo Business OS — *"Your business doesn't stop because you're not there."*

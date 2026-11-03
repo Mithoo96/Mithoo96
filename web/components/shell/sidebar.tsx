@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useDerived } from "@/lib/store";
-import { business } from "@/lib/config/business";
+import { useBusiness } from "@/components/agency/provider";
 import { bottomNav, isActive, mainNav, type NavItem } from "./nav";
 
 function NavLink({ item, active, badge, onClick }: { item: NavItem; active: boolean; badge?: number; onClick?: () => void }) {
@@ -28,6 +27,7 @@ export function LogoMark({ size = 28 }: { size?: number }) {
 
 /** The tenant's brand: monogram + business name from the config. */
 export function Logo() {
+  const business = useBusiness();
   return (
     <Link href="/" className="flex min-w-0 items-center gap-2.5 px-3">
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#f3f5ff] via-white to-[#f7efe2] text-[12px] font-semibold tracking-[-0.02em] text-ink ring-1 ring-hair">{business.monogram}</span>
@@ -37,16 +37,15 @@ export function Logo() {
 }
 
 export function PoweredBy() {
-  return <p className="flex items-center gap-1.5 px-3 pt-5 text-[11px] text-mute"><LogoMark size={14} />Powered by {business.poweredBy}</p>;
+  return <p className="flex items-center gap-1.5 px-3 pt-5 text-[11px] text-mute"><LogoMark size={14} />Powered by Mithoo</p>;
 }
 
 export function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const path = usePathname();
-  const { unreadConversations } = useDerived();
   return (
     <>
       <nav className="flex flex-col gap-1">
-        {mainNav.map((i) => <NavLink key={i.label} item={i} active={isActive(i, path)} badge={i.label === "Inbox" ? unreadConversations.length : undefined} onClick={onNavigate} />)}
+        {mainNav.map((i) => <NavLink key={i.label} item={i} active={isActive(i, path)}  onClick={onNavigate} />)}
       </nav>
       <nav className="mt-auto flex flex-col gap-1 pt-6">
         {bottomNav.map((i) => <NavLink key={i.label} item={i} active={isActive(i, path)} onClick={onNavigate} />)}

@@ -43,7 +43,7 @@ export async function startTask(ctx: ServiceContext, taskId: string): Promise<vo
   await ctx.db.query(`update public.tasks set status = 'IN_PROGRESS', started_at = now() where id = $1`, [task.id]);
   task.status = "IN_PROGRESS";
   await recordEmployeeAction(ctx, { actionType: "TASK_STARTED", taskId: task.id, orderId: task.order_id, shipmentId: task.shipment_id });
-  await logActivity(ctx, { action: "task.started", resourceType: "task", resourceId: task.id, orderId: task.order_id, summary: `Started task "${task.title}"` });
+  await logActivity(ctx, { action: "task.started", resourceType: "task", resourceId: task.id, orderId: task.order_id, summary: task.agency_lead_id ? "Agency follow-up started" : `Started task "${task.title}"` });
   if (task.type === "PACK_ORDER" || task.type === "REPRINT_LABEL") await onPackTaskStarted(ctx, task);
 }
 
@@ -73,7 +73,13 @@ export async function completeTask(ctx: ServiceContext, taskId: string): Promise
     [task.id, next, user.actor.userId],
   );
   await recordEmployeeAction(ctx, { actionType: "TASK_COMPLETED", taskId: task.id, orderId: task.order_id });
-  await logActivity(ctx, { action: next === "COMPLETED" ? "task.completed" : "task.submitted", resourceType: "task", resourceId: task.id, orderId: task.order_id, summary: `Task "${task.title}" ${next === "COMPLETED" ? "completed" : "submitted for sign-off"}` });
+  await logActivity(ctx, { action: next === "COMPLETED" ? "task.completed" : "task.submitted", resourceType: "task", resourceId: task.id, orderId: task.order_id, summary: task.agency_lead_id ? "Agency follow-up work recorded" : `Task "${task.title}" ${next === "COMPLETED" ? "completed" : "submitted for sign-off"}` });
+  if (next === "COMPLETED" && task.agency_lead_id) {
+    await ctx.db.query(`update public.agency_leads set last_contact_at = case when $3::text = 'CONTACTED' then now() else last_contact_at end, next_follow_up_at = (
+      select min(due_at) from public.tasks where agency_lead_id=$1 and organization_id=$2 and status not in ('COMPLETED','CANCELLED')
+    ) where id=$1 and organization_id=$2 and converted_at is null`, [task.agency_lead_id,ctx.organizationId,task.checks_state.CONTACT_OUTCOME_RECORDED?.value??null]);
+    await logActivity(ctx,{action:"follow_up.completed",resourceType:"agency_lead",resourceId:task.agency_lead_id,summary:"Follow-up completed",metadata:{taskId:task.id}});
+  }
   return { completed: next === "COMPLETED", status: next, missing: [], message: next === "COMPLETED" ? "Task completed." : "Submitted for sign-off." };
 }
 

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { business } from "@/lib/config/business";
+import { useBusiness } from "@/components/agency/provider";
 import { Avatar } from "@/components/ui/primitives";
 
 /** Owner photo from the business config, with an initials fallback. */
 export function OwnerAvatar({ size = 40, className = "" }: { size?: number; className?: string }) {
+  const business = useBusiness();
   const [failed, setFailed] = useState(false);
   if (failed || !business.owner.image) return <Avatar name={business.owner.name} size={size} />;
   return (

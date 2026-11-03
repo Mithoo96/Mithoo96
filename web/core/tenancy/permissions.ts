@@ -14,6 +14,7 @@ export type OrgRole = (typeof ORG_ROLES)[number];
 export const PLATFORM_ADMIN = "PLATFORM_ADMIN" as const;
 
 export const PERMISSIONS = [
+  "agency.read_all", "agency.manage", "agency.assign", "agency.configure", "agency.work",
   "org.manage",
   "members.read",
   "members.manage",
@@ -48,6 +49,7 @@ export const PERMISSIONS = [
 export type Permission = (typeof PERMISSIONS)[number];
 
 const MANAGER_PERMISSIONS: readonly Permission[] = [
+  "agency.read_all", "agency.manage", "agency.assign", "agency.work",
   "members.read",
   "dashboard.read",
   "orders.read_all",
@@ -78,7 +80,7 @@ const MANAGER_PERMISSIONS: readonly Permission[] = [
 export const ROLE_PERMISSIONS: Readonly<Record<OrgRole, readonly Permission[]>> = {
   OWNER: PERMISSIONS,
   MANAGER: MANAGER_PERMISSIONS,
-  EMPLOYEE: ["products.read", "tasks.work", "exceptions.report", "approvals.request", "evidence.submit"],
+  EMPLOYEE: ["agency.work", "products.read", "tasks.work", "exceptions.report", "approvals.request", "evidence.submit"],
 };
 
 const ROLE_RANK: Record<OrgRole, number> = { EMPLOYEE: 1, MANAGER: 2, OWNER: 3 };

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Briefcase, Inbox, Sparkles, CircleCheck } from "lucide-react";
-import { useDerived } from "@/lib/store";
 import { useShell } from "./ui-context";
 import { Drawer } from "@/components/ui/overlay";
 import { NavList } from "./sidebar";
@@ -17,8 +16,7 @@ const items = [
 
 export function MobileNav() {
   const path = usePathname(); const { openAssistant } = useShell();
-  const { pendingApprovals, unreadConversations } = useDerived();
-  const badge: Record<string, number> = { Approvals: pendingApprovals.length, Inbox: unreadConversations.length };
+  const badge: Record<string, number> = {};
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-hair bg-white/85 backdrop-blur-xl md:hidden" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="grid grid-cols-5">

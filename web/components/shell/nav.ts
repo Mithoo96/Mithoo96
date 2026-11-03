@@ -3,6 +3,7 @@ import { Home, Users, FolderOpen, Briefcase, Sparkles, Inbox, ChartLine, LayoutG
 export type NavItem = { label: string; icon: LucideIcon; href: string; match: string[] };
 export const mainNav: NavItem[] = [
   { label: "Home", icon: Home, href: "/", match: ["/"] },
+  { label: "Leads", icon: Users, href: "/leads", match: ["/leads"] },
   { label: "Clients", icon: Users, href: "/clients", match: ["/clients"] },
   { label: "Documents", icon: FolderOpen, href: "/documents", match: ["/documents"] },
   { label: "Work", icon: Briefcase, href: "/work", match: ["/work", "/approvals", "/appointments"] },

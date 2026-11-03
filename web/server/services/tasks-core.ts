@@ -12,6 +12,7 @@ import { notify } from "./notifications";
 export interface TaskRow {
   id: string;
   organization_id: string;
+  agency_lead_id: string | null;
   order_id: string | null;
   shipment_id: string | null;
   exception_id: string | null;
@@ -57,6 +58,8 @@ export async function loadTask(ctx: ServiceContext, taskId: string, opts: { forU
 }
 
 export interface CreateTaskInput {
+  readonly agencyLeadId?: string;
+  readonly agencyFollowUpKey?: string;
   readonly type: TaskType;
   readonly orderId?: string | null;
   readonly shipmentId?: string | null;
@@ -78,9 +81,9 @@ export async function createTask(ctx: ServiceContext, input: CreateTaskInput): P
   const due = input.dueAt ?? new Date(ctx.now().getTime() + def.defaultDueMinutes * 60_000);
   const row = await ctx.db.maybeOne<{ id: string }>(
     `insert into public.tasks
-       (organization_id, order_id, shipment_id, exception_id, type, title, instructions, priority, due_at,
+       (agency_lead_id, agency_follow_up_key, organization_id, order_id, shipment_id, exception_id, type, title, instructions, priority, due_at,
         assigned_to, assigned_at, required_checks, required_evidence, requires_signoff, verification_status, metadata, created_by)
-     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, case when $10::uuid is null then null else now() end, $11, $12, $13, $14, $15, $16)
+     values ($17, $18, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, case when $10::uuid is null then null else now() end, $11, $12, $13, $14, $15, $16)
      on conflict (order_id, type) where order_id is not null and status not in ('COMPLETED', 'CANCELLED') do nothing
      returning id`,
     [
@@ -100,6 +103,8 @@ export async function createTask(ctx: ServiceContext, input: CreateTaskInput): P
       input.requiresSignoff ? "PENDING" : def.requiredChecks.length > 0 || (input.requiredEvidence?.length ?? 0) > 0 ? "PENDING" : "NOT_REQUIRED",
       JSON.stringify(input.metadata ?? {}),
       actorUserId(ctx),
+      input.agencyLeadId ?? null,
+      input.agencyFollowUpKey ?? null,
     ],
   );
   if (!row) {
@@ -120,7 +125,7 @@ export async function createTask(ctx: ServiceContext, input: CreateTaskInput): P
     resourceType: "task",
     resourceId: row.id,
     orderId: input.orderId ?? null,
-    summary: `Task created: ${input.title ?? def.title({ orderNumber: input.orderNumber })}`,
+    summary: input.agencyLeadId ? "Agency follow-up task created" : `Task created: ${input.title ?? def.title({ orderNumber: input.orderNumber })}`,
     metadata: { type: input.type, assignedTo: input.assignedTo ?? null },
   });
   if (input.assignedTo) {
@@ -128,7 +133,7 @@ export async function createTask(ctx: ServiceContext, input: CreateTaskInput): P
       recipientIds: [input.assignedTo],
       category: "TASK_ASSIGNED",
       title: "New task assigned",
-      body: input.title ?? def.title({ orderNumber: input.orderNumber }),
+      body: input.agencyLeadId ? "Follow up with your assigned prospect" : input.title ?? def.title({ orderNumber: input.orderNumber }),
       resource: { type: "task", id: row.id },
       dedupeKey: `task-assigned:${row.id}:${input.assignedTo}`,
       excludeActor: false,
@@ -163,7 +168,7 @@ export async function assignTask(ctx: ServiceContext, taskId: string, assigneeId
       recipientIds: [assigneeId],
       category: "TASK_ASSIGNED",
       title: "New task assigned",
-      body: task.title,
+      body: task.agency_lead_id ? "Follow up with your assigned prospect" : task.title,
       resource: { type: "task", id: taskId },
       dedupeKey: `task-assigned:${taskId}:${assigneeId}:${Date.now()}`,
       excludeActor: false,
@@ -174,7 +179,7 @@ export async function assignTask(ctx: ServiceContext, taskId: string, assigneeId
     resourceType: "task",
     resourceId: taskId,
     orderId: task.order_id,
-    summary: `Task "${task.title}" ${assigneeId ? "assigned" : "unassigned"}`,
+    summary: task.agency_lead_id ? "Agency follow-up task assignment changed" : `Task "${task.title}" ${assigneeId ? "assigned" : "unassigned"}`,
     changes: { assigned_to: { from: task.assigned_to, to: assigneeId } },
     metadata: { reason: reason ?? null },
   });

@@ -14,7 +14,8 @@
     "test:integration": "vitest run tests/integration",
     "db:reset:local": "tsx scripts/db/reset-local.ts --seed",
     "db:seed:generate": "tsx scripts/db/generate-seed.ts",
-    "db:demo-passwords": "tsx scripts/db/set-demo-passwords.ts"
+    "db:demo-passwords": "tsx scripts/db/set-demo-passwords.ts",
+    "db:agency-demo": "tsx scripts/db/seed-agency.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

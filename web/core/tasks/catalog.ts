@@ -4,6 +4,7 @@
  * before completion, and default priority/SLA.
  */
 export const TASK_TYPES = [
+  "AGENCY_FOLLOW_UP",
   "PACK_ORDER",
   "REPRINT_LABEL",
   "HAND_TO_CARRIER",
@@ -22,6 +23,7 @@ export type TaskPriority = (typeof TASK_PRIORITIES)[number];
 export const PRIORITY_RANK: Record<TaskPriority, number> = { URGENT: 0, HIGH: 1, NORMAL: 2, LOW: 3 };
 
 export const TASK_CHECKS = [
+  "CONTACT_OUTCOME_RECORDED",
   "ITEMS_CONFIRMED",
   "LABEL_RETRIEVED",
   "LABEL_SCANNED",
@@ -48,6 +50,11 @@ export interface TaskTypeDefinition {
 }
 
 export const TASK_CATALOG: Readonly<Record<TaskType, TaskTypeDefinition>> = {
+  AGENCY_FOLLOW_UP: {
+    title: () => "Follow up with prospect",
+    instructions: [{ key: "contact", text: "Contact the prospect and record the outcome. Schedule the next follow-up if needed.", check: "CONTACT_OUTCOME_RECORDED" }],
+    requiredChecks: ["CONTACT_OUTCOME_RECORDED"], defaultPriority: "NORMAL", defaultDueMinutes: 1440, employeeVisible: true,
+  },
   PACK_ORDER: {
     title: ({ orderNumber }) => `Pack order ${orderNumber ?? ""}`.trim(),
     instructions: [

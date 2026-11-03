@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Bell, CircleAlert, Sparkles } from "lucide-react";
-import { useOs } from "@/lib/store";
+import { useAgency } from "@/components/agency/provider";
+import { markNotificationsRead } from "@/server/actions/operations";
 import { Drawer } from "@/components/ui/overlay";
 import { Button } from "@/components/ui/button";
 import { EmptyState, Segmented } from "@/components/ui/primitives";
@@ -11,7 +12,9 @@ import { ActivityItem } from "@/components/domain/activity-item";
 import type { Notification } from "@/lib/types";
 
 export function NotificationsDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const os = useOs(); const router = useRouter();
+  const agency = useAgency(); const router = useRouter();
+  const notifications: Notification[] = (agency.workspace?.notifications.items??[]).map(n=>({id:n.id,kind:n.priority==='URGENT'||n.priority==='HIGH'?'important':'action',title:n.title,body:n.body??'',time:new Date(n.createdAt).toLocaleString(),href:n.actionUrl??undefined,read:!!n.readAt}));
+  const os = {notifications,markAllNotificationsRead:()=>void agency.run(()=>markNotificationsRead(agency.org,'all')),markNotificationRead:(id:string)=>void agency.run(()=>markNotificationsRead(agency.org,[id]))};
   const [tab, setTab] = useState<Notification["kind"]>("action");
   const list = os.notifications.filter((n) => n.kind === tab);
   const count = (k: Notification["kind"]) => os.notifications.filter((n) => n.kind === k && !n.read).length;

@@ -4,16 +4,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { Search, ChartLine, CircleCheck, Users, Inbox, FileText } from "lucide-react";
-import { useOs } from "@/lib/store";
-import { metrics } from "@/lib/mock";
+import { useAgency } from "@/components/agency/provider";
 import { Avatar } from "@/components/ui/primitives";
 import { BrandIcon, type BrandKey } from "@/components/brand-icon";
-import { channelBrand } from "@/components/channel-icon";
 
 type Result = { group: string; label: string; sub: string; href: string; avatar?: string; brand?: BrandKey };
 
 export function SearchModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const os = useOs(); const router = useRouter();
+  const {workspace} = useAgency(); const router = useRouter();
   const [q, setQ] = useState(""); const [sel, setSel] = useState(0);
   useEffect(() => { if (open) { setQ(""); setSel(0); } }, [open]);
 
@@ -21,13 +19,11 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
     const s = q.trim().toLowerCase();
     const has = (t: string) => !s || t.toLowerCase().includes(s);
     return [
-      ...os.clients.filter((c) => has(c.name) || has(c.service) || has(c.product ?? "")).slice(0, 4).map((c) => ({ group: "Clients", label: c.name, sub: `${c.service} · ${c.nextAction}`, href: `/clients/${c.id}`, avatar: c.name })),
-      ...os.tasks.filter((t) => t.bucket !== "completed" && has(t.title)).slice(0, 3).map((t) => ({ group: "Tasks", label: t.title, sub: t.due, href: "/work" })),
-      ...os.conversations.filter((c) => has(c.name) || c.messages.some((m) => has(m.text))).slice(0, 3).map((c) => ({ group: "Messages", label: c.name, sub: c.messages[c.messages.length - 1].text, href: `/inbox?c=${c.id}`, brand: channelBrand(c.channel) })),
-      ...os.documents.filter((d) => s && (has(d.name) || has(os.clients.find((c) => c.id === d.clientId)?.name ?? "")) && d.status !== "received").slice(0, 3).map((d) => ({ group: "Documents", label: `${d.name} · ${os.clients.find((c) => c.id === d.clientId)?.name}`, sub: `${d.line === "tax" ? "Tax" : "Insurance"} · ${d.date}`, href: `/clients/${d.clientId}` })),
-      ...metrics.filter((m) => has(m.label) || has("report")).slice(0, 3).map((m) => ({ group: "Reports", label: m.label, sub: "Insights report", href: `/insights/${m.key}` })),
+      ...(workspace?.clients??[]).filter(c=>has(c.name)).slice(0,4).map(c=>({group:'Clients',label:c.name,sub:'Agency client',href:'/clients',avatar:c.name})),
+      ...(workspace?.leads??[]).filter(l=>!l.convertedAt&&has(l.name)).slice(0,4).map(l=>({group:'Leads',label:l.name,sub:l.module.replaceAll('_',' '),href:'/leads',avatar:l.name})),
+      ...(workspace?.tasks??[]).filter(t=>t.status!=='COMPLETED'&&has(t.title)).slice(0,3).map(t=>({group:'Tasks',label:t.title,sub:t.dueAt?new Date(t.dueAt).toLocaleString():'No deadline',href:'/work'})),
     ];
-  }, [q, os]);
+  }, [q, workspace]);
 
   useEffect(() => {
     if (!open) return;
@@ -41,7 +37,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   }, [open, results, sel, router, onClose]);
 
   if (!open) return null;
-  const groupIcon = { Clients: Users, Tasks: CircleCheck, Messages: Inbox, Documents: FileText, Reports: ChartLine } as const;
+  const groupIcon = { Leads: Users, Clients: Users, Tasks: CircleCheck, Messages: Inbox, Documents: FileText, Reports: ChartLine } as const;
   let idx = -1;
   return createPortal(
     <div className="fixed inset-0 z-[70] flex items-start justify-center px-4 pt-[10vh]" role="dialog" aria-modal="true" aria-label="Search">
@@ -49,12 +45,12 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
       <div className="pop-in relative w-full max-w-[620px] overflow-hidden rounded-[26px] bg-white shadow-[0_30px_80px_-20px_rgba(30,30,80,0.35)] ring-1 ring-hair">
         <div className="flex items-center gap-3 border-b border-hair px-5">
           <Search size={18} strokeWidth={1.7} className="text-mute" />
-          <input id="global-search" autoFocus value={q} onChange={(e) => { setQ(e.target.value); setSel(0); }} placeholder="Search clients, documents, tasks, messages…" className="h-14 flex-1 bg-transparent text-[16px] focus:outline-none" />
+          <input id="global-search" autoFocus value={q} onChange={(e) => { setQ(e.target.value); setSel(0); }} placeholder="Search leads, clients, tasks…" className="h-14 flex-1 bg-transparent text-[16px] focus:outline-none" />
           <kbd className="rounded-md bg-[#f2f2f6] px-1.5 py-0.5 text-[11px] text-mute">esc</kbd>
         </div>
         <div className="max-h-[56vh] overflow-y-auto p-2">
           {results.length === 0 && <p className="px-4 py-10 text-center text-[14px] text-mute">No results for “{q}”.</p>}
-          {(["Clients", "Tasks", "Messages", "Documents", "Reports"] as const).map((g) => {
+          {(["Leads", "Clients", "Tasks", "Messages", "Documents", "Reports"] as const).map((g) => {
             const rs = results.filter((r) => r.group === g); if (!rs.length) return null;
             const GI = groupIcon[g];
             return (

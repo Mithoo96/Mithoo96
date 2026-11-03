@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Sun, Lock } from "lucide-react";
-import { business } from "@/lib/config/business";
+import { useAgency, useBusiness } from "@/components/agency/provider";
 import { OwnerAvatar } from "@/components/owner-avatar";
 import { replayLaunch } from "@/components/launch-screen";
 import { useToast } from "@/components/ui/toast";
@@ -22,6 +22,8 @@ const Ctx = createContext<Session | null>(null);
 export const useSession = () => { const s = useContext(Ctx); if (!s) throw new Error("useSession outside SessionProvider"); return s; };
 
 export function SessionProvider({ children }: { children: ReactNode }) {
+  const business = useBusiness();
+  const agency = useAgency();
   const toast = useToast();
   const [status, setStatus] = useState<Status>("active");
   const [awake, setAwake] = useState(false);
@@ -38,8 +40,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const value: Session = {
     status, awake, idleMinutes, setIdleMinutes,
     setAwake: (v) => { setAwake(v); last.current = Date.now(); },
-    signOut: () => { setPrompt(false); setAwake(false); setStatus("signedOut"); try { sessionStorage.clear(); } catch {} },
-    lock: () => { setPrompt(false); setStatus("locked"); },
+    signOut: () => { void agency.signOut(); setPrompt(false); setAwake(false); setStatus("signedOut"); try { sessionStorage.clear(); } catch {} },
+    lock: () => { void agency.signOut(); setPrompt(false); setStatus("locked"); },
     signIn,
   };
 
@@ -74,6 +76,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 }
 
 function AwakePrompt({ onStay, onLock }: { onStay: () => void; onLock: () => void }) {
+  const business = useBusiness();
   const total = business.session.answerSeconds;
   const [left, setLeft] = useState<number>(total);
   useEffect(() => {
@@ -107,6 +110,7 @@ function AwakePrompt({ onStay, onLock }: { onStay: () => void; onLock: () => voi
 }
 
 function RestScreen({ status, onContinue }: { status: Status; onContinue: () => void }) {
+  const business = useBusiness();
   const locked = status === "locked";
   return createPortal(
     <div className="fixed inset-0 z-[90] flex flex-col items-center justify-center overflow-hidden bg-white px-6 text-center">

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Greeting } from "./greeting";
-import { business, launch } from "@/lib/mock";
+import { useBusiness, useAgency } from "@/components/agency/provider";
 
 
 
@@ -14,6 +14,9 @@ const EXIT_DURATION = 1400;
 export const replayLaunch = () => window.dispatchEvent(new Event("mithoo:replay-launch"));
 
 export function LaunchScreen() {
+  const business = useBusiness();
+  const { workspace } = useAgency();
+  const launch = {subtitle:"Your workspace is ready for the next step.",items:workspace?[`${workspace.metrics.newLeads} new leads`,`${workspace.metrics.overdueFollowUps} overdue follow-ups`,`${workspace.metrics.activeClients} active clients`,`${workspace.metrics.tasksDue} tasks due`]:["Capture new leads","Assign clear responsibility","Follow up with confidence","Keep work moving"],closing:"Mithoo Business OS"};
   const [phase, setPhase] = useState<"idle" | "intro" | "leaving" | "done">("idle");
   const [run, setRun] = useState(0);
 

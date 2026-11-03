@@ -41,7 +41,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main className="relative flex min-w-0 flex-1 flex-col overflow-x-clip pb-20 md:pb-0">
           <Topbar />
           <HeroGlow />
-          <div key={pageKey} className="relative flex-1">{children}</div>
+          <div key={pageKey} className="relative flex-1">{!['/','/leads','/clients','/work'].includes(path)&&<p className="relative mx-auto max-w-[1080px] px-5 pt-8 text-[12px] text-mute md:px-12">Preview · Changes on this screen are not saved to your business.</p>}{children}</div>
           {showCommandBar && <CommandBar onOpen={ui.openAssistant} />}
         </main>
       </div>
