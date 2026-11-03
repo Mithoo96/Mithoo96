@@ -55,3 +55,13 @@ It enforces certificate verification and rejects redirects for credentialed HTTP
 It deliberately does not claim full gate readiness from connectivity alone.
 Current execution exits 1 with HOSTED GATE BLOCKED because the five required variables are missing.
 The Supabase connector also could not list projects: its runtime requires a non-empty link_id that is not supplied in this chat.
+
+## Claude import and re-verification — 2026-11-03
+
+- Imported `agency-current-changes.patch` onto `5e0a288` in branch `claude/intelligent-faraday-1b30ix` (fast-forward from the prototype history; `git apply --check` passed). Working tree verified identical to the transfer's `source/` snapshot. Committed so the corrections are no longer only local.
+- `npm ci`, `npm run typecheck` (exit 0), `npm run lint` (0 errors, 16 inherited warnings), `npm run build` (58 pages): passed.
+- Full suite on a fresh disposable LOCAL PostgreSQL 16 database: **98/98 passed**, 12 files, zero skipped.
+- `npm run db:audit:hosted`: exits with HOSTED GATE BLOCKED; all five variables missing in this runtime.
+- The inherited `pg` concurrent-query warning comes only from `getOrderDetails` in `server/services/orders.ts` (commerce, `Promise.all` on one transaction client). No Agency service issues parallel queries on a shared client. Left unchanged as out of Batch 1 scope; it must be serialized before upgrading to `pg@9`.
+- Local Supabase (Auth/GoTrue) could not be started here: the network proxy blocks the Supabase container images (ECR Forbidden, Docker Hub 429). Real-session OWNER/MANAGER/EMPLOYEE browser verification therefore remains open, locally and hosted.
+- No hosted access, migration, seed, user creation, deletion or deployment was performed.
