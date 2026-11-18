@@ -1,0 +1,3 @@
+f08be3757050846c7901a6326f3bdec8fa661af67b28dac338c60df024664c4a  Le-Pari-offline-Windows-x64-2026-11-18.zip
+e99bf2e7161155795b6f8821bd79c532184ee80ada787f42bf5e85b989e4f36b  Le-Pari-offline-macOS-Apple-Silicon-2026-11-18.zip
+a283f1f325fbaa9b8df338a2b0b59293caeada8eda9224a39460434b14103fd8  Le-Pari-offline-macOS-Intel-2026-11-18.zip
