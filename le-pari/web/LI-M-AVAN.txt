@@ -1,0 +1,37 @@
+LE PARI DU DIALOGUE — PREZANTASYON SAN ENTÈNÈT
+Vèsyon 18 novanm 2026 (tèks korije yo deja anndan l)
+
+POU KÒMANSE
+1. Dekonprese TOUT fichye ZIP la nan yon dosye sou òdinatè a
+   (Windows: klik dwat → «Extract All». Mac: de-klike sou ZIP la).
+   Pa louvri prezantasyon an pandan l toujou anndan ZIP la.
+2. De-klike sou index.html.
+3. Prezantasyon an louvri nan navigatè a. Pa gen anyen pou enstale.
+   Navigatè rekòmande: Google Chrome oswa Microsoft Edge.
+
+Pa efase ni deplase dosye «assets» la. Li dwe rete bò kote index.html.
+
+KÒMAND
+Flèch dwat, Espace, Page Down: paj apre
+Flèch gòch, Page Up: paj anvan
+F: plen ekran      Esc: sòti nan plen ekran
+M: koupe oswa remete son an
+Yon telekòmand prezantasyon ki itilize flèch yo oswa Page Up/Page Down ap mache.
+Si son an pa soti, klike yon fwa sou prezantasyon an oswa peze yon flèch.
+
+POU MODIFYE TÈKS
+1. De-klike sou editor.html.
+2. Chwazi paj la, korije tèks la, epi klike «Sove koreksyon yo».
+3. Ouvri index.html nan MENM navigatè a pou wè koreksyon yo.
+Koreksyon yo rete sèlman nan navigatè ak òdinatè sa a.
+Pou kenbe yon kopi: klike «Ekspòte JSON» epi mete fichye a sou yon kle USB.
+Sou yon lòt òdinatè oswa yon lòt navigatè: «Enpòte JSON», epi «Sove koreksyon yo».
+«Retabli tèks orijinal yo» remete tèks korije 18 novanm yo.
+
+KONSÒL PREZANTATÈ
+De-klike sou presenter.html, epi klike «Open audience window».
+Konsòl la ka simile soulinyaj tèks la. Mikwofòn nan pa disponib nan vèsyon sa a.
+
+ANVAN PREZANTASYON AN
+Teste sou òdinatè w ap itilize a: tout 21 paj yo, son an, plen ekran (F),
+telekòmand lan. Apre sa, etenn Wi-Fi a epi teste ankò.
