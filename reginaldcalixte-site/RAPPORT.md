@@ -70,6 +70,6 @@ Source de référence : `ME_REGINALD_CALIXTE_RESUME_WEB_VERSION.pdf` (4 pages), 
 - « Maîtrise en Droit pénal et sciences criminelles » et « Certifications professionnelles » (À propos, Parcours) — sans date.
 - « Consultant indépendant auprès de plusieurs entreprises », « Professeur au niveau secondaire et professionnel » (synthèse « Trois champs d'action »).
 
-### Notes non bloquantes
-- Orthographe du prénom : le CV écrit « Reginald » sans accent ; le site, le logo, les métadonnées et les échanges utilisent « Réginald ». La forme accentuée est conservée.
-- Le CV ne précise pas l'établissement des cours de philosophie (2016 – 2018) : affiché sans établissement.
+### Décisions (23/11/2026)
+- Prénom : forme accentuée « Réginald » retenue partout (le CV écrit « Reginald »).
+- Cours de philosophie (2016 – 2018) : affichés tels que dans le CV, sans établissement.
