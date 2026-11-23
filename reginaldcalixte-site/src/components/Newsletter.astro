@@ -1,11 +1,11 @@
 ---
 import Icon from './Icon.astro';
 ---
-<section class="newsletter bg-navy on-dark" id="restons-connectes" aria-labelledby="nl-title">
+<section class="newsletter" id="restons-connectes" aria-labelledby="nl-title">
   <div class="wrap newsletter__grid">
     <div data-reveal>
-      <h2 class="h2" id="nl-title">Restons connectés</h2>
-      <p class="mt-2" style="max-width:42ch;color:rgba(255,255,255,.82)">Recevez les actualités, prises de position, publications et initiatives de Réginald Calixte.</p>
+      <h2 class="h2 ruled" id="nl-title">Restons connectés</h2>
+      <p class="mt-2 newsletter__intro">Recevez les actualités, prises de position, publications et initiatives de Réginald Calixte.</p>
     </div>
     <form class="newsletter__form" data-form="newsletter" action="/api/subscribe" method="post"
       data-success-title="Merci. Vous êtes maintenant inscrit(e)."
@@ -39,17 +39,16 @@ import Icon from './Icon.astro';
   </div>
 </section>
 <style>
-  .newsletter { padding-block: var(--section); position: relative; overflow: hidden; }
-  .newsletter::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; background: linear-gradient(90deg, var(--orange) 0 18%, transparent 18%); }
+  .newsletter { padding-block: var(--section); background: var(--paper); }
+  .newsletter h2 { color: var(--navy); }
+  .newsletter__intro { max-width: 40ch; color: var(--ink-2); }
   .newsletter__grid { display: grid; gap: 3rem var(--gutter); }
-  .newsletter__fields { display: grid; gap: 1.1rem; }
-  .newsletter .field label { color: rgba(255,255,255,.86); }
-  .newsletter .input { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.3); color: #fff; }
-  .newsletter .input:focus { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.18); }
-  .newsletter .field-error { color: #ffb4a8; }
-  .newsletter .input[aria-invalid='true'] { border-color: #ff9a8f; }
-  .newsletter__legal { margin-top: 1.4rem; font-size: .8rem; color: rgba(255,255,255,.66); max-width: 60ch; }
-  .newsletter__legal a { text-decoration: underline; text-underline-offset: 3px; }
+  .newsletter__fields { display: grid; gap: 1.75rem var(--gutter); }
+  .newsletter .input { background: transparent; border: 0; border-bottom: 1.5px solid var(--ink); border-radius: 0; padding-inline: 0; min-height: 48px; }
+  .newsletter .input:focus { box-shadow: none; border-bottom-color: var(--orange-ink); border-bottom-width: 2px; }
+  .newsletter .input[aria-invalid='true'] { border-bottom-color: #b3261e; }
+  .newsletter__legal { margin-top: 1.4rem; font-family: var(--sans); font-size: .82rem; color: var(--ink-3); max-width: 62ch; }
+  .newsletter__legal a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
   @media (min-width: 720px) { .newsletter__fields { grid-template-columns: 1fr 1fr; } .newsletter__email { grid-column: 1 / -1; } }
   @media (min-width: 1024px) { .newsletter__grid { grid-template-columns: 5fr 7fr; align-items: start; } }
 </style>

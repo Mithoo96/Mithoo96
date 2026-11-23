@@ -7,8 +7,8 @@ import { photo } from '../data/photos';
 import { gallery } from '../data/site';
 const items = await Promise.all(gallery.map(async (g) => ({ ...g, large: (await getImage({ src: photo(g.image), width: 1800, format: 'webp' })).src })));
 ---
-<Base title="Galerie" description="En images : Saint-Marc, l'Artibonite, la population, les jeunes, les marchés, la mer et le patrimoine haïtien.">
-  <PageHead title="Galerie" subtitle="Saint-Marc, l'Artibonite, la population, les jeunes, les marchés, la mer et le patrimoine haïtien." crumb="Galerie" image="place-publique" />
+<Base title="Galerie" description="En images : Saint-Marc, l'Artibonite, la population, les jeunes, les marchés, la mer et le patrimoine haïtien." headerTone="light">
+  <PageHead title="Galerie" subtitle="Saint-Marc, l'Artibonite, la population, les jeunes, les marchés, la mer et le patrimoine haïtien." crumb="Galerie" />
   <section class="gal section" aria-label="Photographies">
     <div class="wrap">
       <ul class="gal__grid">

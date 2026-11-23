@@ -17,8 +17,8 @@ const items = await Promise.all(pressPhotos.map(async (p) => {
   return { ...p, size: `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} Mo`, dim: `${dim.width} × ${dim.height} px`, large: large.src };
 }));
 ---
-<Base title="Espace presse" description="Photographies officielles haute résolution de Réginald Calixte, libres d'usage pour la presse, les médias et les partenaires.">
-  <PageHead title="Photos officielles haute résolution" subtitle="Photographies officielles de Réginald Calixte, libres d'usage pour la presse, les médias et les partenaires. Téléchargez en haute résolution." crumb="Espace presse" image="portrait-editorial" />
+<Base title="Espace presse" description="Photographies officielles haute résolution de Réginald Calixte, libres d'usage pour la presse, les médias et les partenaires." headerTone="light">
+  <PageHead title="Photos officielles haute résolution" subtitle="Photographies officielles de Réginald Calixte, libres d'usage pour la presse, les médias et les partenaires. Téléchargez en haute résolution." crumb="Espace presse" />
 
   <section class="terms" aria-labelledby="terms-title">
     <div class="wrap terms__grid">

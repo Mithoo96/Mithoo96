@@ -6,21 +6,21 @@ import Icon from '../components/Icon.astro';
 import { axes, axesIntro } from '../data/site';
 ---
 <Base title="Priorités" description="Les pivots de l'engagement de Me Réginald Calixte : gouvernance locale, Bas-Artibonite, redevabilité budgétaire, décentralisation, État de droit…">
-  <PageHead title="Les pivots de mon engagement" subtitle={axesIntro} crumb="Priorités" image="terrain-marche" />
+  <PageHead title="Les pivots de mon engagement" subtitle={axesIntro} crumb="Priorités" image="terrain-marche" position="55% 35%" />
 
-  <section class="prio section" style="padding-bottom:clamp(3rem,2rem + 3vw,5rem)" aria-label="Les huit priorités">
+  <section class="prio" aria-label="Priorités">
     <div class="wrap">
-      <ol class="prio__grid">
+      <ul class="prio__list">
         {axes.map((a, i) => (
-          <li data-reveal style={`--d:${(i % 4) * 0.06}s`}>
-            <a href={`/vision#axe-${i + 1}`} class="prio__card">
-              <h2 class="prio__title">{a.title}</h2>
-              <p class="prio__text">{a.text}</p>
-              <span class="prio__more">Explorer <span class="visually-hidden">: {a.title}</span><Icon name="arrow" /></span>
-            </a>
+          <li data-reveal>
+            <h2 class="prio__title">{a.title}</h2>
+            <div class="prio__body">
+              <p>{a.text}</p>
+              <a href={`/vision#axe-${i + 1}`}>Explorer<span class="visually-hidden"> : {a.title}</span> <Icon name="arrow" /></a>
+            </div>
           </li>
         ))}
-      </ol>
+      </ul>
     </div>
   </section>
 
@@ -28,20 +28,17 @@ import { axes, axesIntro } from '../data/site';
 </Base>
 
 <style>
-  .prio__grid { display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--rule-strong); border-left: 1px solid var(--rule-strong); }
-  .prio__grid li { border-right: 1px solid var(--rule-strong); border-bottom: 1px solid var(--rule-strong); }
-  .prio__card {
-    position: relative; display: flex; flex-direction: column; height: 100%; min-height: 260px; padding: 1.75rem 1.5rem 1.5rem;
-    text-decoration: none; background: var(--paper); transition: background-color .45s var(--ease), color .45s var(--ease);
+  .prio { padding-block: var(--section) clamp(3rem, 2rem + 3vw, 5rem); }
+  .prio__list li { display: grid; gap: 1rem var(--gutter); padding-block: clamp(1.75rem, 1.25rem + 1.5vw, 2.75rem); border-top: 1px solid var(--rule-strong); }
+  .prio__list li:first-child { border-top: 4px solid var(--navy); }
+  .prio__title { font-family: var(--display); font-stretch: 74%; font-weight: 640; font-size: clamp(1.9rem, 1.3rem + 2.2vw, 3.2rem); line-height: 1; letter-spacing: -0.012em; color: var(--navy); text-wrap: balance; }
+  .prio__body { display: grid; gap: 1rem; align-content: start; }
+  .prio__body p { color: var(--ink-2); font-size: var(--fs-lg); max-width: 46ch; }
+  .prio__body a { justify-self: start; display: inline-flex; align-items: center; gap: .5rem; font-family: var(--sans); font-weight: 600; text-decoration: none; color: var(--ink); border-bottom: 1.5px solid var(--orange); padding-bottom: .2rem; }
+  .prio__body a :global(svg) { width: 18px; height: 18px; transition: transform .35s var(--ease); }
+  .prio__body a:hover :global(svg) { transform: translateX(4px); }
+  @media (min-width: 1024px) {
+    .prio__list li { grid-template-columns: 7fr 5fr; align-items: start; }
+    .prio__body { padding-top: .5rem; }
   }
-  .prio__title { font-family: var(--serif); font-size: var(--fs-xl); line-height: 1.15; color: var(--navy); font-variation-settings: 'opsz' 36; transition: color .45s var(--ease); }
-  .prio__text { margin-top: .9rem; flex: 1; font-size: .95rem; color: var(--ink-2); transition: color .45s var(--ease); }
-  .prio__more { margin-top: 1.4rem; display: inline-flex; align-items: center; gap: .5rem; font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
-  .prio__more :global(svg) { width: 16px; height: 16px; transition: transform .35s var(--ease); }
-  .prio__card:hover, .prio__card:focus-visible { background: var(--navy); }
-  .prio__card:hover .prio__title, .prio__card:hover .prio__more, .prio__card:focus-visible .prio__title, .prio__card:focus-visible .prio__more { color: #fff; }
-  .prio__card:hover .prio__text, .prio__card:focus-visible .prio__text { color: rgba(255,255,255,.82); }
-  .prio__card:hover .prio__more :global(svg) { transform: translateX(5px); }
-  @media (min-width: 640px) { .prio__grid { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 1100px) { .prio__grid { grid-template-columns: repeat(4, 1fr); } .prio__card { min-height: 340px; padding: 2rem 1.75rem 1.75rem; } }
 </style>

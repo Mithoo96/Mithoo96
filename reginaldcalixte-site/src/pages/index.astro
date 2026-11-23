@@ -3,126 +3,168 @@ import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import Newsletter from '../components/Newsletter.astro';
-import Charter from '../components/Charter.astro';
-import Compass from '../components/Compass.astro';
-import Method from '../components/Method.astro';
 import { photo } from '../data/photos';
-import { identity, hero, conviction, bio, ctaBand, gallery } from '../data/site';
+import { identity, hero, conviction, bio, convictions, boussole, methode, axes, axesIntro, news, ctaBand, gallery } from '../data/site';
+const nb = (t: string) => t.replace(/Saint-Marc/g, 'Saint‑Marc');
+const [leadNews, ...moreNews] = news;
 ---
-<Base headerTone="light">
-  <!-- ============================================================ HERO -->
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="hero__stage wrap">
-      <h1 class="hero__title display" id="hero-title">
-        <span class="visually-hidden">Me Réginald Calixte — </span>
-        <span class="line"><span>«&nbsp;Yon lòt</span></span>
-        <span class="line"><em><span>lidèchip&nbsp;!&nbsp;»</span></em></span>
-      </h1>
-
-      <div class="hero__portrait">
-        <Picture
-          src={photo('portrait-officiel')}
-          formats={['avif', 'webp']}
-          widths={[420, 640, 860, 1100]}
-          sizes="(min-width: 900px) 34vw, 92vw"
-          alt="Me Réginald Calixte — portrait officiel"
-          loading="eager"
-          fetchpriority="high"
-        />
-      </div>
-
-      <div class="hero__left">
-        <p class="hero__role">{identity.status}<br />{identity.circonscription}</p>
-      </div>
-
-      <div class="hero__right">
-        <p class="hero__lines">
-          <strong>{hero.lines[0]}</strong>
-          <strong>{hero.lines[1]}</strong>
-        </p>
-        <div class="cluster">
-          <a class="btn" href="/vision">Découvrir la vision <Icon name="arrow" /></a>
-          <a class="btn btn--ghost" href="/parcours">Mon parcours</a>
-        </div>
-      </div>
+<Base>
+  <!-- 1 — Ouverture photographique -->
+  <section class="hero on-dark" aria-labelledby="hero-title">
+    <div class="hero__media">
+      <Picture
+        src={photo('portrait-editorial')}
+        formats={['avif', 'webp']}
+        widths={[640, 1000, 1400, 1672]}
+        sizes="100vw"
+        alt="Me Réginald Calixte en costume bleu, bras croisés"
+        loading="eager"
+        fetchpriority="high"
+      />
     </div>
-
-    <div class="hero__band on-dark">
-      <div class="wrap hero__band-grid">
-        <p class="hero__name">{identity.name}</p>
-        <p class="hero__descriptor">{identity.descriptor}</p>
-
+    <div class="wrap hero__content">
+      <h1 class="hero__title" id="hero-title">Me Réginald Calixte</h1>
+      <p class="hero__status">{identity.statusShort}</p>
+      <p class="hero__sign" lang="ht">{identity.signature}</p>
+      <div class="hero__actions">
+        <a class="btn btn--light" href="/vision">Découvrir la vision <Icon name="arrow" /></a>
+        <a class="hero__link" href="/parcours">Mon parcours</a>
       </div>
     </div>
   </section>
 
-  <!-- ====================================================== CONVICTION -->
-  <section class="conviction section" id="conviction" aria-label="Conviction">
-    <div class="wrap grid-12">
-      <figure class="conviction__body" data-reveal style="--d:.1s">
-        <blockquote>
-          <p><span class="q" aria-hidden="true">«</span>{conviction}</p>
-        </blockquote>
-        <figcaption>— Réginald Calixte</figcaption>
+  <!-- 2 — La conviction, en typographie seule -->
+  <section class="conviction" aria-label="Conviction">
+    <div class="wrap">
+      <figure class="conviction__fig" data-reveal>
+        <blockquote><p>{nb(conviction)}</p></blockquote>
+        <figcaption>Réginald Calixte</figcaption>
       </figure>
+      <div class="conviction__lines" data-reveal style="--d:.1s">
+        {hero.lines.map((l) => <p>{l}</p>)}
+      </div>
     </div>
   </section>
 
-  <!-- ===================================================== QUI SUIS-JE -->
-  <section class="about section bg-white" aria-labelledby="about-title">
-    <div class="wrap about__grid">
-      <div class="about__media" data-reveal>
-        <Picture src={photo('portrait-editorial')} formats={['avif', 'webp']} widths={[480, 760, 1000]} sizes="(min-width: 1024px) 40vw, 92vw" alt="Réginald Calixte, portrait éditorial" />
+  <!-- 3 — Qui suis-je : image à fond perdu -->
+  <section class="bio on-dark" aria-labelledby="bio-title">
+    <div class="bio__media">
+      <Picture src={photo('terrain-foule')} formats={['avif', 'webp']} widths={[640, 960, 1280]} sizes="(min-width: 1024px) 50vw, 100vw" alt="Réginald Calixte, souriant, au milieu de la population" />
+    </div>
+    <div class="bio__text">
+      <h2 class="h2" id="bio-title" data-reveal>{bio.title}</h2>
+      <div class="bio__prose" data-reveal style="--d:.08s">
+        {bio.paragraphs.map((p) => <p set:html={p} />)}
       </div>
-      <div class="about__text">
-        <h2 class="h2" id="about-title" data-reveal>{bio.title}</h2>
-        <div class="prose about__prose mt-3" data-reveal style="--d:.1s">
-          {bio.paragraphs.map((p) => <p set:html={p} />)}
+      <p class="bio__triad" lang="ht" data-reveal>{bio.triad.join(' ')}</p>
+      <a class="link-arrow" href="/biographie" data-reveal>Découvrir son parcours complet <Icon name="arrow" /></a>
+    </div>
+  </section>
+
+  <!-- 4 — Convictions -->
+  <section class="beliefs" aria-labelledby="beliefs-title">
+    <div class="wrap beliefs__grid">
+      <h2 class="h2 ruled beliefs__title" id="beliefs-title" data-reveal>Ce en quoi je crois, sans concession.</h2>
+      <ul class="beliefs__list">
+        {convictions.map((c, i) => <li data-reveal style={`--d:${(i % 2) * 0.06}s`}>{c}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5 — Interlude photographique -->
+  <div class="interlude" aria-hidden="true">
+    <div class="interlude__media">
+      <Picture src={photo('terrain-marche')} formats={['avif', 'webp']} widths={[640, 960, 1280]} sizes="100vw" alt="" />
+    </div>
+  </div>
+
+  <!-- 6 — Boussole et méthode -->
+  <section class="compass" aria-label="Boussole et méthode">
+    <div class="wrap compass__grid">
+      <div data-reveal>
+        <h2 class="h3 ruled">J'ai pour boussole&nbsp;:</h2>
+        <ul class="compass__list">{boussole.map((b) => <li>{b}</li>)}</ul>
+      </div>
+      <div data-reveal style="--d:.08s">
+        <h2 class="h3 ruled">Le leadership-solution comme méthode</h2>
+        <p class="compass__intro">Je valorise:</p>
+        <ul class="compass__list">{methode.map((m) => <li>{m}</li>)}</ul>
+        <a class="link-arrow compass__more" href="/vision">Explorer la vision complète <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 — Les pivots de l'engagement -->
+  <section class="pivots" aria-labelledby="pivots-title">
+    <div class="wrap pivots__grid">
+      <div class="pivots__panel on-dark" data-reveal>
+        <h2 class="h2" id="pivots-title">Les pivots de mon engagement</h2>
+        <p>{axesIntro}</p>
+        <a class="link-arrow" href="/priorites">Voir les priorités <Icon name="arrow" /></a>
+      </div>
+      <ul class="pivots__list">
+        {axes.map((a, i) => (
+          <li data-reveal style={`--d:${(i % 4) * 0.04}s`}>
+            <a href={`/vision#axe-${i + 1}`}><span>{a.title}</span><Icon name="arrow" /></a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8 — Actualités -->
+  <section class="latest" aria-labelledby="latest-title">
+    <div class="wrap">
+      <div class="latest__head ruled">
+        <h2 class="h2" id="latest-title">Actualités</h2>
+        <a class="link-arrow" href="/actualites">Toutes les actualités <Icon name="arrow" /></a>
+      </div>
+      <div class="latest__grid">
+        <article class="latest__lead" data-reveal>
+          <Picture src={photo(leadNews.image)} formats={['avif', 'webp']} widths={[640, 1000]} sizes="(min-width: 1024px) 58vw, 100vw" alt="" />
+          <p class="latest__meta"><span>{leadNews.cat}</span> · <time datetime={leadNews.date}>{leadNews.dateLabel}</time></p>
+          <h3 class="h3">{nb(leadNews.title)}</h3>
+          <p class="latest__excerpt">{leadNews.excerpt}</p>
+        </article>
+        <div class="latest__side">
+          {moreNews.slice(0, 3).map((n, i) => (
+            <article class="latest__item" data-reveal style={`--d:${i * 0.06}s`}>
+              <p class="latest__meta"><span>{n.cat}</span> · <time datetime={n.date}>{n.dateLabel}</time></p>
+              <h3 class="latest__title">{nb(n.title)}</h3>
+              <p class="latest__excerpt">{n.excerpt}</p>
+            </article>
+          ))}
         </div>
-        <p class="triad mt-3" data-reveal>
-          {bio.triad.map((w) => <span>{w} </span>)}
-        </p>
-        <a class="link-arrow mt-3" href="/biographie" data-reveal>Découvrir son parcours complet <Icon name="arrow" /></a>
       </div>
     </div>
   </section>
 
-  <Charter />
-
-  <Compass />
-
-  <Method />
-
-  <!-- ========================================================= GALERIE -->
-  <section class="rail bg-navy-deep on-dark" aria-labelledby="rail-title" data-rail>
-    <div class="wrap rail__head">
-      <h2 class="visually-hidden" id="rail-title">Galerie</h2>
+  <!-- 9 — Galerie -->
+  <section class="rail on-dark" aria-labelledby="rail-title" data-rail>
+    <h2 class="visually-hidden" id="rail-title">Galerie</h2>
+    <ul class="rail__track" data-rail-track tabindex="0" aria-label="Galerie — faire défiler horizontalement">
+      {gallery.map((g) => (
+        <li><Picture src={photo(g.image)} formats={['avif', 'webp']} widths={[480, 800, 1200]} sizes="(min-width: 900px) 46vw, 84vw" alt={g.alt} /></li>
+      ))}
+    </ul>
+    <div class="wrap rail__foot">
+      <a class="link-arrow" href="/galerie">Voir toute la galerie <Icon name="arrow" /></a>
       <div class="rail__ctrl">
         <span class="num rail__count" data-rail-count aria-hidden="true">01 / {String(gallery.length).padStart(2, '0')}</span>
         <button class="icon-btn" type="button" data-rail-prev aria-label="Image précédente"><Icon name="prev" /></button>
         <button class="icon-btn" type="button" data-rail-next aria-label="Image suivante"><Icon name="next" /></button>
       </div>
     </div>
-    <ul class="rail__track" data-rail-track tabindex="0" aria-label="Galerie — faire défiler horizontalement">
-      {gallery.map((g) => (
-        <li>
-          <Picture src={photo(g.image)} formats={['avif', 'webp']} widths={[480, 800, 1200]} sizes="(min-width: 900px) 46vw, 84vw" alt={g.alt} />
-        </li>
-      ))}
-    </ul>
-    <div class="wrap rail__foot"><a class="link-arrow" href="/galerie">Voir toute la galerie <Icon name="arrow" /></a></div>
   </section>
 
-  <!-- ============================================================= CTA -->
+  <!-- 10 — Appel -->
   <section class="call on-dark" aria-labelledby="call-title">
     <div class="call__media" aria-hidden="true">
-      <Picture src={photo('saint-marc-baie')} formats={['avif', 'webp']} widths={[800, 1400, 2000]} sizes="100vw" alt="" />
+      <Picture src={photo('assemblee-quartier')} formats={['avif', 'webp']} widths={[640, 1080]} sizes="100vw" alt="" />
     </div>
     <div class="wrap call__inner">
-      <h2 class="call__title" id="call-title" data-reveal>
-        {ctaBand.map((l) => <span>{l} </span>)}
-      </h2>
-      <div class="cluster mt-3" data-reveal style="--d:.15s">
+      <h2 class="call__title" id="call-title" data-reveal>{ctaBand.join(' ')}</h2>
+      <div class="cluster" data-reveal style="--d:.12s">
         <a class="btn btn--signal" href="/contact">Je m'engage <Icon name="arrow" /></a>
         <a class="btn btn--ghost" href="#restons-connectes">Rester informé(e)</a>
       </div>
@@ -133,109 +175,139 @@ import { identity, hero, conviction, bio, ctaBand, gallery } from '../data/site'
 </Base>
 
 <style>
-  /* --------------------------------------------------------------- Hero */
-  .hero { background: var(--studio); position: relative; overflow: hidden; }
-  .hero__stage {
-    position: relative; display: grid; grid-template-columns: 1fr;
-    padding-top: calc(var(--header-h) + 1.25rem);
+  /* 1 — Hero */
+  .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; background: var(--navy-deep); color: #fff; }
+  .hero__media { position: absolute; inset: 0; z-index: -2; }
+  .hero__media :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 80% 30%; }
+  .hero::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(0,12,40,.45) 0%, rgba(0,12,40,0) 20%),
+      linear-gradient(0deg, rgba(0,12,40,.92) 0%, rgba(0,12,40,.5) 30%, rgba(0,12,40,0) 55%);
   }
-    .hero__title { color: var(--navy); margin-top: clamp(1rem, .5rem + 1.5vw, 2rem); position: relative; z-index: 2; font-size: clamp(3.1rem, 16.5vw, 6.5rem); }
-  .hero__title .line { display: block; overflow: hidden; padding-bottom: .06em; }
-  .hero__title .line > *, .hero__title .line > span { display: inline-block; }
-  .hero__title em { font-style: italic; color: var(--orange); font-variation-settings: 'opsz' 72; }
-  .hero__portrait {
-    position: relative; margin-top: 1.5rem; margin-inline: calc(var(--gutter) * -1);
-    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 10%); mask-image: linear-gradient(180deg, transparent 0, #000 10%);
-  }
-  .hero__portrait :global(img) { width: 100%; aspect-ratio: 4 / 4.4; object-fit: cover; object-position: 50% 12%; }
-  .hero__left, .hero__right { position: relative; z-index: 2; }
-  .hero__left { padding-top: 1.75rem; }
-  .hero__role { font-family: var(--serif); font-size: var(--fs-lg); line-height: 1.35; color: var(--navy); font-variation-settings: 'opsz' 36; }
-  .hero__right { padding-block: 1.5rem 2.75rem; display: grid; gap: 1.75rem; }
-  .hero__lines { display: grid; gap: .5rem; font-size: var(--fs-lg); line-height: 1.45; color: var(--ink); }
-  .hero__lines strong { font-weight: 550; }
-  .hero__lines strong:first-child { font-family: var(--serif); font-size: var(--fs-xl); font-weight: 500; color: var(--navy); font-variation-settings: 'opsz' 36; }
+  .hero__content { padding-bottom: clamp(2.25rem, 1.5rem + 3vw, 4.5rem); }
+  .hero__title { font-family: var(--display); font-stretch: 72%; font-weight: 660; font-size: clamp(2.9rem, 1.6rem + 4.4vw, 5.6rem); line-height: .92; letter-spacing: -0.015em; max-width: 11ch; }
+  @media (min-width: 900px) { .hero__title { max-width: none; } }
+  .hero__status { margin-top: 1.25rem; font-family: var(--sans); font-size: clamp(1rem, .9rem + .4vw, 1.2rem); font-weight: 500; color: rgba(255,255,255,.92); }
+  .hero__sign { margin-top: .35rem; font-style: italic; font-size: clamp(1.25rem, 1rem + .8vw, 1.7rem); color: #fff; }
+  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.75rem; margin-top: 2rem; }
+  .hero__link { font-family: var(--sans); font-weight: 600; text-decoration: none; border-bottom: 1.5px solid rgba(255,255,255,.6); padding-bottom: .2rem; }
+  .hero__link:hover { border-color: #fff; }
+  .btn--light { --bg: #fff; --fg: var(--navy); --bd: #fff; }
+  .btn--light:hover { --bg: var(--paper); --bd: var(--paper); }
 
-  .hero__band { background: var(--navy); color: var(--white); position: relative; z-index: 3; }
-  .hero__band-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem var(--gutter); padding-block: 1.4rem; align-items: center; }
-  .hero__name { font-family: var(--serif); font-size: 1.35rem; line-height: 1.1; grid-column: 1 / -1; font-variation-settings: 'opsz' 36; }
-  .hero__descriptor { font-size: .95rem; color: rgba(255,255,255,.82); }
-
-  @media (min-width: 900px) {
-    .hero__stage {
-      grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter);
-      grid-template-rows: auto 1fr;
-      min-height: min(max(100svh - 92px, 720px), 1040px);
-    }
-    .hero__title { grid-column: 1 / -1; text-align: center; font-size: clamp(4rem, 1rem + 7.2vw, 9.5rem); white-space: nowrap; }
-    .hero__title .line { display: inline-block; vertical-align: bottom; }
-    .hero__title .line + .line { margin-left: .22em; }
-    .hero__portrait {
-      grid-column: 4 / span 6; grid-row: 2; margin: 0; align-self: end; justify-self: center;
-      width: min(100%, 560px); margin-top: -0.6rem; z-index: 1;
-      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 12%);
-      -webkit-mask-composite: source-in;
-      mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 12%);
-      mask-composite: intersect;
-    }
-    .hero__portrait :global(img) { aspect-ratio: auto; height: 100%; max-height: calc(100svh - 330px); min-height: 430px; object-position: 50% 0; }
-    .hero__left { grid-column: 1 / span 3; grid-row: 2; align-self: center; padding: 0; }
-    .hero__right { grid-column: 10 / span 3; grid-row: 2; align-self: center; padding: 0; }
-    .hero__right .cluster { flex-direction: column; align-items: stretch; }
-    .hero__band-grid { grid-template-columns: 1fr auto; padding-block: 1.6rem; }
-    .hero__name { grid-column: auto; font-size: 1.55rem; }
-  }
-  @media (min-width: 900px) and (max-width: 1180px) {
-    .hero__left { grid-column: 1 / span 3; }
-    .hero__portrait { grid-column: 4 / span 6; }
-    .hero__lines strong:not(:first-child) { font-size: 1rem; }
-  }
-
-  /* Entrées */
   @media (prefers-reduced-motion: no-preference) {
-    .hero__title .line > * { animation: rise 1.1s var(--ease) both; }
-    .hero__title .line:nth-child(3) > * { animation-delay: .12s; }
-    .hero__portrait { animation: fadeUp 1.4s var(--ease) .15s both; }
-    .hero__left, .hero__right { animation: fade 1s var(--ease) .55s both; }
-    .hero__band { animation: fade 1s var(--ease) .7s both; }
+    .hero__media :global(img) { animation: settle 2s var(--ease) both; }
+    .hero__content > * { animation: up 1.1s var(--ease) both; }
+    .hero__content > :nth-child(2) { animation-delay: .12s; }
+    .hero__content > :nth-child(3) { animation-delay: .2s; }
+    .hero__content > :nth-child(4) { animation-delay: .3s; }
+    @supports (animation-timeline: scroll()) {
+      .hero__media { animation: drift linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+    }
   }
-  @keyframes rise { from { transform: translateY(105%); } to { transform: none; } }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(28px) scale(1.02); } to { opacity: 1; transform: none; } }
-  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes settle { from { transform: scale(1.06); } to { transform: none; } }
+  @keyframes up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  @keyframes drift { to { transform: translateY(22%); } }
 
-  /* ---------------------------------------------------------- Conviction */
-  .conviction__body { grid-column: 1 / -1; }
-  .conviction blockquote p {
-    font-family: var(--serif); font-size: clamp(1.7rem, 1rem + 2.6vw, 3.4rem); line-height: 1.16;
-    letter-spacing: -0.015em; color: var(--navy); font-variation-settings: 'opsz' 60; text-wrap: pretty;
-  }
-  .conviction .q { color: var(--orange); margin-right: .15em; }
-  .conviction figcaption { margin-top: 2rem; font-size: 1rem; color: var(--ink-3); }
-  @media (min-width: 900px) {
-    .conviction__body { grid-column: 4 / span 9; }
-    .conviction .q { position: absolute; transform: translateX(-100%); margin-left: -.1em; }
-    .conviction blockquote p { position: relative; }
-  }
+  /* 2 — Conviction */
+  .conviction { padding-block: clamp(5rem, 3rem + 8vw, 11rem); background: var(--paper); }
+  .conviction__fig { max-width: 32ch; font-size: clamp(1.7rem, 1rem + 2.7vw, 3.3rem); }
+  .conviction blockquote p { font-style: italic; line-height: 1.22; color: var(--navy); text-wrap: pretty; }
+  .conviction figcaption { margin-top: 1.75rem; font-family: var(--sans); font-size: 1rem; font-weight: 600; color: var(--ink-2); }
+  .conviction figcaption::before { content: '— '; color: var(--orange-ink); }
+  .conviction__lines { margin-top: clamp(3rem, 2rem + 4vw, 6rem); display: grid; gap: .75rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); max-width: 900px; margin-left: auto; font-size: var(--fs-lg); color: var(--ink-2); }
+  @media (min-width: 900px) { .conviction__lines { grid-template-columns: 1fr 1fr; gap: var(--gutter); } }
 
-  /* --------------------------------------------------------------- About */
-  .about__grid { display: grid; gap: 3rem var(--gutter); }
-  .about__media { position: relative; }
-  .about__media :global(img) { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 70% 30%; }
-  .about__prose > :global(p:first-child)::first-letter {
-    float: left; font-family: var(--serif); font-size: 4.4em; line-height: .82; margin: .06em .12em 0 0; color: var(--navy);
-  }
-  .triad { display: flex; flex-wrap: wrap; gap: .1em .45em; font-family: var(--serif); font-size: var(--fs-2xl); line-height: 1; color: var(--navy); font-variation-settings: 'opsz' 60; padding-block: 1.6rem; border-block: 1px solid var(--rule); }
-  .triad span:nth-child(2) { font-style: italic; color: var(--orange-ink); }
+  /* 3 — Bio */
+  .bio { display: grid; background: var(--navy); color: #fff; }
+  .bio__media { overflow: hidden; }
+  .bio__media :global(img) { width: 100%; height: 100%; min-height: 420px; max-height: 80svh; object-fit: cover; object-position: 30% 25%; }
+  .bio__text { padding: clamp(3rem, 2rem + 4vw, 6.5rem) var(--gutter); display: grid; gap: 1.75rem; align-content: center; max-width: 720px; }
+  .bio__prose { display: grid; gap: 1.1rem; color: rgba(255,255,255,.86); }
+  .bio__prose :global(strong) { color: #fff; }
+  .bio__triad { font-family: var(--display); font-stretch: 74%; font-weight: 600; font-size: var(--fs-2xl); line-height: 1; letter-spacing: -0.01em; padding-block: 1.5rem; border-block: 1px solid var(--rule-light); }
+  .bio .link-arrow { justify-self: start; }
   @media (min-width: 1024px) {
-    .about__grid { grid-template-columns: 5fr 1fr 6fr; align-items: center; }
-    .about__text { grid-column: 3; }
+    .bio { grid-template-columns: 1fr 1fr; min-height: 88svh; }
+    .bio__media { order: 2; }
+    .bio__media :global(img) { max-height: none; }
+    .bio__text { justify-self: end; padding-left: var(--gutter); padding-right: clamp(2rem, 1rem + 4vw, 6rem); }
   }
 
-  /* ---------------------------------------------------------------- Rail */
-  .rail { padding-block: calc(var(--section) * .55) calc(var(--section) * .7); }
-  .rail__head { display: flex; justify-content: flex-end; align-items: end; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-  .rail__ctrl { display: flex; align-items: center; gap: .75rem; }
-  .rail__count { font-size: .85rem; letter-spacing: .12em; margin-right: .5rem; color: rgba(255,255,255,.8); }
+  /* 4 — Convictions */
+  .beliefs { padding-block: var(--section); background: var(--white); }
+  .beliefs__grid { display: grid; gap: 2.5rem var(--gutter); }
+  .beliefs__title { color: var(--navy); max-width: 14ch; }
+  .beliefs__list li { padding-block: 1.35rem; border-bottom: 1px solid var(--rule); font-size: clamp(1.25rem, 1rem + .9vw, 1.65rem); line-height: 1.3; color: var(--ink); }
+  .beliefs__list li:first-child { border-top: 1px solid var(--rule); }
+  @media (min-width: 1024px) {
+    .beliefs__grid { grid-template-columns: 5fr 7fr; align-items: start; }
+    .beliefs__title { position: sticky; top: calc(var(--header-h) + 2rem); }
+  }
+
+  /* 5 — Interlude */
+  .interlude { height: clamp(320px, 78svh, 820px); overflow: hidden; position: relative; background: var(--navy-deep); }
+  .interlude__media { position: absolute; inset: -12% 0; }
+  .interlude__media :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .interlude__media { animation: parallax linear both; animation-timeline: view(); }
+    }
+  }
+  @keyframes parallax { from { transform: translateY(-8%); } to { transform: translateY(8%); } }
+
+  /* 6 — Boussole & méthode */
+  .compass { padding-block: var(--section); background: var(--paper); }
+  .compass__grid { display: grid; gap: 4rem var(--gutter); }
+  .compass h2 { color: var(--navy); }
+  .compass__intro { margin-top: 1rem; color: var(--ink-3); }
+  .compass__list { margin-top: 1.25rem; }
+  .compass__list li { padding-block: 1rem; border-bottom: 1px solid var(--rule); font-size: var(--fs-lg); }
+  .compass__list li::first-letter { text-transform: uppercase; }
+  .compass__more { margin-top: 2rem; }
+  @media (min-width: 900px) { .compass__grid { grid-template-columns: 1fr 1fr; } }
+
+  /* 7 — Pivots */
+  .pivots { padding-block: 0 var(--section); background: var(--paper); }
+  .pivots__grid { display: grid; }
+  .pivots__panel { background: var(--navy); color: #fff; padding: clamp(2rem, 1.5rem + 3vw, 4rem); display: grid; gap: 1.5rem; align-content: start; }
+  .pivots__panel p { color: rgba(255,255,255,.86); max-width: 40ch; }
+  .pivots__panel .link-arrow { justify-self: start; }
+  .pivots__list { background: var(--white); padding: clamp(.5rem, .25rem + 1vw, 1.5rem) clamp(1.25rem, 1rem + 2vw, 3rem); }
+  .pivots__list a {
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-block: 1.05rem;
+    border-bottom: 1px solid var(--rule); text-decoration: none; font-family: var(--display); font-stretch: 82%; font-weight: 580; font-size: clamp(1.1rem, 1rem + .5vw, 1.35rem); color: var(--navy);
+    transition: color .25s, padding .35s var(--ease);
+  }
+  .pivots__list li:last-child a { border-bottom: 0; }
+  .pivots__list a :global(svg) { width: 20px; height: 20px; flex: none; color: var(--orange-ink); transition: transform .35s var(--ease); }
+  .pivots__list a:hover { color: var(--orange-ink); padding-left: .35rem; }
+  .pivots__list a:hover :global(svg) { transform: translateX(4px); }
+  @media (min-width: 1024px) {
+    .pivots__grid { grid-template-columns: 5fr 7fr; }
+    .pivots__list { columns: 2; column-gap: 2.5rem; }
+    .pivots__list li { break-inside: avoid; }
+    .pivots__list li:nth-child(4) a { border-bottom: 0; }
+  }
+
+  /* 8 — Actualités */
+  .latest { padding-block: 0 var(--section); background: var(--paper); }
+  .latest__head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; color: var(--navy); }
+  .latest__grid { display: grid; gap: 2.5rem var(--gutter); }
+  .latest__lead :global(img) { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; margin-bottom: 1.25rem; }
+  .latest__lead .h3 { color: var(--navy); font-size: var(--fs-2xl); }
+  .latest__meta { font-family: var(--sans); font-size: .85rem; color: var(--ink-3); margin-bottom: .6rem; }
+  .latest__meta span { color: var(--orange-ink); font-weight: 600; }
+  .latest__excerpt { margin-top: .6rem; color: var(--ink-2); }
+  .latest__side { display: grid; align-content: start; }
+  .latest__item { padding-block: 1.5rem; border-top: 1px solid var(--rule); }
+  .latest__item:first-child { border-top: 0; padding-top: 0; }
+  .latest__title { font-family: var(--display); font-stretch: 80%; font-weight: 620; font-size: 1.45rem; line-height: 1.1; color: var(--navy); }
+  @media (min-width: 1024px) { .latest__grid { grid-template-columns: 7fr 5fr; } }
+
+  /* 9 — Rail */
+  .rail { background: var(--navy-deep); color: #fff; padding-block: clamp(3rem, 2rem + 4vw, 6rem); }
   .rail__track {
     display: flex; gap: clamp(.75rem, .5rem + 1vw, 1.5rem); overflow-x: auto; scroll-snap-type: x mandatory;
     padding-inline: max(var(--gutter), calc((100vw - var(--maxw)) / 2 + var(--gutter)));
@@ -243,16 +315,17 @@ import { identity, hero, conviction, bio, ctaBand, gallery } from '../data/site'
     scrollbar-width: none;
   }
   .rail__track::-webkit-scrollbar { display: none; }
-  .rail__track li { flex: none; scroll-snap-align: start; height: clamp(280px, 52vh, 560px); }
+  .rail__track li { flex: none; scroll-snap-align: start; height: clamp(300px, 62svh, 640px); }
   .rail__track :global(img) { height: 100%; width: auto; max-width: none; object-fit: cover; }
-  .rail__foot { margin-top: 2.5rem; }
+  .rail__foot { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 1.75rem; }
+  .rail__ctrl { display: flex; align-items: center; gap: .75rem; }
+  .rail__count { font-family: var(--sans); font-size: .9rem; margin-right: .5rem; color: rgba(255,255,255,.82); }
 
-  /* ----------------------------------------------------------------- CTA */
+  /* 10 — Appel */
   .call { position: relative; isolation: isolate; color: #fff; overflow: hidden; }
   .call__media { position: absolute; inset: 0; z-index: -2; }
   .call__media :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .call::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(100deg, rgba(0,15,56,.94) 0%, rgba(0,24,86,.82) 50%, rgba(0,24,86,.45) 100%); }
-  .call__inner { padding-block: clamp(6rem, 4rem + 8vw, 11rem); }
-  .call__title { font-family: var(--serif); font-size: clamp(2rem, 1rem + 3.6vw, 4.4rem); line-height: 1.04; letter-spacing: -0.02em; max-width: 20ch; font-variation-settings: 'opsz' 72; }
-  .call__title span:last-child { font-style: italic; color: var(--orange); }
+  .call::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, rgba(0,12,40,.92), rgba(0,24,86,.72)); }
+  .call__inner { padding-block: clamp(6rem, 4rem + 8vw, 11rem); display: grid; gap: 2.5rem; }
+  .call__title { font-family: var(--display); font-stretch: 72%; font-weight: 640; font-size: clamp(2.2rem, 1.2rem + 3.6vw, 4.8rem); line-height: .98; letter-spacing: -0.012em; max-width: 18ch; text-wrap: balance; }
 </style>

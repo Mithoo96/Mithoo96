@@ -1,23 +1,61 @@
 ---
 import { Picture } from 'astro:assets';
 import { photo } from '../data/photos';
-interface Props { eyebrow?: string; title: string; highlight?: string; subtitle?: string; crumb: string; image?: string; meta?: string }
-const { title: rawTitle, highlight: rawHighlight, subtitle, crumb, image } = Astro.props;
-const nb = (t?: string) => t?.replace(/Saint-Marc/g, 'Saint\u2011Marc');
-const title = nb(rawTitle)!;
-const highlight = nb(rawHighlight);
+interface Props { title: string; subtitle?: string; crumb: string; image?: string; position?: string }
+const { title: rawTitle, subtitle, crumb, image, position = '50% 35%' } = Astro.props;
+const title = rawTitle.replace(/Saint-Marc/g, 'Saint‑Marc');
 ---
-<section class="page-head on-dark">
-  {image && (
-    <div class="page-head__media">
-      <Picture src={photo(image)} formats={['avif', 'webp']} widths={[800, 1400, 2000]} sizes="100vw" alt="" loading="eager" fetchpriority="high" />
+{image ? (
+  <section class="ph ph--photo on-dark">
+    <div class="ph__media">
+      <Picture src={photo(image)} formats={['avif', 'webp']} widths={[640, 1024, 1440, 2000]} sizes="100vw" alt="" loading="eager" fetchpriority="high" style={`object-position:${position}`} />
     </div>
-  )}
-  <div class="wrap page-head__inner">
-    <nav aria-label="Fil d'Ariane">
-      <ol class="breadcrumb"><li><a href="/">Accueil</a></li><li aria-current="page">{crumb}</li></ol>
-    </nav>
-    <h1 class="h1">{title}{highlight && <> {highlight}</>}</h1>
-    {subtitle && <p class="page-head__sub">{subtitle}</p>}
-  </div>
-</section>
+    <div class="wrap ph__inner">
+      <nav aria-label="Fil d'Ariane"><ol class="breadcrumb"><li><a href="/">Accueil</a></li><li aria-current="page">{crumb}</li></ol></nav>
+      <h1 class="h1">{title}</h1>
+      {subtitle && <p class="ph__sub">{subtitle}</p>}
+    </div>
+  </section>
+) : (
+  <section class="ph ph--plain">
+    <div class="wrap ph__inner">
+      <nav aria-label="Fil d'Ariane"><ol class="breadcrumb"><li><a href="/">Accueil</a></li><li aria-current="page">{crumb}</li></ol></nav>
+      <h1 class="h1 ruled">{title}</h1>
+      {subtitle && <p class="ph__sub">{subtitle}</p>}
+    </div>
+  </section>
+)}
+
+<style>
+  .ph { position: relative; isolation: isolate; }
+  .ph--photo { min-height: clamp(460px, 74svh, 820px); display: flex; align-items: flex-end; color: #fff; background: var(--navy-deep); overflow: hidden; }
+  .ph__media { position: absolute; inset: 0; z-index: -2; }
+  .ph__media :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .ph--photo::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(0,12,40,.55) 0%, rgba(0,12,40,0) 26%),
+      linear-gradient(0deg, rgba(0,12,40,.92) 0%, rgba(0,12,40,.7) 38%, rgba(0,12,40,0) 72%),
+      linear-gradient(90deg, rgba(0,12,40,.45) 0%, rgba(0,12,40,0) 60%);
+  }
+  .ph__inner { width: 100%; padding-bottom: clamp(2.5rem, 2rem + 3vw, 4.5rem); }
+  .ph--plain .ph__inner { padding-top: calc(var(--header-h) + clamp(3rem, 2rem + 5vw, 6.5rem)); padding-bottom: clamp(2.5rem, 2rem + 3vw, 4.5rem); }
+  .ph .breadcrumb { margin-bottom: 1.5rem; }
+  .ph--plain .breadcrumb { color: var(--ink-3); }
+  .ph--plain .breadcrumb a:hover { color: var(--ink); }
+  .ph h1 { max-width: 16ch; }
+  .ph--photo h1 { text-shadow: 0 1px 24px rgba(0,0,0,.25); }
+  .ph--plain h1 { color: var(--navy); max-width: 20ch; }
+  .ph__sub { margin-top: 1.25rem; max-width: 56ch; font-size: var(--fs-lg); line-height: 1.55; }
+  .ph--photo .ph__sub { color: rgba(255,255,255,.9); }
+  .ph--plain .ph__sub { color: var(--ink-2); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ph--photo .ph__media :global(img) { animation: settle 1.6s var(--ease) both; }
+    @supports (animation-timeline: view()) {
+      .ph--photo .ph__media { animation: drift linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+    }
+  }
+  @keyframes settle { from { transform: scale(1.05); } to { transform: none; } }
+  @keyframes drift { to { transform: translateY(18%); } }
+</style>

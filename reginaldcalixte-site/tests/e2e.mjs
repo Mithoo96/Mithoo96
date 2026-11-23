@@ -206,7 +206,7 @@ try {
   /* 13. prefers-reduced-motion */
   const rm = await browser.newPage({ reducedMotion: 'reduce' });
   await rm.goto(OK + '/');
-  const anim = await rm.evaluate(() => getComputedStyle(document.querySelector('.hero__portrait')).animationName);
+  const anim = await rm.evaluate(() => getComputedStyle(document.querySelector('.hero__media img')).animationName);
   const hidden = await rm.evaluate(() => [...document.querySelectorAll('[data-reveal]')].filter((e) => getComputedStyle(e).opacity !== '1').length);
   check('prefers-reduced-motion : pas d’animation d’entrée, contenu visible', anim === 'none' && hidden === 0, `anim=${anim}, masqués=${hidden}`);
 

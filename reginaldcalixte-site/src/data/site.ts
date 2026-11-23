@@ -161,7 +161,7 @@ export const videos = [
 export const newsCategories = ['Sur le terrain', 'Communiqués', 'Rencontres'] as const;
 
 export const news = [
-  { title: "L'engagement citoyen gagne du terrain à Saint-Marc", excerpt: 'De plus en plus de citoyens rejoignent la vision de Réginald Calixte pour une nouvelle gouvernance locale.', date: '2026-05-15', dateLabel: '15 mai 2026', cat: 'Sur le terrain', image: 'terrain-foule' },
+  { title: "L'engagement citoyen gagne du terrain à Saint-Marc", excerpt: 'De plus en plus de citoyens rejoignent la vision de Réginald Calixte pour une nouvelle gouvernance locale.', date: '2026-05-15', dateLabel: '15 mai 2026', cat: 'Sur le terrain', image: 'activite-communautaire' },
   { title: 'Communiqué : Pour une rentrée scolaire sécurisée', excerpt: 'Réginald Calixte appelle les autorités à prendre des mesures urgentes pour garantir la sécurité des élèves.', date: '2026-05-02', dateLabel: '2 mai 2026', cat: 'Communiqués', image: 'portrait-officiel' },
   { title: 'Rencontre avec les associations de quartier', excerpt: "Échanges avec les leaders communautaires sur les enjeux de sécurité et d'assainissement.", date: '2026-04-20', dateLabel: '20 avril 2026', cat: 'Rencontres', image: 'echange-quartier' },
   { title: 'Intervention sur la gouvernance locale', excerpt: 'Prise de parole sur la nécessité d\'une gestion transparente des fonds publics municipaux.', date: '2026-04-15', dateLabel: '15 avril 2026', cat: 'Sur le terrain', image: 'carte-bas-artibonite' },

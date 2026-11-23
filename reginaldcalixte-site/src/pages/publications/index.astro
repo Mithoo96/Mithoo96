@@ -8,8 +8,8 @@ import { publicationCategories } from '../../data/site';
 const posts = (await getCollection('publications', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const fmt = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
-<Base title="Publications" description="Écrits & réflexions de Réginald Calixte : articles, analyses, réflexions, tribunes et documents d'intérêt public.">
-  <PageHead title="Les idées comptent." subtitle="Articles, analyses, réflexions, tribunes et documents d'intérêt public." crumb="Publications" image="saint-marc-panorama" />
+<Base title="Publications" description="Écrits & réflexions de Réginald Calixte : articles, analyses, réflexions, tribunes et documents d'intérêt public." headerTone="light">
+  <PageHead title="Les idées comptent." subtitle="Articles, analyses, réflexions, tribunes et documents d'intérêt public." crumb="Publications" />
 
   <section class="pubs section" aria-labelledby="pubs-title">
     <div class="wrap">
