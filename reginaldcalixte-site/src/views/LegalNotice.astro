@@ -1,0 +1,54 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { useLang, formatDate, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, c, L } = useLang(lang);
+const { contact } = c;
+const updated = formatDate('2026-11-23', lang);
+---
+{lang === 'fr' && (
+  <Legal lang={lang} title={t.legalNotice} description="Mentions légales du site officiel de Me Réginald Calixte." updated={updated}>
+    <h2>Éditeur du site</h2>
+    <p>Le site reginaldcalixte.com est le site officiel de Me Réginald Calixte, candidat à la députation dans la 1ère Circonscription de Saint-Marc.</p>
+    <p>Adresse : Sant vil, Senmak — Latibonit, Ayiti.<br />Téléphone : {contact.phones.join(' / ')}<br />Courriel : <a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+    <h2>Responsable de la publication</h2>
+    <p>Me Réginald Calixte.</p>
+    <h2>Hébergement</h2>
+    <p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis — vercel.com.</p>
+    <h2>Crédits</h2>
+    <p>Photographies : © Réginald Calixte, sauf mention contraire. Les vignettes des vidéos proviennent de YouTube et appartiennent à leurs auteurs respectifs.</p>
+    <h2>Propriété intellectuelle</h2>
+    <p>Les textes, photographies et éléments graphiques de ce site sont protégés. Toute reproduction est soumise à autorisation préalable, à l'exception des photographies de l'<a href={L('/presse')}>Espace presse</a>, utilisables selon les conditions qui y sont indiquées.</p>
+  </Legal>
+)}
+{lang === 'ht' && (
+  <Legal lang={lang} title={t.legalNotice} description="Mansyon legal sit ofisyèl Me Réginald Calixte." updated={updated}>
+    <h2>Editè sit la</h2>
+    <p>Sit reginaldcalixte.com se sit ofisyèl Me Réginald Calixte, kandida pou depite nan Premye Sikonskripsyon Senmak.</p>
+    <p>Adrès : Sant vil, Senmak — Latibonit, Ayiti.<br />Telefòn : {contact.phones.join(' / ')}<br />Imel : <a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+    <h2>Responsab piblikasyon an</h2>
+    <p>Me Réginald Calixte.</p>
+    <h2>Ebèjman</h2>
+    <p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, Etazini — vercel.com.</p>
+    <h2>Kredi</h2>
+    <p>Foto : © Réginald Calixte, sof si yo di lòt bagay. Ti imaj videyo yo soti sou YouTube e se pou otè yo chak.</p>
+    <h2>Pwopriyete entelektyèl</h2>
+    <p>Tèks, foto ak eleman grafik sit sa a pwoteje. Pou repwodui yo, fòk ou gen otorizasyon davans, sof foto ki nan <a href={L('/presse')}>Espas laprès</a> la, ou ka itilize dapre kondisyon ki ekri la a.</p>
+  </Legal>
+)}
+{lang === 'en' && (
+  <Legal lang={lang} title={t.legalNotice} description="Legal notice for the official website of Me Réginald Calixte." updated={updated}>
+    <h2>Publisher</h2>
+    <p>reginaldcalixte.com is the official website of Me Réginald Calixte, candidate for Deputy for the 1st Constituency of Saint-Marc.</p>
+    <p>Address: Sant vil, Senmak — Latibonit, Ayiti (city centre, Saint-Marc, Artibonite, Haiti).<br />Phone: {contact.phones.join(' / ')}<br />Email: <a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+    <h2>Publication manager</h2>
+    <p>Me Réginald Calixte.</p>
+    <h2>Hosting</h2>
+    <p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, United States — vercel.com.</p>
+    <h2>Credits</h2>
+    <p>Photographs: © Réginald Calixte, unless otherwise stated. Video thumbnails come from YouTube and belong to their respective owners.</p>
+    <h2>Intellectual property</h2>
+    <p>The texts, photographs and graphic elements of this website are protected. Any reproduction requires prior permission, except for the photographs in the <a href={L('/presse')}>Press room</a>, which may be used under the conditions stated there.</p>
+  </Legal>
+)}

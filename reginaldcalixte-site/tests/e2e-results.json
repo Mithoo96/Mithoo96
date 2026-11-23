@@ -80,7 +80,7 @@
     "detail": ""
   },
   {
-    "name": "liens internes + ressources (270) → 200",
+    "name": "liens internes + ressources (298) → 200",
     "pass": true,
     "detail": ""
   },
@@ -135,24 +135,64 @@
     "detail": ""
   },
   {
-    "name": "contact : envoi vide → 4 erreurs en créole, focus sur le 1er champ",
+    "name": "contact fr : envoi vide → 4 erreurs dans la langue, focus sur le 1er champ",
     "pass": true,
-    "detail": "invalid=4"
+    "detail": "invalid=4 « Indiquez votre nom. »"
   },
   {
-    "name": "contact : catégorie « Invitation » pré-remplit le sujet",
-    "pass": true,
-    "detail": ""
-  },
-  {
-    "name": "contact : e-mail invalide signalé",
+    "name": "contact fr : catégorie « Invitation » pré-remplit le sujet",
     "pass": true,
     "detail": ""
   },
   {
-    "name": "contact : envoi valide → message « Mesaj la voye » + e-mail transmis à annpale@",
+    "name": "contact fr : e-mail invalide signalé",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "contact fr : envoi valide → confirmation dans la langue + e-mail transmis (langue indiquée)",
+    "pass": true,
+    "detail": "Message envoyéNous avons bien reçu votre message. L’équipe vous répondra très bientôt."
+  },
+  {
+    "name": "contact ht : envoi vide → 4 erreurs dans la langue, focus sur le 1er champ",
+    "pass": true,
+    "detail": "invalid=4 « Ou dwe ekri non ou. »"
+  },
+  {
+    "name": "contact ht : catégorie « Envitasyon » pré-remplit le sujet",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "contact ht : e-mail invalide signalé",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "contact ht : envoi valide → confirmation dans la langue + e-mail transmis (langue indiquée)",
     "pass": true,
     "detail": "Mesaj la voyeN ap reponn ou. Noubyen resevwa mesaj ou a, ekip la ap tounen jiska ou byento."
+  },
+  {
+    "name": "contact en : envoi vide → 4 erreurs dans la langue, focus sur le 1er champ",
+    "pass": true,
+    "detail": "invalid=4 « Please enter your name. »"
+  },
+  {
+    "name": "contact en : catégorie « Invitation » pré-remplit le sujet",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "contact en : e-mail invalide signalé",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "contact en : envoi valide → confirmation dans la langue + e-mail transmis (langue indiquée)",
+    "pass": true,
+    "detail": "Message sentWe have received your message. The team will get back to you shortly."
   },
   {
     "name": "contact : service d’envoi en panne → message d’erreur avec repli e-mail, saisie conservée",
@@ -220,7 +260,42 @@
     "detail": ""
   },
   {
-    "name": "aucun défilement horizontal (320 → 1920 px, 14 routes)",
+    "name": "aucun défilement horizontal (320 → 1920 px, 42 routes FR/HT/EN)",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "multilingue : 42 pages, attribut lang, hreflang (fr, ht, en, x-default), langue active du sélecteur",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "sélecteur : Parcours FR → KRE → EN → FR sans quitter la page",
+    "pass": true,
+    "detail": "Eksperyans nan sèvis kominote a / Experience in service of the community"
+  },
+  {
+    "name": "en-tête desktop : navigation + sélecteur sur une ligne, sans chevauchement (FR/KRE/EN)",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "menu mobile : sélecteur de langue, Contact FR → EN, menu traduit",
+    "pass": true,
+    "detail": "Home | About | Vision | Priorities | Background | Publications | Media | News | Get involved / Contact"
+  },
+  {
+    "name": "préférence : retour en anglais mémorisé, lien /ht explicite respecté, puis créole mémorisé",
+    "pass": true,
+    "detail": "/en · /ht/priorites · /ht/parcours"
+  },
+  {
+    "name": "actualités : dates localisées (15 me 2026 / 15 May 2026), filtres traduits",
+    "pass": true,
+    "detail": "15 me 2026 / 15 May 2026 / 2"
+  },
+  {
+    "name": "sitemap : 42 URL avec alternatives hreflang",
     "pass": true,
     "detail": ""
   },

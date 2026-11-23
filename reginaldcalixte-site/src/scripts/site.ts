@@ -2,6 +2,33 @@
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* Messages de l'interface dans la langue de la page */
+const LANG = (document.documentElement.lang || 'fr') as 'fr' | 'ht' | 'en';
+const I18N_ALL = {
+  fr: {
+    menu: 'Menu', close: 'Fermer', video: 'Vidéo', required: 'Ce champ est requis.', email: 'Adresse e-mail invalide.', sending: 'Envoi en cours…', thanks: 'Merci.', failed: 'Envoi impossible',
+    shown: (n: number) => `${n} élément${n > 1 ? 's' : ''} affiché${n > 1 ? 's' : ''}`,
+    network: "Le message n'a pas pu être envoyé. Vérifiez votre connexion ou écrivez-nous directement à annpale@reginaldcalixte.com.",
+    server: "Le service d'envoi est momentanément indisponible. Vous pouvez nous écrire directement à annpale@reginaldcalixte.com.",
+    rate: 'Trop de tentatives en peu de temps. Merci de réessayer dans quelques minutes.',
+  },
+  ht: {
+    menu: 'Meni', close: 'Fèmen', video: 'Videyo', required: 'Ou dwe ranpli chan sa a.', email: 'Adrès imel la pa kòrèk.', sending: 'Voye an pwogre…', thanks: 'Mèsi.', failed: 'Mesaj la pa ka pati',
+    shown: (n: number) => `${n} eleman parèt`,
+    network: 'Mesaj la pa t ka pati. Verifye koneksyon w oswa ekri nou dirèkteman nan annpale@reginaldcalixte.com.',
+    server: 'Sèvis pou voye mesaj la pa disponib pou kounye a. Ou ka ekri nou dirèkteman nan annpale@reginaldcalixte.com.',
+    rate: 'Ou eseye twòp fwa nan yon ti tan. Tanpri eseye ankò nan kèk minit.',
+  },
+  en: {
+    menu: 'Menu', close: 'Close', video: 'Video', required: 'This field is required.', email: 'Invalid email address.', sending: 'Sending…', thanks: 'Thank you.', failed: 'Message not sent',
+    shown: (n: number) => `${n} item${n > 1 ? 's' : ''} shown`,
+    network: 'The message could not be sent. Please check your connection or write to us directly at annpale@reginaldcalixte.com.',
+    server: 'The sending service is temporarily unavailable. You can write to us directly at annpale@reginaldcalixte.com.',
+    rate: 'Too many attempts in a short time. Please try again in a few minutes.',
+  },
+};
+const T = I18N_ALL[LANG] || I18N_ALL.fr;
+
 /* ---------------------------------------------------------------- Header */
 const header = document.querySelector<HTMLElement>('[data-header]');
 if (header) {
@@ -22,14 +49,14 @@ if (toggle && panel) {
     panel.hidden = false;
     requestAnimationFrame(() => panel.classList.add('is-open'));
     toggle.setAttribute('aria-expanded', 'true');
-    if (label) label.textContent = 'Fermer';
+    if (label) label.textContent = toggle.dataset.labelClose || T.close;
     document.body.classList.add('nav-open');
     panel.querySelector<HTMLElement>('a')?.focus();
   };
   const close = (returnFocus = true) => {
     panel.classList.remove('is-open');
     toggle.setAttribute('aria-expanded', 'false');
-    if (label) label.textContent = 'Menu';
+    if (label) label.textContent = toggle.dataset.labelOpen || T.menu;
     document.body.classList.remove('nav-open');
     closeTimer = window.setTimeout(() => (panel.hidden = true), reduceMotion ? 0 : 400);
     if (returnFocus) toggle.focus();
@@ -67,7 +94,7 @@ document.querySelectorAll<HTMLButtonElement>('[data-yt]').forEach((btn) => {
     frame.className = 'video-frame';
     const iframe = document.createElement('iframe');
     iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0`;
-    iframe.title = btn.dataset.title || 'Vidéo';
+    iframe.title = btn.dataset.title || T.video;
     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     iframe.allowFullscreen = true;
     iframe.referrerPolicy = 'strict-origin-when-cross-origin';
@@ -88,11 +115,11 @@ document.querySelectorAll<HTMLElement>('[data-filter-group]').forEach((group) =>
       group.querySelectorAll('button[data-filter]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
       let n = 0;
       target.querySelectorAll<HTMLElement>('[data-cat]').forEach((item) => {
-        const show = f === 'Tous' || item.dataset.cat === f;
+        const show = f === 'all' || item.dataset.cat === f;
         item.hidden = !show;
         if (show) n++;
       });
-      if (status) status.textContent = `${n} élément${n > 1 ? 's' : ''} affiché${n > 1 ? 's' : ''}`;
+      if (status) status.textContent = T.shown(n);
     });
   });
 });
@@ -168,11 +195,6 @@ document.querySelectorAll<HTMLButtonElement>('[data-subject]').forEach((b) => {
 /* ----------------------------------------------------------- Formulaires */
 type FieldErrors = Record<string, string>;
 
-const MESSAGES = {
-  network: "Le message n'a pas pu être envoyé. Vérifiez votre connexion ou écrivez-nous directement à annpale@reginaldcalixte.com.",
-  server: "Le service d'envoi est momentanément indisponible. Vous pouvez nous écrire directement à annpale@reginaldcalixte.com.",
-  rate: 'Trop de tentatives en peu de temps. Merci de réessayer dans quelques minutes.',
-};
 
 document.querySelectorAll<HTMLFormElement>('form[data-form]').forEach((form) => {
   const status = form.querySelector<HTMLElement>('[data-form-status]');
@@ -210,8 +232,8 @@ document.querySelectorAll<HTMLFormElement>('form[data-form]').forEach((form) => 
     form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input:not([type=hidden]):not(.hp input), textarea').forEach((el) => {
       if (el.closest('.hp')) return;
       const v = el.value.trim();
-      if (el.required && !v) errors[el.name] = el.dataset.msgRequired || 'Ce champ est requis.';
-      else if (el.type === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) errors[el.name] = el.dataset.msgEmail || 'Adresse e-mail invalide.';
+      if (el.required && !v) errors[el.name] = el.dataset.msgRequired || T.required;
+      else if (el.type === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) errors[el.name] = el.dataset.msgEmail || T.email;
     });
     return errors;
   };
@@ -225,7 +247,7 @@ document.querySelectorAll<HTMLFormElement>('form[data-form]').forEach((form) => 
 
     const data = Object.fromEntries(new FormData(form).entries());
     const original = submit?.innerHTML;
-    if (submit) { submit.disabled = true; submit.textContent = form.dataset.sending || 'Envoi en cours…'; }
+    if (submit) { submit.disabled = true; submit.textContent = form.dataset.sending || T.sending; }
     try {
       const res = await fetch(form.action, {
         method: 'POST',
@@ -234,20 +256,27 @@ document.querySelectorAll<HTMLFormElement>('form[data-form]').forEach((form) => 
       });
       const body = await res.json().catch(() => ({}));
       if (res.ok && body.ok) {
-        setStatus('success', form.dataset.successTitle || 'Merci.', form.dataset.successText || '');
+        setStatus('success', form.dataset.successTitle || T.thanks, form.dataset.successText || '');
         form.reset();
         if (started) started.value = String(Date.now());
       } else if (res.status === 422 && body.errors) {
         showErrors(body.errors);
       } else if (res.status === 429) {
-        setStatus('error', 'Envoi impossible', MESSAGES.rate);
+        setStatus('error', T.failed, T.rate);
       } else {
-        setStatus('error', 'Envoi impossible', MESSAGES.server);
+        setStatus('error', T.failed, T.server);
       }
     } catch {
-      setStatus('error', 'Envoi impossible', MESSAGES.network);
+      setStatus('error', T.failed, T.network);
     } finally {
       if (submit) { submit.disabled = false; if (original) submit.innerHTML = original; }
     }
+  });
+});
+
+/* ------------------------------------------------- Préférence de langue */
+document.querySelectorAll<HTMLAnchorElement>('[data-lang-link]').forEach((a) => {
+  a.addEventListener('click', () => {
+    try { localStorage.setItem('rc-lang', a.dataset.langLink || 'fr'); } catch {}
   });
 });

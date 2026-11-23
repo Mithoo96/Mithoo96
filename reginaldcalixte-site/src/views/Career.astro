@@ -1,0 +1,248 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { photo } from '../data/photos';
+import { useLang, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, c } = useLang(lang);
+const { parcoursIntro, positionnement, experience, organisations, formation, cv } = c;
+
+// Chronologie regroupée par année de début (ordre décroissant)
+const yearOf = (p: string) => p.match(/\d{4}/)?.[0] ?? '';
+const years: { year: string; jobs: typeof cv.jobs }[] = [];
+for (const j of cv.jobs) {
+  const y = yearOf(j.period);
+  const g = years.find((x) => x.year === y);
+  g ? g.jobs.push(j) : years.push({ year: y, jobs: [j] });
+}
+
+// Fonction exercée selon le résumé professionnel — affichée séparément de la présentation du site
+const functionOf: Record<string, (typeof cv.social)[number]> = {
+  BADI: cv.social[2],
+  OJH: cv.social[1],
+  'Fondation Lakounsa': cv.social[0],
+};
+
+// Formations présentes sur le site mais absentes du résumé : conservées provisoirement, sans date
+const siteOnlyTraining = formation.slice(2);
+---
+<Base lang={lang} title={c.nav[4].name} description={t.parcoursDesc}>
+  <PageHead lang={lang} title={t.parcoursTitle} subtitle={parcoursIntro} crumb={c.nav[4].name} image="assemblee-quartier" position="50% 40%" />
+
+  <!-- Positionnement -->
+  <section class="intro section bg-white" aria-labelledby="intro-title">
+    <div class="wrap intro__grid">
+      <h2 class="h2 ruled intro__title" id="intro-title" data-reveal>{c.bio.title}</h2>
+      <div class="intro__text" data-reveal style="--d:.08s">
+        <p class="lead">{positionnement}</p>
+        <p set:html={cv.summary} />
+        <p>{cv.skills}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trois champs d'action : synthèse -->
+  <section class="fields" aria-labelledby="fields-title">
+    <div class="wrap">
+      <h2 class="h3 ruled" id="fields-title" data-reveal>{t.fieldsTitle}</h2>
+      <dl class="fields__list" data-reveal>
+        {experience.map((col) => (
+          <div>
+            <dt>{col.field}</dt>
+            <dd>{col.items.map((it) => (it.place ? `${it.role} (${it.place})` : it.role)).join(' · ')}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- Chronologie -->
+  <section class="chrono section bg-white" aria-labelledby="chrono-title">
+    <div class="wrap chrono__grid">
+      <div class="chrono__aside">
+        <h2 class="h2 ruled" id="chrono-title" data-reveal>{t.expTitle}</h2>
+        <figure class="chrono__img" data-reveal>
+          <Picture src={photo('terrain-marche')} formats={['avif', 'webp']} widths={[480, 800]} sizes="(min-width: 1024px) 30vw, 92vw" alt={t.marchAlt} />
+        </figure>
+      </div>
+      <ol class="years">
+        {years.map((g) => (
+          <li class="years__group">
+            <p class="years__year" aria-hidden="true">{g.year}</p>
+            <ol class="years__items">
+              {g.jobs.map((j) => (
+                <li data-reveal>
+                  <h3 class="item__role">{j.role}</h3>
+                  {j.org && <p class="item__org">{j.org}</p>}
+                  <p class="item__period"><time>{j.period}</time></p>
+                  {j.note && <p class="item__note">{j.note}</p>}
+                </li>
+              ))}
+            </ol>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Engagements politiques (à valider avant mise en production) -->
+  <section class="politics section" aria-labelledby="pol-title">
+    <div class="wrap politics__grid">
+      <h2 class="h2 ruled" id="pol-title" data-reveal>{t.polTitle}</h2>
+      <ol class="politics__list">
+        {cv.political.map((j) => (
+          <li data-reveal>
+            <p class="item__period"><time>{j.period}</time></p>
+            <h3 class="item__role">{j.role}</h3>
+            <p class="item__org">{j.org}</p>
+            {j.note && <p class="item__note">{j.note}</p>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Organisations : présentation du site et fonction exercée, séparées -->
+  <section class="orgs section bg-navy on-dark" aria-labelledby="orgs-title">
+    <div class="wrap">
+      <h2 class="h2 ruled" id="orgs-title" data-reveal>{t.orgsTitle}</h2>
+      <ul class="orgs__grid">
+        {organisations.map((o, i) => {
+          const f = functionOf[o.acronym];
+          return (
+            <li data-reveal style={`--d:${i * 0.08}s`}>
+              <h3 class="orgs__acr">{o.acronym}</h3>
+              {o.acronym !== o.name && <p class="orgs__name">{o.name}</p>}
+              <p class="orgs__text">{o.text}</p>
+              {f && (
+                <dl class="orgs__fn">
+                  <dt>{t.functionHeld}</dt>
+                  <dd>{f.role}, {f.period}</dd>
+                </dl>
+              )}
+              {f?.note && <p class="orgs__note">{f.note}</p>}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Formation, langues, distinctions -->
+  <section class="edu section bg-white" aria-labelledby="edu-title">
+    <div class="wrap">
+      <div class="edu__head">
+        <h2 class="h2 ruled" id="edu-title" data-reveal>{t.formationTitle}</h2>
+        <p class="edu__motto" data-reveal>{t.formationMotto}</p>
+      </div>
+      <div class="edu__cols">
+        <div data-reveal>
+          <h3 class="edu__label">{t.degrees}</h3>
+          <ul class="edu__list">
+            {cv.degrees.map((d) => <li><p class="item__role">{d.title}</p><p class="item__org">{d.place}</p><p class="item__period">{d.period}</p></li>)}
+            {siteOnlyTraining.map((d) => <li><p class="item__role">{d.title}</p><p class="item__org">{d.place}</p></li>)}
+          </ul>
+        </div>
+        <div data-reveal style="--d:.06s">
+          <h3 class="edu__label">{t.training}</h3>
+          <ul class="edu__list">
+            {cv.training.map((d) => <li><p class="item__role">{d.title}</p><p class="item__org">{d.place}</p><p class="item__period">{d.period}</p></li>)}
+          </ul>
+        </div>
+        <div data-reveal style="--d:.12s">
+          <h3 class="edu__label">{t.languages}</h3>
+          <ul class="edu__list">
+            {cv.languages.map((l) => <li><p class="item__role">{l.name}</p><p class="item__org">{l.level}</p></li>)}
+          </ul>
+          <h3 class="edu__label edu__label--gap">{t.awards}</h3>
+          <ul class="edu__list">
+            {cv.awards.map((a) => <li><p class="item__role">{a.title}</p><p class="item__org">{a.org}</p></li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Éléments communs */
+  .item__role { font-family: var(--display); font-stretch: 82%; font-weight: 620; font-size: clamp(1.15rem, 1.05rem + .4vw, 1.35rem); line-height: 1.15; color: var(--navy); }
+  .item__org { margin-top: .2rem; color: var(--ink-2); font-size: 1.02rem; }
+  .item__period { margin-top: .3rem; font-family: var(--sans); font-size: .88rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .item__note { margin-top: .5rem; color: var(--ink-3); font-size: .98rem; max-width: 58ch; }
+
+  /* Positionnement */
+  .intro__grid { display: grid; gap: 2.5rem var(--gutter); }
+  .intro__title { color: var(--navy); max-width: 16ch; }
+  .intro__text { display: grid; gap: 1.2rem; color: var(--ink-2); max-width: 62ch; }
+  .intro__text .lead { color: var(--ink); }
+  @media (min-width: 1024px) { .intro__grid { grid-template-columns: 5fr 7fr; align-items: start; } }
+
+  /* Synthèse des champs */
+  .fields { padding-block: clamp(3rem, 2rem + 3vw, 5rem); background: var(--paper); }
+  .fields h2 { color: var(--navy); }
+  .fields__list { margin: 1.5rem 0 0; display: grid; gap: 0 var(--gutter); }
+  .fields__list div { padding-block: 1.1rem; border-bottom: 1px solid var(--rule); display: grid; gap: .35rem; }
+  .fields__list dt { font-family: var(--sans); font-weight: 650; color: var(--ink); }
+  .fields__list dd { margin: 0; color: var(--ink-2); }
+  @media (min-width: 900px) { .fields__list { grid-template-columns: repeat(3, 1fr); } .fields__list div { border-bottom: 0; border-top: 1px solid var(--rule); } }
+
+  /* Chronologie */
+  .chrono__grid { display: grid; gap: 2.5rem var(--gutter); }
+  .chrono h2 { color: var(--navy); }
+  .chrono__img { margin-top: 2rem; }
+  .chrono__img :global(img) { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 60% 40%; }
+  @media (max-width: 1023px) { .chrono__img { display: none; } }
+  @media (min-width: 1024px) {
+    .chrono__grid { grid-template-columns: 4fr 8fr; align-items: start; }
+    .chrono__aside { position: sticky; top: calc(var(--header-h) + 2rem); }
+  }
+  .years__group { display: grid; grid-template-columns: 4rem 1fr; gap: 0 1rem; }
+  .years__year { font-family: var(--display); font-stretch: 74%; font-weight: 660; font-size: 1.6rem; line-height: 1; color: var(--navy); padding-top: 1.3rem; font-variant-numeric: tabular-nums; }
+  .years__items { border-left: 1px solid var(--rule-strong); padding-left: 1.25rem; }
+  .years__items li { position: relative; padding-block: 1.35rem; border-top: 1px solid var(--rule); }
+  .years__group:first-child .years__items li:first-child { border-top: 0; }
+  .years__items li::before {
+    content: ''; position: absolute; top: 1.7rem; left: calc(-1.25rem - 5px);
+    width: 9px; height: 9px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--navy); box-sizing: border-box;
+  }
+  @media (min-width: 720px) {
+    .years__group { grid-template-columns: 6rem 1fr; gap: 0 1.5rem; }
+    .years__year { font-size: 2rem; }
+    .years__items { padding-left: 2rem; }
+    .years__items li::before { left: calc(-2rem - 5px); }
+  }
+
+  /* Engagements politiques */
+  .politics__grid { display: grid; gap: 2rem var(--gutter); }
+  .politics h2 { color: var(--navy); }
+  .politics__list { display: grid; gap: 0 var(--gutter); }
+  .politics__list li { padding-block: 1.4rem; border-top: 1px solid var(--rule-strong); }
+  @media (min-width: 900px) { .politics__grid { grid-template-columns: 4fr 8fr; } .politics__list { grid-template-columns: 1fr 1fr; } }
+
+  /* Organisations */
+  .orgs h2 { margin-bottom: 2.5rem; }
+  .orgs__grid { display: grid; gap: 0 var(--gutter); }
+  .orgs__grid li { padding: 2rem 0; border-top: 1px solid var(--rule-light); display: grid; gap: .8rem; align-content: start; }
+  .orgs__acr { font-family: var(--display); font-stretch: 74%; font-weight: 640; font-size: var(--fs-2xl); line-height: 1; }
+  .orgs__name { font-family: var(--sans); font-size: .95rem; font-weight: 600; color: #ffb399; }
+  .orgs__text { color: rgba(255,255,255,.84); max-width: 40ch; }
+  .orgs__fn { margin: .4rem 0 0; padding-top: .9rem; border-top: 1px solid var(--rule-light); display: grid; gap: .2rem; font-family: var(--sans); }
+  .orgs__fn dt { font-size: .85rem; color: rgba(255,255,255,.7); }
+  .orgs__fn dd { margin: 0; color: #fff; font-weight: 550; }
+  .orgs__fn .orgs__full { font-weight: 400; color: rgba(255,255,255,.8); }
+  .orgs__note { color: rgba(255,255,255,.75); font-size: .95rem; max-width: 42ch; }
+  @media (min-width: 900px) { .orgs__grid { grid-template-columns: repeat(3, 1fr); } }
+
+  /* Formation */
+  .edu__head { display: grid; gap: 1rem; margin-bottom: 2.75rem; }
+  .edu h2 { color: var(--navy); }
+  .edu__motto { font-style: italic; color: var(--ink-3); font-size: var(--fs-lg); }
+  .edu__cols { display: grid; gap: 3rem var(--gutter); }
+  .edu__label { font-family: var(--sans); font-size: 1rem; font-weight: 650; color: var(--ink); padding-bottom: .75rem; border-bottom: 2px solid var(--navy); }
+  .edu__label--gap { margin-top: 2.5rem; }
+  .edu__list li { padding-block: 1.1rem; border-bottom: 1px solid var(--rule); }
+  @media (min-width: 1024px) { .edu__cols { grid-template-columns: 1.2fr 1.2fr 1fr; } }
+</style>

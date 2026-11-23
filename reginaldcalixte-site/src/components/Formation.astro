@@ -1,11 +1,14 @@
 ---
-import { formation } from '../data/site';
+import { useLang, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { t, c } = useLang(Astro.props.lang);
+const formation = c.formation;
 ---
 <section class="formation section bg-white" aria-labelledby="formation-title">
   <div class="wrap">
     <div class="section-head" data-reveal>
-      <h2 class="h2" id="formation-title">Un parcours académique avancé</h2>
-      <p class="formation__motto">Apprendre pour mieux agir.</p>
+      <h2 class="h2" id="formation-title">{t.formationTitle}</h2>
+      <p class="formation__motto">{t.formationMotto}</p>
     </div>
     <ol class="formation__list">
       {formation.map((f, i) => (

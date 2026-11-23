@@ -1,58 +1,58 @@
 ---
-import { nav, contact, identity } from '../data/site';
 import Icon from './Icon.astro';
+import { useLang, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { t, c, L } = useLang(Astro.props.lang);
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer on-dark">
   <div class="wrap">
     <div class="footer-top">
       <div>
-        <a href="/" aria-label="Accueil"><img src="/brand/logo-blanc-480.png" srcset="/brand/logo-blanc-240.webp 240w, /brand/logo-blanc-480.webp 480w" sizes="260px" alt="Me Réginald Calixte — L'engagement fait le citoyen" width="480" height="82" loading="lazy" /></a>
-        <p style="margin-top:1.4rem;color:#fff;font-weight:600">{identity.name}</p>
-        <p style="margin-top:.25rem;color:var(--orange);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:650">{identity.statusShort}</p>
+        <a href={L('/')} aria-label={t.home}><img src="/brand/logo-blanc-480.png" srcset="/brand/logo-blanc-240.webp 240w, /brand/logo-blanc-480.webp 480w" sizes="260px" alt="Me Réginald Calixte — L'engagement fait le citoyen" width="480" height="82" loading="lazy" /></a>
+        <p style="margin-top:1.4rem;color:#fff;font-weight:600">{c.identity.name}</p>
+        <p style="margin-top:.25rem;color:var(--orange);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:650">{c.identity.statusShort}</p>
       </div>
-      <ul class="footer-mandate" aria-label="Le mandat de député">
-        <li>Représenter dignement</li>
-        <li>Contrôler rigoureusement</li>
-        <li>Légiférer consciencieusement</li>
+      <ul class="footer-mandate" aria-label={t.mandateAria}>
+        {t.mandate.map((m) => <li>{m}</li>)}
       </ul>
     </div>
     <div class="footer-cols">
       <div>
-        <h2>Navigation</h2>
-        <ul>{nav.map((i) => <li><a href={i.path}>{i.name}</a></li>)}</ul>
+        <h2>{t.footNav}</h2>
+        <ul>{c.nav.map((i) => <li><a href={L(i.path)}>{i.name}</a></li>)}</ul>
       </div>
       <div>
-        <h2>Contact</h2>
+        <h2>{t.footContact}</h2>
         <ul>
-          <li>{contact.addressFooter[0]}<br />{contact.addressFooter[1]}</li>
-          {contact.phones.map((p) => <li><a href={`tel:${p.replace(/\s/g, '')}`}>{p}</a></li>)}
-          <li><a href={`mailto:${contact.email}`} style="word-break:break-all">{contact.email}</a></li>
+          <li>{c.contact.addressFooter[0]}<br />{c.contact.addressFooter[1]}</li>
+          {c.contact.phones.map((p) => <li><a href={`tel:${p.replace(/\s/g, '')}`}>{p}</a></li>)}
+          <li><a href={`mailto:${c.contact.email}`} style="word-break:break-all">{c.contact.email}</a></li>
         </ul>
       </div>
       <div>
-        <h2>S'engager</h2>
-        <p>Chaque citoyen peut contribuer à définir un autre modèle de leadership.</p>
-        <a class="link-arrow mt-2" href="/contact">Nous contacter <Icon name="arrow" /></a>
+        <h2>{t.footEngage}</h2>
+        <p>{t.footEngageText}</p>
+        <a class="link-arrow mt-2" href={L('/contact')}>{t.contactUs} <Icon name="arrow" /></a>
       </div>
       <div>
-        <h2>Suivez Réginald Calixte</h2>
+        <h2>{t.follow}</h2>
         <div class="socials">
-          {contact.socials.map((s) => (
-            <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={`${s.name} (nouvel onglet)`}><Icon name={s.icon as any} /></a>
+          {c.contact.socials.map((s) => (
+            <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={`${s.name} (${t.newTab})`}><Icon name={s.icon as any} /></a>
           ))}
         </div>
-        <p class="mt-2">Suivez les actualités et prises de position de Réginald Calixte.</p>
+        <p class="mt-2">{t.followText}</p>
       </div>
     </div>
     <div class="footer-bottom">
       <ul>
-        <li><a href="/politique-de-confidentialite">Politique de confidentialité</a></li>
-        <li><a href="/conditions-utilisation">Conditions d'utilisation</a></li>
-        <li><a href="/mentions-legales">Mentions légales</a></li>
-        <li><a href="/presse">Espace presse</a></li>
+        <li><a href={L('/politique-de-confidentialite')}>{t.privacy}</a></li>
+        <li><a href={L('/conditions-utilisation')}>{t.terms}</a></li>
+        <li><a href={L('/mentions-legales')}>{t.legalNotice}</a></li>
+        <li><a href={L('/presse')}>{t.press}</a></li>
       </ul>
-      <p>© {year} Réginald Calixte — Tous droits réservés.</p>
+      <p>© {year} Réginald Calixte — {t.rights}</p>
     </div>
   </div>
 </footer>

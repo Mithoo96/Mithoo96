@@ -1,0 +1,57 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { useLang, formatDate, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, c, L } = useLang(lang);
+const { contact } = c;
+const updated = formatDate('2026-11-23', lang);
+---
+{lang === 'fr' && (
+  <Legal lang={lang} title={t.terms} description="Conditions d'utilisation du site officiel de Me Réginald Calixte." updated={updated}>
+    <h2>Objet</h2>
+    <p>Le site reginaldcalixte.com présente le parcours, la vision, les priorités et les activités publiques de Me Réginald Calixte. Son utilisation implique l'acceptation des présentes conditions.</p>
+    <h2>Contenus</h2>
+    <p>Les contenus sont publiés à titre d'information. L'équipe veille à leur exactitude et les met à jour régulièrement. Le site est proposé en français, en créole haïtien et en anglais ; en cas de divergence, la version française fait foi.</p>
+    <h2>Utilisation des formulaires</h2>
+    <p>Les formulaires doivent être utilisés de bonne foi. Les messages injurieux, diffamatoires, menaçants ou sans rapport avec l'objet du site ne recevront pas de suite.</p>
+    <h2>Photographies</h2>
+    <p>Les photographies de l'<a href={L('/presse')}>Espace presse</a> peuvent être utilisées par les rédactions, journalistes et partenaires avec le crédit « © Réginald Calixte », sans modification altérant leur sens ou leur intégrité.</p>
+    <h2>Liens externes</h2>
+    <p>Le site renvoie vers des services tiers (Facebook, Instagram, YouTube). Ces services sont régis par leurs propres conditions.</p>
+    <h2>Contact</h2>
+    <p>Pour toute question : <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+  </Legal>
+)}
+{lang === 'ht' && (
+  <Legal lang={lang} title={t.terms} description="Kondisyon itilizasyon sit ofisyèl Me Réginald Calixte." updated={updated}>
+    <h2>Objektif</h2>
+    <p>Sit reginaldcalixte.com prezante pakou, vizyon, priyorite ak aktivite piblik Me Réginald Calixte. Lè w itilize l, ou aksepte kondisyon sa yo.</p>
+    <h2>Kontni</h2>
+    <p>Kontni yo pibliye pou enfòme. Ekip la veye pou yo egzat e li mete yo ajou regilyèman. Sit la disponib an franse, an kreyòl ayisyen ak an anglè ; si gen diferans, se vèsyon franse a ki fè otorite.</p>
+    <h2>Itilizasyon fòmilè yo</h2>
+    <p>Fòk moun itilize fòmilè yo ak bòn fwa. Mesaj ki joure moun, ki difame, ki menase oswa ki pa gen rapò ak objektif sit la p ap gen swit.</p>
+    <h2>Foto</h2>
+    <p>Redaksyon, jounalis ak patnè ka itilize foto ki nan <a href={L('/presse')}>Espas laprès</a> la ak kredi « © Réginald Calixte », san okenn chanjman ki ta chanje sans oswa entegrite yo.</p>
+    <h2>Lyen ekstèn</h2>
+    <p>Sit la voye sou lòt sèvis (Facebook, Instagram, YouTube). Sèvis sa yo gen pwòp kondisyon pa yo.</p>
+    <h2>Kontak</h2>
+    <p>Pou nenpòt kesyon : <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+  </Legal>
+)}
+{lang === 'en' && (
+  <Legal lang={lang} title={t.terms} description="Terms of use of the official website of Me Réginald Calixte." updated={updated}>
+    <h2>Purpose</h2>
+    <p>reginaldcalixte.com presents the background, vision, priorities and public activities of Me Réginald Calixte. By using it, you accept these terms.</p>
+    <h2>Content</h2>
+    <p>Content is published for information purposes. The team ensures its accuracy and updates it regularly. The website is available in French, Haitian Creole and English; in the event of any discrepancy, the French version prevails.</p>
+    <h2>Use of forms</h2>
+    <p>Forms must be used in good faith. Abusive, defamatory or threatening messages, or messages unrelated to the purpose of the website, will not be answered.</p>
+    <h2>Photographs</h2>
+    <p>Photographs in the <a href={L('/presse')}>Press room</a> may be used by newsrooms, journalists and partners with the credit “© Réginald Calixte”, without any alteration that changes their meaning or integrity.</p>
+    <h2>External links</h2>
+    <p>The website links to third-party services (Facebook, Instagram, YouTube), which are governed by their own terms.</p>
+    <h2>Contact</h2>
+    <p>For any question: <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+  </Legal>
+)}

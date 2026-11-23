@@ -1,0 +1,81 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { useLang, formatDate, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, c } = useLang(lang);
+const { contact } = c;
+const updated = formatDate('2026-11-23', lang);
+---
+{lang === 'fr' && (
+  <Legal lang={lang} title={t.privacy} description="Comment le site de Me Réginald Calixte traite les données personnelles transmises par ses formulaires." updated={updated}>
+    <p>Cette politique explique quelles données personnelles sont collectées sur reginaldcalixte.com, pourquoi, et comment exercer vos droits.</p>
+    <h2>Données collectées</h2>
+    <ul>
+      <li><strong>Formulaire de contact</strong> : nom, adresse e-mail, numéro de téléphone (facultatif), sujet et message.</li>
+      <li><strong>Inscription « Restons connectés »</strong> : prénom, nom et adresse e-mail.</li>
+    </ul>
+    <p>Aucune autre donnée personnelle n'est demandée. Le site n'utilise ni cookies publicitaires ni outil de mesure d'audience. La langue choisie est mémorisée dans votre navigateur pour vous présenter le site dans cette langue lors de vos prochaines visites.</p>
+    <h2>Finalités</h2>
+    <ul>
+      <li>Répondre aux messages, demandes médias, invitations et propositions de collaboration.</li>
+      <li>Envoyer les actualités, prises de position, publications et initiatives de Réginald Calixte aux personnes inscrites.</li>
+    </ul>
+    <h2>Destinataires</h2>
+    <p>Les données sont destinées à l'équipe de Réginald Calixte. Leur transmission technique est assurée par l'hébergeur du site et par un prestataire d'envoi d'e-mails agissant pour notre compte. Elles ne sont ni vendues ni cédées à des tiers.</p>
+    <h2>Durée de conservation</h2>
+    <p>Les messages sont conservés le temps nécessaire à leur traitement. Les inscriptions sont conservées jusqu'à votre désinscription.</p>
+    <h2>Vos droits</h2>
+    <p>Vous pouvez à tout moment demander l'accès, la rectification ou la suppression de vos données, ou vous désinscrire, en écrivant à <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+    <h2>Vidéos YouTube</h2>
+    <p>Sur la page Médias, les vidéos sont proposées en mode « confidentialité renforcée » (youtube-nocookie.com) et ne sont chargées qu'après un clic sur le bouton de lecture. YouTube applique alors sa propre politique de confidentialité.</p>
+  </Legal>
+)}
+{lang === 'ht' && (
+  <Legal lang={lang} title={t.privacy} description="Kijan sit Me Réginald Calixte trete done pèsonèl moun voye nan fòmilè li yo." updated={updated}>
+    <p>Politik sa a esplike ki done pèsonèl sit reginaldcalixte.com ranmase, poukisa, ak kijan ou ka egzèse dwa w yo.</p>
+    <h2>Done nou ranmase</h2>
+    <ul>
+      <li><strong>Fòmilè kontak</strong> : non, adrès imel, nimewo telefòn (si w vle), sijè ak mesaj.</li>
+      <li><strong>Enskripsyon « Ann rete konekte »</strong> : prenon, non ak adrès imel.</li>
+    </ul>
+    <p>Nou pa mande okenn lòt done pèsonèl. Sit la pa itilize ni bonbon (cookies) piblisitè ni zouti pou mezire odyans. Lang ou chwazi a anrejistre nan navigatè w pou sit la ka parèt nan lang sa a pwochen fwa w vini.</p>
+    <h2>Poukisa</h2>
+    <ul>
+      <li>Pou reponn mesaj, demann medya, envitasyon ak pwopozisyon kolaborasyon.</li>
+      <li>Pou voye aktyalite, pozisyon, piblikasyon ak inisyativ Réginald Calixte bay moun ki enskri yo.</li>
+    </ul>
+    <h2>Kiyès ki resevwa done yo</h2>
+    <p>Done yo se pou ekip Réginald Calixte. Ebèjè sit la ak yon prestatè ki voye imel pou nou se yo ki transmèt yo teknikman. Nou pa vann yo, ni nou pa bay lòt moun yo.</p>
+    <h2>Konbyen tan nou kenbe yo</h2>
+    <p>Nou kenbe mesaj yo pou tan ki nesesè pou trete yo. Nou kenbe enskripsyon yo jiskaske ou dezenskri.</p>
+    <h2>Dwa w yo</h2>
+    <p>Nenpòt ki lè, ou ka mande pou wè, korije oswa efase done w yo, oswa dezenskri, lè w ekri nan <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+    <h2>Videyo YouTube</h2>
+    <p>Sou paj Medya a, videyo yo parèt nan mòd « konfidansyalite ranfòse » (youtube-nocookie.com), e yo chaje sèlman lè w klike sou bouton lekti a. Apre sa, se politik konfidansyalite YouTube ki aplike.</p>
+  </Legal>
+)}
+{lang === 'en' && (
+  <Legal lang={lang} title={t.privacy} description="How the website of Me Réginald Calixte processes the personal data submitted through its forms." updated={updated}>
+    <p>This policy explains what personal data is collected on reginaldcalixte.com, why, and how you can exercise your rights.</p>
+    <h2>Data collected</h2>
+    <ul>
+      <li><strong>Contact form</strong>: name, email address, phone number (optional), subject and message.</li>
+      <li><strong>“Stay connected” sign-up</strong>: first name, last name and email address.</li>
+    </ul>
+    <p>No other personal data is requested. The website uses no advertising cookies and no audience measurement tools. Your chosen language is stored in your browser so that the site can be shown in that language on your next visits.</p>
+    <h2>Purposes</h2>
+    <ul>
+      <li>Replying to messages, media requests, invitations and collaboration proposals.</li>
+      <li>Sending Réginald Calixte's news, positions, publications and initiatives to subscribers.</li>
+    </ul>
+    <h2>Recipients</h2>
+    <p>The data is intended for Réginald Calixte's team. It is technically transmitted by the website's host and by an email delivery provider acting on our behalf. It is never sold or passed on to third parties.</p>
+    <h2>Retention</h2>
+    <p>Messages are kept for as long as necessary to handle them. Subscriptions are kept until you unsubscribe.</p>
+    <h2>Your rights</h2>
+    <p>You may at any time request access to, correction or deletion of your data, or unsubscribe, by writing to <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+    <h2>YouTube videos</h2>
+    <p>On the Media page, videos are provided in privacy-enhanced mode (youtube-nocookie.com) and are only loaded after you click the play button. YouTube's own privacy policy then applies.</p>
+  </Legal>
+)}

@@ -5,7 +5,8 @@ const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const axeSource = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const BASE = (process.argv[2] || '').replace(/\/$/, '');
-const ROUTES = ['/', '/biographie', '/vision', '/priorites', '/parcours', '/publications', '/medias', '/actualites', '/contact', '/presse', '/galerie', '/mentions-legales', '/politique-de-confidentialite', '/conditions-utilisation'];
+const FR = ['/', '/biographie', '/vision', '/priorites', '/parcours', '/publications', '/medias', '/actualites', '/contact', '/presse', '/galerie', '/mentions-legales', '/politique-de-confidentialite', '/conditions-utilisation'];
+const ROUTES = [...FR, ...['/ht', '/en'].flatMap((l) => FR.map((r) => (r === '/' ? l : l + r)))];
 const res = []; const ok = (n, p, d = '') => { res.push(p); console.log(`${p ? '✔' : '✘'} ${n}${d ? ' — ' + d : ''}`); };
 const b = await chromium.launch();
 const page = await b.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
@@ -16,7 +17,9 @@ for (const r of ROUTES) {
   const i = await page.evaluate(() => ({ h1: document.querySelectorAll('h1').length, robots: document.querySelector('meta[name=robots]')?.content || '', broken: [...document.images].filter((im) => im.getAttribute('src') && im.complete && im.naturalWidth === 0).length,
     links: [...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')),
     assets: [...document.querySelectorAll('img[src], source[srcset], img[srcset], link[rel=preload], link[rel=icon], script[src]')].flatMap((e) => [e.getAttribute('src'), e.getAttribute('href'), ...(e.getAttribute('srcset') || '').split(',').map((s) => s.trim().split(' ')[0])]).filter(Boolean) }));
-  ok(`${r} → ${resp.status()}, h1, noindex, images chargées`, resp.status() === 200 && i.h1 === 1 && i.robots.includes('noindex') && i.broken === 0, `robots="${i.robots}" images cassées=${i.broken}`);
+  const lang = r.startsWith('/ht') ? 'ht' : r.startsWith('/en') ? 'en' : 'fr';
+  const hl = await page.evaluate(() => document.documentElement.lang);
+  ok(`${r} → ${resp.status()}, lang=${hl}, h1, noindex, images chargées`, resp.status() === 200 && hl === lang && i.h1 === 1 && i.robots.includes('noindex') && i.broken === 0, `robots="${i.robots}" images cassées=${i.broken}`);
   [...i.links, ...i.assets].forEach((h) => h.startsWith('/') && !h.startsWith('//') && internal.add(h.split('#')[0]));
   await page.addScriptTag({ content: axeSource });
   const v = await page.evaluate(async () => (await window.axe.run(document, { runOnly: ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'] })).violations.map((x) => x.id));
@@ -32,9 +35,16 @@ const head = await page.request.get(BASE + '/'); ok('en-tête X-Robots-Tag noind
 for (const f of ['/presse/reginald-calixte-portrait-officiel.jpg', '/presse/reginald-calixte-portrait-editorial.jpg', '/presse/saint-marc-place-publique.jpg', '/presse/reginald-calixte-rencontre-citoyenne.jpg']) {
   const r = await page.request.get(BASE + f); ok(`téléchargement ${f}`, r.status() === 200 && r.headers()['content-type'] === 'image/jpeg');
 }
+// Multilingue : redirections /fr, sélecteur, préférence
+const fr1 = await page.request.get(BASE + '/fr/vision', { maxRedirects: 0 }); ok('/fr/vision → 301 vers /vision', fr1.status() === 301 && (fr1.headers().location || '').endsWith('/vision'), `${fr1.status()} ${fr1.headers().location}`);
+await page.goto(BASE + '/vision'); await page.click('.lang-switch--bar a[hreflang=ht]'); await page.waitForURL('**/ht/vision');
+await page.click('.lang-switch--bar a[hreflang=en]'); await page.waitForURL('**/en/vision');
+await page.goto(BASE + '/'); await page.waitForURL('**/en', { timeout: 5000 }).catch(() => {});
+ok('sélecteur FR → KRE → EN sur la même page, préférence mémorisée', new URL(page.url()).pathname === '/en', page.url());
 // Fonctions serverless : validation active (sans envoi d'e-mail)
-const api = await page.request.post(BASE + '/api/contact', { headers: { 'Content-Type': 'application/json', Origin: BASE }, data: { first_name: '', email: 'x', _t: String(Date.now() - 10000) } });
-ok('fonction /api/contact déployée (validation → 422)', api.status() === 422, String(api.status()));
+const api = await page.request.post(BASE + '/api/contact', { headers: { 'Content-Type': 'application/json', Origin: BASE }, data: { first_name: '', email: 'x', lang: 'ht', _t: String(Date.now() - 10000) } });
+const aj = await api.json().catch(() => ({}));
+ok('fonction /api/contact déployée (validation → 422, messages en créole)', api.status() === 422 && (aj.errors?.first_name || '').includes('non ou'), String(api.status()));
 const api2 = await page.request.post(BASE + '/api/subscribe', { headers: { 'Content-Type': 'application/json', Origin: BASE }, data: { email: '', _t: String(Date.now() - 10000) } });
 ok('fonction /api/subscribe déployée (validation → 422)', api2.status() === 422, String(api2.status()));
 // Interactions
@@ -49,7 +59,7 @@ await m.goto(BASE + '/contact'); await m.click('form[data-form=contact] button[t
 ok('formulaire contact : validation des champs', (await m.locator('form[data-form=contact] [aria-invalid=true]').count()) === 4);
 const over = [];
 for (const w of [320, 768, 1920]) { const p = await b.newPage({ viewport: { width: w, height: 900 } }); for (const r of ROUTES) { await p.goto(BASE + r, { waitUntil: 'domcontentloaded' }); const o = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth); if (o > 0) over.push(`${w}${r}`); } await p.close(); }
-ok('aucun débordement horizontal 320 / 768 / 1920 px', over.length === 0, over.join(','));
+ok(`aucun débordement horizontal 320 / 768 / 1920 px (${ROUTES.length} routes)`, over.length === 0, over.join(','));
 ok('aucune erreur JavaScript', errs.filter((e) => !/404/.test(e)).length === 0, errs.join(' | '));
 await b.close();
 console.log(`\n${res.filter(Boolean).length}/${res.length} vérifications réussies sur ${BASE}`);

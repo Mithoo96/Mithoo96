@@ -1,0 +1,35 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { useLang, formatDate, type Lang } from '../i18n';
+import { publicationCategories as frCategories } from '../data/site';
+interface Props { lang: Lang; post: CollectionEntry<'publications'> }
+const { lang, post } = Astro.props;
+const { t, c, L } = useLang(lang);
+const { Content } = await render(post);
+const catLabel = c.publicationCategories[(frCategories as readonly string[]).indexOf(post.data.category)] ?? post.data.category;
+---
+<Base lang={lang} title={post.data.title} description={post.data.excerpt} headerTone="light" alternates={false} switchPath="/publications">
+  <article class="article">
+    <header class="wrap wrap-narrow article__head">
+      <nav aria-label={t.breadcrumb}><ol class="crumb"><li><a href={L('/')}>{t.home}</a></li><li><a href={L('/publications')}>{c.nav[5].name}</a></li></ol></nav>
+      <p class="article__meta mt-3">{catLabel} · <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date, lang)}</time></p>
+      <h1 class="h1 mt-1">{post.data.title}</h1>
+      <p class="lead mt-2">{post.data.excerpt}</p>
+    </header>
+    <div class="wrap wrap-narrow article__body prose"><Content /></div>
+    <footer class="wrap wrap-narrow article__foot"><a class="link-arrow" href={L('/publications')}><Icon name="prev" /> {t.allPubs}</a></footer>
+  </article>
+</Base>
+<style>
+  .article { padding-top: calc(var(--header-h) + 3rem); padding-bottom: var(--section); }
+  .crumb { display: flex; gap: .5rem; font-size: .8rem; color: var(--ink-3); }
+  .crumb li + li::before { content: '/'; margin-right: .5rem; color: var(--orange-ink); }
+  .article__head { padding-bottom: 2.5rem; border-bottom: 1px solid var(--rule); }
+  .article__body { padding-top: 2.5rem; font-size: 1.15rem; line-height: 1.75; max-width: 920px; }
+  .article__body :global(h2) { font-family: var(--serif); font-size: var(--fs-xl); margin: 2em 0 .6em; color: var(--navy); }
+  .article__foot { margin-top: 3rem; }
+  .article__meta { color: var(--ink-3); font-size: .95rem; }
+</style>

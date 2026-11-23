@@ -1,0 +1,62 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+import { photo } from '../data/photos';
+import { useLang, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, c } = useLang(lang);
+const [feature, ...rest] = c.videos;
+---
+<Base lang={lang} title={c.nav[6].name} description={t.mediaDesc} headerTone="light">
+  <PageHead lang={lang} title={t.mediaTitle} subtitle={t.mediaSub} crumb={c.nav[6].name} />
+
+  <section class="media section on-dark" aria-labelledby="media-title">
+    <div class="wrap">
+      <h2 class="visually-hidden" id="media-title">{t.videos}</h2>
+      <article class="media__feature" data-reveal>
+        <div class="media__player">
+          <button class="video-card" type="button" data-yt={feature.id} data-title={feature.title}>
+            <Picture src={photo(`yt-${feature.id}`)} formats={['avif', 'webp']} widths={[480, 960]} sizes="(min-width: 1024px) 62vw, 92vw" alt="" />
+            <span class="video-card__play"><span><Icon name="play" /></span><span class="visually-hidden">{t.playVideo} : {feature.title}</span></span>
+          </button>
+        </div>
+        <div class="media__info">
+          <h3 class="h2">{feature.title}</h3>
+          {feature.category !== feature.title && <p class="media__cat">{feature.category}</p>}
+          <a class="link-arrow mt-2" href={`https://www.youtube.com/watch?v=${feature.id}`} target="_blank" rel="noopener noreferrer">{t.watchYoutube} <span class="visually-hidden">({t.newTab})</span><Icon name="arrow" /></a>
+        </div>
+      </article>
+
+      <ol class="media__grid">
+        {rest.map((v, i) => (
+          <li data-reveal style={`--d:${i * 0.08}s`}>
+            <button class="video-card" type="button" data-yt={v.id} data-title={v.title}>
+              <Picture src={photo(`yt-${v.id}`)} formats={['avif', 'webp']} widths={[480, 800]} sizes="(min-width: 900px) 30vw, 92vw" alt="" />
+              <span class="video-card__play"><span><Icon name="play" /></span><span class="visually-hidden">{t.playVideo} : {v.title}</span></span>
+            </button>
+            <h3 class="h3 mt-2">{v.title}</h3>
+            {v.category !== v.title && <p class="media__cat mt-1">{v.category}</p>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .media { background: var(--navy-deep); color: #fff; }
+  .media .h2, .media .h3 { color: #fff; }
+  .media .media__cat { color: rgba(255,255,255,.72) !important; }
+  .media .media__feature { border-bottom-color: var(--rule-light) !important; }
+  .media .link-arrow { color: #fff; }
+  .media__feature { display: grid; gap: 2rem var(--gutter); padding-bottom: 3.5rem; margin-bottom: 3.5rem; border-bottom: 1px solid var(--rule-strong); }
+  .media__cat { font-size: .92rem; color: var(--ink-3); }
+  .media__info .media__cat { margin-top: .5rem; }
+  .media__info .link-arrow { margin-top: 1.5rem; }
+  @media (min-width: 1024px) { .media__feature { grid-template-columns: 8fr 4fr; align-items: end; } }
+  .media__grid { display: grid; gap: 3rem var(--gutter); }
+  @media (min-width: 900px) { .media__grid { grid-template-columns: repeat(3, 1fr); } }
+</style>

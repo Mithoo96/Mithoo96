@@ -1,0 +1,65 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Charter from '../components/Charter.astro';
+import Compass from '../components/Compass.astro';
+import Formation from '../components/Formation.astro';
+import NextLink from '../components/NextLink.astro';
+import { photo } from '../data/photos';
+import { useLang, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, c, L } = useLang(lang);
+const { bio, conviction, cv } = c;
+const quote = lang === 'en' ? `“${conviction}”` : `« ${conviction} »`;
+---
+<Base lang={lang} title={c.nav[1].name} description={t.aboutDesc} headerTone="light">
+  <section class="opening" aria-labelledby="about-title">
+    <div class="opening__media">
+      <Picture src={photo('portrait-officiel')} formats={['avif', 'webp']} widths={[480, 800, 1200, 1600]} sizes="(min-width: 1024px) 50vw, 100vw" alt={t.portraitAlt} loading="eager" fetchpriority="high" />
+    </div>
+    <div class="opening__text">
+      <nav aria-label={t.breadcrumb}><ol class="breadcrumb"><li><a href={L('/')}>{t.home}</a></li><li aria-current="page">{c.nav[1].name}</li></ol></nav>
+      <h1 class="h1 ruled" id="about-title">{t.aboutTitle}</h1>
+      <p class="opening__triad" lang="ht">{bio.triad.join(' ')}</p>
+      <div class="opening__prose">
+        {bio.paragraphs.map((p) => <p set:html={p} />)}
+        <p set:html={cv.summary} />
+      </div>
+    </div>
+  </section>
+
+  <Charter lang={lang} />
+  <Compass lang={lang} />
+
+  <section class="message section" aria-label={t.messageAria}>
+    <div class="wrap wrap-narrow" data-reveal>
+      <blockquote class="message__quote"><p>{quote}</p></blockquote>
+      <p class="message__cite">— Réginald Calixte</p>
+    </div>
+  </section>
+
+  <Formation lang={lang} />
+
+  <NextLink href={L('/parcours')} title={t.nextCareerTitle} cta={t.nextCareerCta} />
+</Base>
+
+<style>
+  .opening { display: grid; background: var(--studio); }
+  .opening__media { overflow: hidden; }
+  .opening__media :global(picture) { height: 100%; }
+  .opening__media :global(img) { width: 100%; height: 100%; max-height: 78svh; object-fit: cover; object-position: 50% 12%; }
+  .opening__text { padding: clamp(2.5rem, 2rem + 3vw, 5rem) var(--gutter) clamp(3rem, 2rem + 4vw, 6rem); display: grid; gap: 1.5rem; align-content: center; max-width: 720px; }
+  .opening .breadcrumb { color: var(--ink-3); margin-bottom: .5rem; }
+  .opening h1 { color: var(--navy); }
+  .opening__triad { font-family: var(--display); font-stretch: 74%; font-weight: 600; font-size: var(--fs-xl); color: var(--orange-ink); }
+  .opening__prose { display: grid; gap: 1.1rem; color: var(--ink-2); font-size: var(--fs-lg); line-height: 1.6; }
+  .opening__prose :global(strong) { color: var(--ink); }
+  @media (min-width: 1024px) {
+    .opening { grid-template-columns: 1fr 1fr; min-height: 100svh; }
+    .opening__media :global(img) { max-height: none; position: sticky; top: 0; height: 100svh; }
+    .opening__text { padding-top: calc(var(--header-h) + 4rem); padding-left: clamp(2rem, 1rem + 4vw, 6rem); }
+  }
+  .message__quote p { font-family: var(--serif); font-size: clamp(1.6rem, 1rem + 2.2vw, 2.9rem); line-height: 1.2; color: var(--navy); font-variation-settings: 'opsz' 60; text-wrap: pretty; }
+  .message__cite { margin-top: 1.75rem; font-size: 1rem; color: var(--ink-3); }
+</style>

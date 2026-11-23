@@ -1,0 +1,70 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+import Newsletter from '../components/Newsletter.astro';
+import { useLang, formatDate, type Lang } from '../i18n';
+import { publicationCategories as frCategories } from '../data/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, c, L } = useLang(lang);
+const publicationCategories = c.publicationCategories;
+// Rubrique traduite à partir de la rubrique française enregistrée dans l'article
+const catLabel = (cat: string) => publicationCategories[(frCategories as readonly string[]).indexOf(cat)] ?? cat;
+
+// Chaque article est rédigé dans une langue (champ « lang », français par défaut)
+const posts = (await getCollection('publications', ({ data }) => !data.draft && data.lang === lang)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<Base lang={lang} title={c.nav[5].name} description={t.pubsDesc} headerTone="light">
+  <PageHead lang={lang} title={t.pubsTitle} subtitle={t.pubsSub} crumb={c.nav[5].name} />
+
+  <section class="pubs section" aria-labelledby="pubs-title">
+    <div class="wrap">
+      <h2 class="visually-hidden" id="pubs-title">{c.nav[5].name}</h2>
+      {posts.length > 0 && (
+        <div class="rubriques" data-filter-group="#pubs-list" data-filter-status="#pubs-status" role="group" aria-label={t.filterByTopic}>
+          <button type="button" data-filter="all" aria-pressed="true">{t.all}</button>
+          {publicationCategories.map((cat) => <button type="button" data-filter={cat} aria-pressed="false">{cat}</button>)}
+        </div>
+      )}
+      <p class="visually-hidden" id="pubs-status" role="status" aria-live="polite"></p>
+
+      {posts.length > 0 ? (
+        <ol class="pubs__list" id="pubs-list">
+          {posts.map((p) => (
+            <li data-cat={catLabel(p.data.category)}>
+              <a href={L(`/publications/${p.id}`)}>
+                <p class="pubs__meta"><span>{catLabel(p.data.category)}</span><time datetime={p.data.date.toISOString()}>{formatDate(p.data.date, lang)}</time></p>
+                <h3 class="h3">{p.data.title}</h3>
+                <p class="pubs__excerpt">{p.data.excerpt}</p>
+                <span class="link-arrow">{t.read} <Icon name="arrow" /></span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <div class="pubs__empty" id="pubs-list" data-reveal>
+          <h3 class="h2">{t.pubsEmptyTitle}</h3>
+          <p class="lead mt-2">{t.pubsEmptyText}</p>
+          <p class="pubs__topics mt-3">{publicationCategories.join(' · ')}</p>
+        </div>
+      )}
+    </div>
+  </section>
+  {posts.length === 0 && <Newsletter lang={lang} />}
+</Base>
+
+<style>
+  .rubriques { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding-bottom: 2rem; margin-bottom: 3rem; border-bottom: 1px solid var(--rule-strong); }
+  .rubriques button { min-height: 40px; padding: .45rem 1rem; border: 1px solid var(--rule-strong); background: transparent; border-radius: 999px; font-size: .86rem; font-weight: 550; cursor: pointer; transition: background-color .25s, color .25s, border-color .25s; }
+  .rubriques button:hover { border-color: var(--navy); }
+  .rubriques button[aria-pressed='true'] { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .pubs__empty { max-width: 860px; padding-bottom: 1rem; }
+  .pubs__topics { color: var(--ink-3); font-size: .95rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+  .pubs__list li { border-top: 1px solid var(--rule); }
+  .pubs__list a { display: grid; gap: .75rem; padding-block: 2rem; text-decoration: none; }
+  .pubs__meta { display: flex; gap: 1rem; font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 650; color: var(--ink-3); }
+  .pubs__meta span { color: var(--orange-ink); }
+  .pubs__excerpt { color: var(--ink-2); max-width: 64ch; }
+</style>

@@ -1,14 +1,16 @@
 ---
-import { methode } from '../data/site';
 import Icon from './Icon.astro';
-interface Props { link?: boolean; title?: string; lead?: string }
-const { link = true, title, lead = 'Je valorise:' } = Astro.props;
+import { useLang, type Lang } from '../i18n';
+interface Props { link?: boolean; title?: string; lead?: string; lang: Lang }
+const { t, c, L } = useLang(Astro.props.lang);
+const { link = true, title, lead = t.iValue } = Astro.props;
+const methode = c.methode;
 ---
   <section class="method section" aria-labelledby="method-title">
     <div class="wrap">
       <div class="section-head">
         <div data-reveal>
-          {title ? <h2 class="h2" id="method-title">{title}</h2> : <h2 class="h2" id="method-title">Le leadership-solution comme méthode</h2>}
+          {title ? <h2 class="h2" id="method-title">{title}</h2> : <h2 class="h2" id="method-title">{t.methodTitle}</h2>}
           <p class="lead mt-2">{lead}</p>
         </div>
       </div>
@@ -19,7 +21,7 @@ const { link = true, title, lead = 'Je valorise:' } = Astro.props;
           </li>
         ))}
       </ol>
-      {link && <a class="link-arrow mt-4" href="/vision" data-reveal>Explorer la vision complète <Icon name="arrow" /></a>}
+      {link && <a class="link-arrow mt-4" href={L('/vision')} data-reveal>{t.exploreVision} <Icon name="arrow" /></a>}
     </div>
   </section>
 

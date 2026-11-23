@@ -1,9 +1,12 @@
 ---
-import { convictions } from '../data/site';
+import { useLang, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { t, c } = useLang(Astro.props.lang);
+const convictions = c.convictions;
 ---
 <section class="charter section" aria-labelledby="charter-title">
   <div class="wrap charter__grid">
-    <h2 class="h2 ruled charter__title" id="charter-title" data-reveal>Ce en quoi je crois, sans concession.</h2>
+    <h2 class="h2 ruled charter__title" id="charter-title" data-reveal>{t.beliefsTitle}</h2>
     <ul class="charter__list">
       {convictions.map((c, i) => <li data-reveal style={`--d:${(i % 2) * 0.06}s`}>{c}</li>)}
     </ul>

@@ -1,0 +1,19 @@
+---
+import { locales, langLabel, langName, localize, splitPath, ui, type Lang } from '../i18n';
+interface Props { lang: Lang; class?: string; switchPath?: string }
+const { lang, class: cls, switchPath } = Astro.props;
+const { path } = splitPath(Astro.url.pathname);
+// Page disponible dans une seule langue : les autres langues mènent à switchPath
+const target = (l: Lang) => (switchPath && l !== lang ? localize(l, switchPath) : localize(l, path));
+---
+<nav class:list={['lang-switch', cls]} aria-label={ui[lang].langChoice}>
+  <ul>
+    {locales.map((l) => (
+      <li>
+        <a href={target(l)} hreflang={l} lang={l} data-lang-link={l} aria-current={l === lang ? 'true' : undefined}>
+          <span aria-hidden="true">{langLabel[l]}</span><span class="visually-hidden">{langName[l]}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

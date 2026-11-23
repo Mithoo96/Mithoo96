@@ -1,0 +1,9 @@
+---
+import { getCollection } from 'astro:content';
+import Article from '../../../views/Article.astro';
+export async function getStaticPaths() {
+  const posts = await getCollection('publications', ({ data }) => !data.draft && data.lang !== 'fr');
+  return posts.map((post) => ({ params: { lang: post.data.lang, id: post.id }, props: { post } }));
+}
+---
+<Article lang={Astro.props.post.data.lang} post={Astro.props.post} />

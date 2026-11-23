@@ -60,5 +60,17 @@
     "env": {
       "PUBLIC_NOINDEX": "1"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/fr",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/fr/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    }
+  ]
 }

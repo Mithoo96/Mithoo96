@@ -1,0 +1,109 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Icon from '../components/Icon.astro';
+import { useLang, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, c, L } = useLang(lang);
+const { contact, contactCategories, identity } = c;
+---
+<Base lang={lang} title={t.footContact} description={t.contactDesc}>
+  <PageHead lang={lang} title={t.contactTitle} subtitle={t.contactSub} crumb={t.footContact} image="rencontre-citoyenne" position="50% 45%" />
+
+  <section class="contact section" aria-label={t.contactAria}>
+    <div class="wrap contact__grid">
+      <div class="contact__card on-dark" data-reveal>
+        <h2 class="h3">{identity.name}</h2>
+        <p class="contact__status">{identity.statusShort}</p>
+        <dl class="contact__dl">
+          <div><dt><Icon name="pin" /> {t.address}</dt><dd>{contact.addressContact[0]}<br />{contact.addressContact[1]}</dd></div>
+          <div><dt><Icon name="phone" /> {t.phone}</dt><dd>{contact.phones.map((p) => <a href={`tel:${p.replace(/\s/g, '')}`}>{p}</a>)}</dd></div>
+          <div><dt><Icon name="mail" /> {t.emailShort}</dt><dd><a href={`mailto:${contact.email}`}>{contact.email}</a></dd></div>
+        </dl>
+        <div class="contact__social">
+          <p>{t.followShort}</p>
+          <div class="socials">
+            {contact.socials.map((s) => <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={`${s.name} (${t.newTab})`}><Icon name={s.icon as any} /></a>)}
+          </div>
+        </div>
+      </div>
+
+      <div class="contact__main">
+        <div class="contact__cats" data-reveal>
+          <h2 class="contact__cats-title" id="cats-title">{t.categories}</h2>
+          <ul aria-labelledby="cats-title">
+            {contactCategories.map((cat) => <li><button type="button" data-subject={cat} aria-pressed="false">{cat}</button></li>)}
+          </ul>
+        </div>
+
+        <form class="contact__form" data-form="contact" action="/api/contact" method="post" novalidate
+          data-success-title={t.fSuccessTitle}
+          data-success-text={t.fSuccessText}
+          data-sending={t.fSending} data-reveal style="--d:.08s" aria-labelledby="form-title">
+          <h2 class="h2" id="form-title">{t.formTitle}</h2>
+          <p class="text-muted mt-1">{t.formIntro}</p>
+
+          <div class="contact__fields mt-3">
+            <div class="field">
+              <label for="first_name">{t.fName} <span aria-hidden="true">*</span></label>
+              <input class="input" id="first_name" name="first_name" autocomplete="name" placeholder={t.fNamePh} required maxlength="120" data-msg-required={t.errName} />
+              <p class="field-error" data-error-for="first_name" aria-live="polite"></p>
+            </div>
+            <div class="field">
+              <label for="email">{t.fEmail} <span aria-hidden="true">*</span></label>
+              <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder={t.fEmailPh} required maxlength="160" data-msg-required={t.errEmail} data-msg-email={t.errEmailInvalid} />
+              <p class="field-error" data-error-for="email" aria-live="polite"></p>
+            </div>
+            <div class="field">
+              <label for="phone">{t.fPhone}</label>
+              <input class="input" id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+509 XXXX XXXX" maxlength="40" />
+              <p class="field-error" data-error-for="phone" aria-live="polite"></p>
+            </div>
+            <div class="field">
+              <label for="sujet">{t.fSubject} <span aria-hidden="true">*</span></label>
+              <input class="input" id="sujet" name="sujet" placeholder={t.fSubjectPh} required maxlength="160" data-msg-required={t.errSubject} />
+              <p class="field-error" data-error-for="sujet" aria-live="polite"></p>
+            </div>
+            <div class="field contact__wide">
+              <label for="calendar_notes">{t.fMessage} <span aria-hidden="true">*</span></label>
+              <textarea class="input" id="calendar_notes" name="calendar_notes" placeholder={t.fMessagePh} required maxlength="5000" data-msg-required={t.errMessage}></textarea>
+              <p class="field-error" data-error-for="calendar_notes" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="hp" aria-hidden="true"><label>{t.honeypot} <input name="website" tabindex="-1" autocomplete="off" /></label></div>
+          <input type="hidden" name="_t" value="" />
+          <input type="hidden" name="lang" value={lang} />
+          <p class="contact__legal">{t.requiredNote} · <a href={L('/politique-de-confidentialite')}>{t.privacy}</a></p>
+          <button class="btn btn--signal contact__submit" type="submit">{t.fSubmit} <Icon name="arrow" /></button>
+          <p class="form-status mt-2" data-form-status role="status" tabindex="-1"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact__grid { display: grid; gap: 2.5rem var(--gutter); }
+  .contact__card { background: var(--navy); color: #fff; padding: clamp(1.75rem, 1rem + 2vw, 2.75rem); align-self: start; }
+  .contact__status { margin-top: .6rem; font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 650; color: var(--orange); }
+  .contact__dl { margin: 2rem 0 0; display: grid; gap: 1.5rem; }
+  .contact__dl dt { display: flex; align-items: center; gap: .6rem; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 650; color: rgba(255,255,255,.75); }
+  .contact__dl dt :global(svg) { width: 18px; height: 18px; color: var(--orange); }
+  .contact__dl dd { margin: .45rem 0 0; font-family: var(--serif); font-size: 1.25rem; line-height: 1.4; display: grid; }
+  .contact__dl a { text-decoration: none; word-break: break-word; }
+  .contact__dl a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .contact__social { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--rule-light); display: grid; gap: 1rem; font-size: .9rem; color: rgba(255,255,255,.82); }
+  .contact__cats { padding-bottom: 2rem; margin-bottom: 2.5rem; border-bottom: 1px solid var(--rule-strong); }
+  .contact__cats-title { font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--ink-3); margin-bottom: 1rem; font-family: var(--sans); }
+  .contact__cats ul { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .contact__cats button { min-height: 40px; padding: .45rem 1rem; border: 1px solid var(--rule-strong); background: transparent; border-radius: 999px; font-size: .86rem; font-weight: 550; cursor: pointer; transition: background-color .25s, color .25s, border-color .25s; }
+  .contact__cats button:hover { border-color: var(--navy); }
+  .contact__cats button[aria-pressed='true'] { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .contact__fields { display: grid; gap: 1.35rem var(--gutter); }
+  .contact__legal { margin-top: 1.5rem; font-size: .82rem; color: var(--ink-3); }
+  .contact__legal a { color: var(--ink); }
+  .contact__submit { margin-top: 1.5rem; width: 100%; }
+  @media (min-width: 720px) { .contact__fields { grid-template-columns: 1fr 1fr; } .contact__wide { grid-column: 1 / -1; } .contact__submit { width: auto; } }
+  @media (min-width: 1024px) { .contact__grid { grid-template-columns: 4fr 8fr; } .contact__card { position: sticky; top: calc(var(--header-h) + 2rem); } }
+</style>

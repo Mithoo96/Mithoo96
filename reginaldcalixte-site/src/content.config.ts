@@ -15,6 +15,8 @@ const publications = defineCollection({
     category: z.enum(['Droit', 'Société', 'Gouvernance', 'Environnement', 'Développement', 'Opinions']),
     excerpt: z.string(),
     draft: z.boolean().default(false),
+    /** Langue de l'article : fr (défaut), ht ou en */
+    lang: z.enum(['fr', 'ht', 'en']).default('fr'),
   }),
 });
 

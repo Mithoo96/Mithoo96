@@ -8,79 +8,110 @@ import serifLatin from '@fontsource/spectral/files/spectral-latin-400-normal.wof
 import sansLatin from '@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2?url';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { locales, localize, splitPath, ogLocale, ui, type Lang } from '../i18n';
 
 interface Props {
+  lang?: Lang;
   title?: string;
   description?: string;
   image?: string;
   headerTone?: 'dark' | 'light';
   noindex?: boolean;
+  /** Pages disponibles dans une seule langue (ex. publication) : pas d'alternatives hreflang */
+  alternates?: boolean;
+  /** Pour ces pages, chemin proposé par le sélecteur de langue vers les autres langues */
+  switchPath?: string;
 }
 
-const DEFAULT_TITLE = 'Me Réginald Calixte — Candidat à la députation, 1ère Circonscription de Saint-Marc';
-const DEFAULT_DESC = "Me Réginald Calixte, candidat à la députation pour la 1ère Circonscription de Saint-Marc. Yon lòt lidèchip ! Une vision fondée sur la dignité, la gouvernance et l'engagement citoyen.";
-const OG_DESC = "Yon lòt lidèchip ! Une vision fondée sur la dignité, la gouvernance et l'engagement citoyen pour Saint-Marc.";
-
-const { title, description = DEFAULT_DESC, image = '/og-reginald-calixte.jpg', headerTone = 'dark', noindex: pageNoindex = false } = Astro.props;
+const { lang = 'fr', title, description, image = '/og-reginald-calixte.jpg', headerTone = 'dark', noindex: pageNoindex = false, alternates = true, switchPath } = Astro.props;
+const t = ui[lang];
 // Environnement de prévisualisation : PUBLIC_NOINDEX=1 au build → aucune page indexable
 const noindex = pageNoindex || import.meta.env.PUBLIC_NOINDEX === '1';
-const fullTitle = title ? `${title} — Me Réginald Calixte` : DEFAULT_TITLE;
-const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', Astro.site);
+const fullTitle = title ? `${title} — Me Réginald Calixte` : t.metaDefaultTitle;
+const desc = description ?? t.metaDefaultDesc;
+const { path } = splitPath(Astro.url.pathname);
+const canonical = new URL(localize(lang, path), Astro.site);
+const alt = Object.fromEntries(locales.map((l) => [l, new URL(localize(l, path), Astro.site).href])) as Record<Lang, string>;
 const ogImage = new URL(image, Astro.site);
+const keywords = {
+  fr: 'Réginald Calixte, Reginald Calixte, candidat députation Saint-Marc, 1ère circonscription Saint-Marc, Saint-Marc Haïti, leadership Saint-Marc, développement Saint-Marc, juriste haïtien, avocat Port-au-Prince, développement communautaire Haïti, gouvernance locale Haïti',
+  ht: 'Réginald Calixte, Reginald Calixte, kandida depite Senmak, Premye sikonskripsyon Senmak, Senmak Ayiti, lidèchip Senmak, devlopman Senmak, avoka ayisyen, gouvènans lokal Ayiti',
+  en: 'Réginald Calixte, Reginald Calixte, candidate for deputy Saint-Marc, 1st constituency Saint-Marc, Saint-Marc Haiti, Haitian lawyer, local governance Haiti, community development Haiti',
+}[lang];
 const person = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: 'Réginald Calixte',
-  jobTitle: 'Candidat à la députation, 1ère Circonscription de Saint-Marc',
+  alternateName: 'Reginald Calixte',
+  jobTitle: t.jobTitle,
   nationality: 'Haïtienne',
   url: 'https://www.reginaldcalixte.com/',
   image: new URL('/presse/reginald-calixte-portrait-officiel.jpg', Astro.site).href,
-  address: { '@type': 'PostalAddress', addressLocality: 'Saint-Marc', addressRegion: 'Artibonite', addressCountry: 'Haïti' },
-  knowsAbout: ['Droit', 'Gouvernance locale', 'Développement communautaire', 'Communication publique'],
-  description: 'Me Réginald Calixte, avocat inscrit au Barreau de Port-au-Prince, candidat à la députation pour la 1ère Circonscription de Saint-Marc. Yon lòt lidèchip !',
+  address: { '@type': 'PostalAddress', addressLocality: 'Saint-Marc', addressRegion: 'Artibonite', addressCountry: 'HT' },
+  description: t.personDesc,
   sameAs: ['https://www.facebook.com/reginald.calixte.90', 'https://www.instagram.com/reginaldcalixte/'],
 };
+const altPaths = Object.fromEntries(locales.map((l) => [l, localize(l, path)]));
 ---
 <!doctype html>
-<html lang="fr">
+<html lang={lang} data-alt={JSON.stringify(altPaths)}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={desc} />
     <meta name="author" content="Réginald Calixte" />
-    <meta name="keywords" content="Réginald Calixte, Reginald Calixte, candidat députation Saint-Marc, 1ère circonscription Saint-Marc, Saint-Marc Haïti, leadership Saint-Marc, développement Saint-Marc, juriste haïtien, avocat Port-au-Prince, développement communautaire Haïti, gouvernance locale Haïti" />
+    <meta name="keywords" content={keywords} />
     {noindex && <meta name="robots" content="noindex, nofollow, noarchive" />}
     <link rel="canonical" href={canonical.href} />
+    {alternates && locales.map((l) => <link rel="alternate" hreflang={l} href={alt[l]} />)}
+    {alternates && <link rel="alternate" hreflang="x-default" href={alt.fr} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#001856" />
     <link rel="preload" href={serifLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={sansLatin} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={title ? description : OG_DESC} />
+    <meta property="og:description" content={title ? desc : t.metaOgDesc} />
     <meta property="og:type" content="website" />
     <meta property="og:image" content={ogImage.href} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={DEFAULT_TITLE} />
+    <meta property="og:image:alt" content={t.metaDefaultTitle} />
     <meta property="og:url" content={canonical.href} />
     <meta property="og:site_name" content="Réginald Calixte" />
-    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    {locales.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={ogLocale[l]} />)}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={title ? description : OG_DESC} />
+    <meta name="twitter:description" content={title ? desc : t.metaOgDesc} />
     <meta name="twitter:image" content={ogImage.href} />
     <script type="application/ld+json" set:html={JSON.stringify(person)} />
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        // Préférence linguistique : mémorisée à chaque page vue ; appliquée seulement à l'arrivée
+        // sur une page en français (langue par défaut). Un lien /ht ou /en explicite est respecté.
+        try {
+          var lang = d.lang, key = 'rc-lang', saved = localStorage.getItem(key);
+          var fromSite = document.referrer && new URL(document.referrer).origin === location.origin;
+          if (!fromSite && lang === 'fr' && (saved === 'ht' || saved === 'en')) {
+            var alt = JSON.parse(d.getAttribute('data-alt') || '{}');
+            if (alt[saved]) { location.replace(alt[saved] + location.hash); return; }
+          }
+          localStorage.setItem(key, lang);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
-    <a class="skip-link" href="#contenu">Aller au contenu</a>
-    <Header tone={headerTone} />
+    <a class="skip-link" href="#contenu">{t.skip}</a>
+    <Header tone={headerTone} lang={lang} switchPath={switchPath} />
     <main id="contenu" tabindex="-1">
       <slot />
     </main>
-    <Footer />
+    <Footer lang={lang} />
     <script>
       import '../scripts/site';
     </script>

@@ -1,0 +1,79 @@
+---
+import fs from 'node:fs';
+import { Picture, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Lightbox from '../components/Lightbox.astro';
+import Icon from '../components/Icon.astro';
+import { photo } from '../data/photos';
+import { useLang, type Lang } from '../i18n';
+import { imageSize } from '../data/imagesize';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const { t, c } = useLang(lang);
+const { pressPhotos, pressUsage, contact } = c;
+const dec = (n: number) => (lang === 'en' ? n.toFixed(1) : n.toFixed(1).replace('.', ','));
+
+const items = await Promise.all(pressPhotos.map(async (p) => {
+  const path = `public${p.file}`;
+  const bytes = fs.statSync(path).size;
+  const dim = imageSize(path);
+  const large = await getImage({ src: photo(p.image), width: 1800, format: 'webp' });
+  return { ...p, size: `${dec(bytes / 1024 / 1024)} ${t.sizeUnit}`, dim: `${dim.width} × ${dim.height} px`, large: large.src };
+}));
+---
+<Base lang={lang} title={t.press} description={t.pressDesc} headerTone="light">
+  <PageHead lang={lang} title={t.pressTitle} subtitle={t.pressSub} crumb={t.press} />
+
+  <section class="terms" aria-labelledby="terms-title">
+    <div class="wrap terms__grid">
+      <h2 class="h3" id="terms-title">{t.termsTitle}</h2>
+      <div>
+        <p>{pressUsage}</p>
+        <p class="terms__contact">{t.mediaRequest} : <a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="press section" aria-label={t.pressTitle}>
+    <div class="wrap">
+      <ol class="press__grid">
+        {items.map((p, i) => (
+          <li data-reveal style={`--d:${(i % 2) * 0.08}s`}>
+            <a class="press__img" href={p.large} data-lightbox-item data-alt={p.alt} data-caption={`${p.title} — © Réginald Calixte`}>
+              <Picture src={photo(p.image)} formats={['avif', 'webp']} widths={[480, 800, 1100]} sizes="(min-width: 900px) 46vw, 92vw" alt={p.alt} />
+              <span class="visually-hidden">{t.enlarge} : {p.title}</span>
+            </a>
+            <div class="press__meta">
+              <div>
+                <h2 class="h3">{p.title}</h2>
+                <p class="press__tech num">JPEG · {p.dim} · {p.size}</p>
+              </div>
+              <a class="btn btn--ghost press__dl" href={p.file} download>
+                <Icon name="download" /> {t.downloadHd}<span class="visually-hidden"> : {p.title} (JPEG, {p.size})</span>
+              </a>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+  <Lightbox lang={lang} />
+</Base>
+
+<style>
+  .terms { background: var(--paper-2); padding-block: clamp(2.5rem, 2rem + 2vw, 4rem); }
+  .terms__grid { display: grid; gap: 1.25rem var(--gutter); }
+  .terms__grid p { color: var(--ink-2); max-width: 75ch; }
+  .terms__contact { margin-top: 1rem; font-weight: 600; }
+  @media (min-width: 900px) { .terms__grid { grid-template-columns: 4fr 8fr; } }
+  .press__grid { display: grid; gap: 4rem var(--gutter); }
+  @media (min-width: 900px) { .press__grid { grid-template-columns: 1fr 1fr; } }
+  .press__img { display: block; overflow: hidden; background: var(--paper-2); }
+  .press__img :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: 50% 20%; transition: transform 1.2s var(--ease); }
+  .press__img:hover :global(img) { transform: scale(1.03); }
+  .press__meta { display: grid; gap: 1.25rem; margin-top: 1.4rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+  .press__tech { margin-top: .6rem; font-size: .8rem; color: var(--ink-3); letter-spacing: .04em; }
+  .press__dl { justify-self: start; }
+  @media (min-width: 1200px) { .press__meta { grid-template-columns: 1fr auto; align-items: end; } }
+</style>

@@ -1,45 +1,53 @@
 ---
-import { nav, contact, identity } from '../data/site';
-interface Props { tone?: 'dark' | 'light' }
-const { tone = 'dark' } = Astro.props;
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+import { useLang, splitPath, type Lang } from '../i18n';
+import LangSwitch from './LangSwitch.astro';
+interface Props { tone?: 'dark' | 'light'; lang: Lang; switchPath?: string }
+const { tone = 'dark', lang, switchPath } = Astro.props;
+const { t, c, L } = useLang(lang);
+const { path } = splitPath(Astro.url.pathname);
 const isCurrent = (p: string) => (p === '/' ? path === '/' : path === p || path.startsWith(p + '/'));
 ---
 <header class="site-header" data-tone={tone} data-header>
   <div class="wrap site-header__bar">
-    <a class="site-header__logo" href="/" aria-label={`${identity.name} — ${identity.motto} (accueil)`}>
+    <a class="site-header__logo" href={L('/')} aria-label={`${c.identity.name} — ${c.identity.motto} (${t.homeAria})`}>
       <img class="logo-white" src="/brand/logo-blanc-240.png" srcset="/brand/logo-blanc-240.webp 240w, /brand/logo-blanc-480.webp 480w" sizes="200px" alt="" width="240" height="41" fetchpriority="high" />
       <img class="logo-navy" src="/brand/logo-marine-240.png" srcset="/brand/logo-marine-240.webp 240w, /brand/logo-marine-480.webp 480w" sizes="200px" alt="" width="240" height="41" fetchpriority="high" />
     </a>
-    <nav class="primary-nav" aria-label="Navigation principale">
+    <nav class="primary-nav" aria-label={t.navMain}>
       <ul>
-        {nav.map((item) => (
-          <li><a href={item.path} aria-current={isCurrent(item.path) ? 'page' : undefined}>{item.name}</a></li>
+        {c.nav.map((item) => (
+          <li><a href={L(item.path)} aria-current={isCurrent(item.path) ? 'page' : undefined}>{item.name}</a></li>
         ))}
-        <li><a class="btn btn--signal" href="/contact" aria-current={isCurrent('/contact') ? 'page' : undefined}>S'engager</a></li>
+        <li><a class="btn btn--signal" href={L('/contact')} aria-current={isCurrent('/contact') ? 'page' : undefined}>{t.engage}</a></li>
       </ul>
     </nav>
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" data-menu-toggle>
-      <span data-menu-label>Menu</span>
-      <span class="menu-toggle__icon" aria-hidden="true"><span></span><span></span></span>
-    </button>
+    <div class="site-header__tools">
+      <LangSwitch lang={lang} switchPath={switchPath} class="lang-switch--bar" />
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" data-menu-toggle data-label-open={t.menu} data-label-close={t.close}>
+        <span data-menu-label>{t.menu}</span>
+        <span class="menu-toggle__icon" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
   </div>
 </header>
-<div class="mobile-nav on-dark" id="mobile-nav" data-mobile-nav aria-label="Menu" hidden>
-  <nav aria-label="Navigation mobile">
-    <ol>
-      {nav.map((item) => (
-        <li><a href={item.path} aria-current={isCurrent(item.path) ? 'page' : undefined}>{item.name}</a></li>
-      ))}
-      <li><a href="/contact" aria-current={isCurrent('/contact') ? 'page' : undefined}>S'engager / Contact</a></li>
-    </ol>
-  </nav>
+<div class="mobile-nav on-dark" id="mobile-nav" data-mobile-nav aria-label={t.menu} hidden>
+  <div>
+    <LangSwitch lang={lang} switchPath={switchPath} class="lang-switch--panel" />
+    <nav aria-label={t.navMobile}>
+      <ol>
+        {c.nav.map((item) => (
+          <li><a href={L(item.path)} aria-current={isCurrent(item.path) ? 'page' : undefined}>{item.name}</a></li>
+        ))}
+        <li><a href={L('/contact')} aria-current={isCurrent('/contact') ? 'page' : undefined}>{t.engageContact}</a></li>
+      </ol>
+    </nav>
+  </div>
   <div class="mobile-nav__foot">
-    <a class="btn btn--signal" href="/contact">S'engager</a>
+    <a class="btn btn--signal" href={L('/contact')}>{t.engage}</a>
     <div>
-      {contact.phones.map((p) => <a href={`tel:${p.replace(/\s/g, '')}`} style="display:block">{p}</a>)}
-      <a href={`mailto:${contact.email}`}>{contact.email}</a>
+      {c.contact.phones.map((p) => <a href={`tel:${p.replace(/\s/g, '')}`} style="display:block">{p}</a>)}
+      <a href={`mailto:${c.contact.email}`}>{c.contact.email}</a>
     </div>
-    <a href="/presse">Espace presse</a>
+    <a href={L('/presse')}>{t.press}</a>
   </div>
 </div>

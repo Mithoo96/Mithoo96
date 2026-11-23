@@ -73,3 +73,30 @@ Source de référence : `ME_REGINALD_CALIXTE_RESUME_WEB_VERSION.pdf` (4 pages), 
 ### Décisions (23/11/2026)
 - Prénom : forme accentuée « Réginald » retenue partout (le CV écrit « Reginald »).
 - Cours de philosophie (2016 – 2018) : affichés tels que dans le CV, sans établissement.
+
+## 7. Version multilingue (français · kreyòl ayisyen · English)
+
+### Architecture
+- Français par défaut, aux adresses existantes (`/`, `/vision`, `/parcours`…) : aucune URL publique ne change, le référencement acquis est conservé. `/fr` et `/fr/...` redirigent (301) vers ces adresses.
+- Créole sous `/ht/...`, anglais sous `/en/...`, avec les mêmes chemins (ex. `/ht/parcours`, `/en/parcours`). 42 pages générées (14 × 3), toutes statiques : aucune traduction automatique côté navigateur.
+- Sélecteur « FR | KRE | EN » dans l'en-tête (desktop ≥ 560 px) et en tête du menu mobile ; il renvoie vers la même page dans l'autre langue.
+- Préférence mémorisée dans le navigateur (`localStorage`, clé `rc-lang`, aucun cookie) : un visiteur qui a choisi le créole ou l'anglais et revient par une page française depuis l'extérieur est redirigé vers la même page dans sa langue ; un lien explicite vers `/ht/...` ou `/en/...` est toujours respecté. Mention ajoutée dans la politique de confidentialité.
+- SEO : `lang` sur `<html>`, `canonical` par langue, `hreflang` fr / ht / en + `x-default` (français), `og:locale` et alternatives, titres et descriptions traduits, sitemap avec alternatives `xhtml:link`. « Reginald » sans accent conservé dans les métadonnées (mots-clés, `alternateName`).
+- Formulaires : messages d'erreur et de confirmation dans la langue de la page (navigateur et serveur) ; la langue du site est indiquée dans l'e-mail reçu par l'équipe.
+- Fichiers : `src/i18n/` (configuration, libellés d'interface), `src/data/content.ht.ts`, `src/data/content.en.ts`, vues partagées dans `src/views/`.
+
+### Choix éditoriaux
+- Signature « Yon lòt lidèchip ! » et titre « An n boukante lide ! » conservés en créole dans les trois langues (éléments d'identité).
+- Noms d'institutions, d'organisations, d'établissements et intitulés de diplômes conservés en français dans les versions créole et anglaise (Primature, Cour supérieure des comptes et du contentieux administratif, Université d'État d'Haïti, Master II…), pour éviter une traduction inexacte d'un titre officiel. Fonctions traduites lorsque l'équivalent est sans ambiguïté.
+- Formulaire de contact : la version française est désormais rédigée en français ; la version créole reprend les textes créoles de l'ancien site.
+- Conditions d'utilisation : en cas de divergence entre les versions, la version française fait foi (mention dans les trois langues).
+- Créole : graphie standard (Senmak, Latibonit, Ayiti), registre institutionnel. À faire relire par un locuteur de l'équipe avant publication, comme tout texte officiel.
+
+### Contenus non disponibles dans les trois langues
+- Publications : aucun article n'est encore en ligne (comme sur l'ancien site), la page affiche les rubriques traduites et l'inscription aux actualités. Chaque futur article sera publié dans sa langue de rédaction (`lang: fr`, `ht` ou `en` dans le fichier) et n'apparaîtra que dans la version correspondante ; aucune traduction ne sera générée automatiquement.
+- Actualités : seuls les titres et résumés existent sur l'ancien site ; ils sont traduits, aucun texte complet n'a été inventé.
+- Logo : le texte « L'engagement fait le citoyen » fait partie de l'image du logo et reste en français.
+- Vidéos YouTube : contenus d'origine, non sous-titrés.
+
+### Tests
+- 63/63 vérifications automatisées (navigateur réel) : 42 pages en 200 avec la bonne langue, `hreflang` et langue active du sélecteur ; changement de langue sans quitter la page ; menu mobile traduit ; préférence mémorisée et liens explicites respectés ; formulaire de contact complet dans les trois langues ; dates et filtres localisés ; sitemap ; aucun débordement horizontal de 320 à 1920 px sur les 42 pages ; axe WCAG 2.2 AA sans violation. 17/17 tests des fonctions serveur.

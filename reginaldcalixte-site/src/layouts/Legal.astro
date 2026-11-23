@@ -1,14 +1,16 @@
 ---
 import Base from './Base.astro';
-interface Props { title: string; description: string; updated: string }
-const { title, description, updated } = Astro.props;
+import { useLang, type Lang } from '../i18n';
+interface Props { title: string; description: string; updated: string; lang: Lang }
+const { title, description, updated, lang } = Astro.props;
+const { t, L } = useLang(lang);
 ---
-<Base title={title} description={description} headerTone="light">
+<Base lang={lang} title={title} description={description} headerTone="light">
   <article class="legal">
     <header class="wrap wrap-narrow legal__head">
-      <nav aria-label="Fil d'Ariane"><ol class="crumb"><li><a href="/">Accueil</a></li><li aria-current="page">{title}</li></ol></nav>
+      <nav aria-label={t.breadcrumb}><ol class="crumb"><li><a href={L('/')}>{t.home}</a></li><li aria-current="page">{title}</li></ol></nav>
       <h1 class="h1 mt-3">{title}</h1>
-      <p class="text-muted mt-2">Dernière mise à jour : {updated}</p>
+      <p class="text-muted mt-2">{t.updated} : {updated}</p>
     </header>
     <div class="wrap wrap-narrow legal__body"><slot /></div>
   </article>

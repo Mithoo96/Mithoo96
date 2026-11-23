@@ -1,8 +1,10 @@
 ---
 import { Picture } from 'astro:assets';
 import { photo } from '../data/photos';
-interface Props { title: string; subtitle?: string; crumb: string; image?: string; position?: string }
-const { title: rawTitle, subtitle, crumb, image, position = '50% 35%' } = Astro.props;
+import { useLang, type Lang } from '../i18n';
+interface Props { title: string; subtitle?: string; crumb: string; image?: string; position?: string; lang: Lang }
+const { title: rawTitle, subtitle, crumb, image, position = '50% 35%', lang } = Astro.props;
+const { t, L } = useLang(lang);
 const title = rawTitle.replace(/Saint-Marc/g, 'Saint‑Marc');
 ---
 {image ? (
@@ -11,7 +13,7 @@ const title = rawTitle.replace(/Saint-Marc/g, 'Saint‑Marc');
       <Picture src={photo(image)} formats={['avif', 'webp']} widths={[640, 1024, 1440, 2000]} sizes="100vw" alt="" loading="eager" fetchpriority="high" style={`object-position:${position}`} />
     </div>
     <div class="wrap ph__inner">
-      <nav aria-label="Fil d'Ariane"><ol class="breadcrumb"><li><a href="/">Accueil</a></li><li aria-current="page">{crumb}</li></ol></nav>
+      <nav aria-label={t.breadcrumb}><ol class="breadcrumb"><li><a href={L('/')}>{t.home}</a></li><li aria-current="page">{crumb}</li></ol></nav>
       <h1 class="h1">{title}</h1>
       {subtitle && <p class="ph__sub">{subtitle}</p>}
     </div>
@@ -19,7 +21,7 @@ const title = rawTitle.replace(/Saint-Marc/g, 'Saint‑Marc');
 ) : (
   <section class="ph ph--plain">
     <div class="wrap ph__inner">
-      <nav aria-label="Fil d'Ariane"><ol class="breadcrumb"><li><a href="/">Accueil</a></li><li aria-current="page">{crumb}</li></ol></nav>
+      <nav aria-label={t.breadcrumb}><ol class="breadcrumb"><li><a href={L('/')}>{t.home}</a></li><li aria-current="page">{crumb}</li></ol></nav>
       <h1 class="h1 ruled">{title}</h1>
       {subtitle && <p class="ph__sub">{subtitle}</p>}
     </div>

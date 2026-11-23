@@ -1,26 +1,4 @@
 ---
-import Legal from '../layouts/Legal.astro';
-import { contact } from '../data/site';
+import View from '../views/Privacy.astro';
 ---
-<Legal title="Politique de confidentialité" description="Comment le site de Me Réginald Calixte traite les données personnelles transmises par ses formulaires." updated="23 novembre 2026">
-  <p>Cette politique explique quelles données personnelles sont collectées sur reginaldcalixte.com, pourquoi, et comment exercer vos droits.</p>
-  <h2>Données collectées</h2>
-  <ul>
-    <li><strong>Formulaire de contact</strong> : nom, adresse e-mail, numéro de téléphone (facultatif), sujet et message.</li>
-    <li><strong>Inscription « Restons connectés »</strong> : prénom, nom et adresse e-mail.</li>
-  </ul>
-  <p>Aucune autre donnée personnelle n'est demandée. Le site n'utilise ni cookies publicitaires ni outil de mesure d'audience.</p>
-  <h2>Finalités</h2>
-  <ul>
-    <li>Répondre aux messages, demandes médias, invitations et propositions de collaboration.</li>
-    <li>Envoyer les actualités, prises de position, publications et initiatives de Réginald Calixte aux personnes inscrites.</li>
-  </ul>
-  <h2>Destinataires</h2>
-  <p>Les données sont destinées à l'équipe de Réginald Calixte. Leur transmission technique est assurée par l'hébergeur du site et par un prestataire d'envoi d'e-mails agissant pour notre compte. Elles ne sont ni vendues ni cédées à des tiers.</p>
-  <h2>Durée de conservation</h2>
-  <p>Les messages sont conservés le temps nécessaire à leur traitement. Les inscriptions sont conservées jusqu'à votre désinscription.</p>
-  <h2>Vos droits</h2>
-  <p>Vous pouvez à tout moment demander l'accès, la rectification ou la suppression de vos données, ou vous désinscrire, en écrivant à <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
-  <h2>Vidéos YouTube</h2>
-  <p>Sur la page Médias, les vidéos sont proposées en mode « confidentialité renforcée » (youtube-nocookie.com) et ne sont chargées qu'après un clic sur le bouton de lecture. YouTube applique alors sa propre politique de confidentialité.</p>
-</Legal>
+<View lang="fr" />
