@@ -116,7 +116,6 @@ const siteOnlyTraining = formation.filter((f) => /pénal|Certifications/.test(f.
                 <dl class="orgs__fn">
                   <dt>Fonction exercée</dt>
                   <dd>{f.role}, {f.period}</dd>
-                  {o.acronym === 'Fondation Lakounsa' && <dd class="orgs__full">{f.org}</dd>}
                 </dl>
               )}
               {f?.note && <p class="orgs__note">{f.note}</p>}

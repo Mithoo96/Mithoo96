@@ -1,30 +1,25 @@
 ---
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import PageHead from '../components/PageHead.astro';
 import Charter from '../components/Charter.astro';
 import Compass from '../components/Compass.astro';
 import Formation from '../components/Formation.astro';
 import NextLink from '../components/NextLink.astro';
 import { photo } from '../data/photos';
-import { bio, conviction } from '../data/site';
+import { bio, conviction, cv } from '../data/site';
 ---
 <Base title="À propos" description="Qui est Me Réginald Calixte ? Né à Saint-Marc, avocat inscrit au Barreau de Port-au-Prince : « Moun, Ayisyen, Sitwayen. »" headerTone="light">
-  <PageHead title="Qui suis-je?" subtitle="Moun, Ayisyen, Sitwayen." crumb="À propos" />
-
-  <section class="profile section bg-white" aria-labelledby="profile-title">
-    <div class="wrap profile__grid">
-      <figure class="profile__media" data-reveal>
-        <Picture src={photo('portrait-officiel')} formats={['avif', 'webp']} widths={[420, 700, 1000]} sizes="(min-width: 1024px) 36vw, 92vw" alt="Portrait officiel de Réginald Calixte" />
-      </figure>
-      <div class="profile__text">
-        <h2 class="visually-hidden" id="profile-title">Qui suis-je ?</h2>
-        <div class="prose profile__prose" data-reveal style="--d:.08s">
-          {bio.paragraphs.map((p) => <p set:html={p} />)}
-        </div>
-        <p class="profile__triad mt-3" data-reveal>
-          {bio.triad.map((w) => <span>{w} </span>)}
-        </p>
+  <section class="opening" aria-labelledby="about-title">
+    <div class="opening__media">
+      <Picture src={photo('portrait-officiel')} formats={['avif', 'webp']} widths={[480, 800, 1200, 1600]} sizes="(min-width: 1024px) 50vw, 100vw" alt="Portrait officiel de Me Réginald Calixte" loading="eager" fetchpriority="high" />
+    </div>
+    <div class="opening__text">
+      <nav aria-label="Fil d'Ariane"><ol class="breadcrumb"><li><a href="/">Accueil</a></li><li aria-current="page">À propos</li></ol></nav>
+      <h1 class="h1 ruled" id="about-title">Qui suis-je?</h1>
+      <p class="opening__triad" lang="ht">{bio.triad.join(' ')}</p>
+      <div class="opening__prose">
+        {bio.paragraphs.map((p) => <p set:html={p} />)}
+        <p>{cv.summary}</p>
       </div>
     </div>
   </section>
@@ -45,17 +40,20 @@ import { bio, conviction } from '../data/site';
 </Base>
 
 <style>
-  .profile__grid { display: grid; gap: 3rem var(--gutter); }
-  .profile__media :global(img) { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 15%; }
-  .profile__prose { font-size: var(--fs-lg); line-height: 1.65; }
-  .profile__prose > :global(p:first-child)::first-letter { float: left; font-family: var(--serif); font-size: 4.6em; line-height: .8; margin: .06em .12em 0 0; color: var(--navy); }
-  .profile__triad { display: grid; gap: .1rem; font-family: var(--serif); font-size: var(--fs-3xl); line-height: .98; color: var(--navy); font-variation-settings: 'opsz' 72; padding-top: 2rem; border-top: 1px solid var(--rule); }
-  .profile__triad span:nth-child(2) { font-style: italic; color: var(--orange-ink); padding-left: .6em; }
-  .profile__triad span:nth-child(3) { padding-left: 1.2em; }
+  .opening { display: grid; background: var(--studio); }
+  .opening__media { overflow: hidden; }
+  .opening__media :global(picture) { height: 100%; }
+  .opening__media :global(img) { width: 100%; height: 100%; max-height: 78svh; object-fit: cover; object-position: 50% 12%; }
+  .opening__text { padding: clamp(2.5rem, 2rem + 3vw, 5rem) var(--gutter) clamp(3rem, 2rem + 4vw, 6rem); display: grid; gap: 1.5rem; align-content: center; max-width: 720px; }
+  .opening .breadcrumb { color: var(--ink-3); margin-bottom: .5rem; }
+  .opening h1 { color: var(--navy); }
+  .opening__triad { font-family: var(--display); font-stretch: 74%; font-weight: 600; font-size: var(--fs-xl); color: var(--orange-ink); }
+  .opening__prose { display: grid; gap: 1.1rem; color: var(--ink-2); font-size: var(--fs-lg); line-height: 1.6; }
+  .opening__prose :global(strong) { color: var(--ink); }
   @media (min-width: 1024px) {
-    .profile__grid { grid-template-columns: 5fr 1fr 6fr; align-items: start; }
-    .profile__media { position: sticky; top: calc(var(--header-h) + 2rem); }
-    .profile__text { grid-column: 3; padding-top: 1rem; }
+    .opening { grid-template-columns: 1fr 1fr; min-height: 100svh; }
+    .opening__media :global(img) { max-height: none; position: sticky; top: 0; height: 100svh; }
+    .opening__text { padding-top: calc(var(--header-h) + 4rem); padding-left: clamp(2rem, 1rem + 4vw, 6rem); }
   }
   .message__quote p { font-family: var(--serif); font-size: clamp(1.6rem, 1rem + 2.2vw, 2.9rem); line-height: 1.2; color: var(--navy); font-variation-settings: 'opsz' 60; text-wrap: pretty; }
   .message__cite { margin-top: 1.75rem; font-size: 1rem; color: var(--ink-3); }

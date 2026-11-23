@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PageHead from '../../components/PageHead.astro';
 import Icon from '../../components/Icon.astro';
+import Newsletter from '../../components/Newsletter.astro';
 import { publicationCategories } from '../../data/site';
 
 const posts = (await getCollection('publications', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -44,8 +45,7 @@ const fmt = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', ye
       )}
     </div>
   </section>
-  <div id="restons-connectes-pubs"></div>
-  <script is:inline>document.querySelector('a[href="/#restons-connectes"]')?.setAttribute('href', '/#restons-connectes');</script>
+  {posts.length === 0 && <Newsletter />}
 </Base>
 
 <style>
@@ -53,7 +53,7 @@ const fmt = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', ye
   .rubriques button { min-height: 40px; padding: .45rem 1rem; border: 1px solid var(--rule-strong); background: transparent; border-radius: 999px; font-size: .86rem; font-weight: 550; cursor: pointer; transition: background-color .25s, color .25s, border-color .25s; }
   .rubriques button:hover { border-color: var(--navy); }
   .rubriques button[aria-pressed='true'] { background: var(--navy); color: #fff; border-color: var(--navy); }
-  .pubs__empty { max-width: 860px; }
+  .pubs__empty { max-width: 860px; padding-bottom: 1rem; }
   .pubs__topics { color: var(--ink-3); font-size: .95rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
   .pubs__list li { border-top: 1px solid var(--rule); }
   .pubs__list a { display: grid; gap: .75rem; padding-block: 2rem; text-decoration: none; }

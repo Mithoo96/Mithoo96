@@ -21,6 +21,10 @@ import { axes, axesIntro, visionIntro, visionLead } from '../data/site';
           <Picture src={photo('carte-bas-artibonite')} formats={['avif', 'webp']} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 38vw, 92vw" alt="Carte du Bas-Artibonite et de la région de Saint-Marc" />
           <figcaption>Saint-Marc et le Bas-Artibonite</figcaption>
         </figure>
+        <div class="share">
+          <button class="btn btn--ghost" type="button" data-share data-share-title="Une vision pour Saint-Marc — Me Réginald Calixte">Partager la vision <Icon name="arrow" /></button>
+          <p class="share__status" role="status" aria-live="polite" data-share-status></p>
+        </div>
       </div>
       <ol class="axes__list">
         {axes.map((a, i) => (
@@ -33,14 +37,6 @@ import { axes, axesIntro, visionIntro, visionLead } from '../data/site';
     </div>
   </section>
 
-  <section class="share section" aria-label="Partager la vision">
-    <div class="wrap share__inner" data-reveal>
-      <div>
-        <button class="btn" type="button" data-share data-share-title="Une vision pour Saint-Marc — Me Réginald Calixte">Partager la vision <Icon name="arrow" /></button>
-        <p class="share__status" role="status" aria-live="polite" data-share-status></p>
-      </div>
-    </div>
-  </section>
 
 </Base>
 
@@ -74,6 +70,6 @@ import { axes, axesIntro, visionIntro, visionLead } from '../data/site';
     .axes__aside { position: sticky; top: calc(var(--header-h) + 2rem); }
     .axes__list li { padding-block: 2.2rem; }
   }
-  .share__inner { display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; gap: 2rem; padding-block: 2.5rem; border-block: 1px solid var(--rule-strong); }
+  .share { margin-top: 2rem; }
   .share__status { margin-top: .6rem; font-size: .85rem; color: var(--ink-3); min-height: 1.2em; }
 </style>

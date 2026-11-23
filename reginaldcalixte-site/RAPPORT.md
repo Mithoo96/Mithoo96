@@ -48,30 +48,28 @@ Non testé : envoi réel d'e-mails (aucune clé Resend), Safari/Firefox réels (
 
 ## 6. Intégration du résumé professionnel (CV « version web »)
 
-Source : `ME_REGINALD_CALIXTE_RESUME_WEB_VERSION.pdf` (4 pages), transmis le 23/11/2026.
+Source de référence : `ME_REGINALD_CALIXTE_RESUME_WEB_VERSION.pdf` (4 pages), transmis le 23/11/2026. En cas de divergence avec l'ancien site, **le CV fait foi** (consigne du 23/11/2026). Les informations de l'ancien site qui ne contredisent pas le CV sont conservées. Aucune coordonnée personnelle du CV n'est publiée (vérifié par recherche dans le code source et le site compilé).
 
-**Présentation retenue (page Parcours)** : positionnement du site + résumé du CV ; « Trois champs d'action » réduit à une synthèse en trois lignes ; chronologie professionnelle groupée par année (14 postes) ; engagements politiques ; organisations (présentation du site et *fonction exercée* selon le CV, affichées séparément) ; formations universitaires et continues, langues, prix.
+### Mises à jour appliquées
 
-**Règles appliquées**
-- Aucune coordonnée personnelle du CV publiée (adresse à Frécyneau, adresse Gmail, lien LinkedIn sans URL). Vérifié par recherche dans le code source et dans le site compilé : aucune occurrence.
-- Engagements politiques affichés avec fonctions et périodes exactes du CV — **à valider avant toute mise en production**.
-- Diplômes et certifications du site conservés provisoirement, signalés ci-dessous.
-- Statut de cofondateur (site) et fonctions exercées (CV) présentés séparément, sans fusion.
+| Élément | Ancien site | Désormais (CV) | Pages |
+|---|---|---|---|
+| Diplôme de Limoges | « maîtrise en droit international de l'environnement » | « master II en droit international et comparé de l'environnement », 2023 – 2024 | Accueil, À propos, Parcours |
+| Licence | « Licence en Sciences Juridiques, UEH/FDSE » | « Licence en droit », UEH, Faculté de Droit et des Sciences Économiques, 2010 – 2014 | À propos, Parcours |
+| Primature | « Secrétaire exécutif à la Primature » | « Secrétaire exécutif du Premier ministre » (nov. 2024 – juillet 2026) | Parcours |
+| Cour supérieure des comptes | « Consultant » | « Consultant en communication », Cour supérieure des comptes et du contentieux administratif (janv. – avril 2019) | Parcours |
+| Secrétariat d'État à la Population | « Consultant, Bureau du Secrétaire d'État » | « Consultant au cabinet du Secrétaire d'État à la Population » (mars 2020) | Parcours |
+| Ministère de l'Agriculture | « Consultant » | « Consultant juridique » (avril 2020 – juillet 2021) | Parcours |
+| Radio | « Radio Pacific » | « Pacific FM », émission *Tribune parlementaire* (2017 – 2018) | Parcours |
+| Fondation Lakounsa | « Fondation Lakounsa » | « Fondation pour la démocratie et la culture « Lakounsa » » ; Directeur exécutif, 2019 – 2020 | Parcours |
+| BADI / OJH | Organisations « cofondées » | Ajout des fonctions : Directeur exécutif (BADI, 2014) ; Secrétaire à la communication (OJH, 2017 – 2019). La mention de cofondation, non contredite par le CV, est conservée. | Parcours |
+| Biographie | 3 paragraphes | + paragraphe de présentation du CV | À propos |
+| Nouveau | — | 14 postes datés, engagements politiques (RELANS !, PAC), formations continues, langues, prix et reconnaissance | Parcours |
 
-### Informations à faire confirmer
+### Conservé de l'ancien site (non contredit par le CV)
+- « Maîtrise en Droit pénal et sciences criminelles » et « Certifications professionnelles » (À propos, Parcours) — sans date.
+- « Consultant indépendant auprès de plusieurs entreprises », « Professeur au niveau secondaire et professionnel » (synthèse « Trois champs d'action »).
 
-| # | Sujet | Site actuel | Résumé professionnel (CV) | Traitement provisoire | Pièce à fournir / question |
-|---|---|---|---|---|---|
-| 1 | Orthographe du prénom | « Réginald » (avec accent) | « Reginald » (sans accent) | « Réginald » conservé partout | Graphie officielle à confirmer |
-| 2 | Maîtrise en Droit pénal et sciences criminelles | Listée (« Formation avancée ») | Absente | Conservée, sans date | Diplôme ou attestation, établissement, année |
-| 3 | Certifications professionnelles (gestion de projet, management, création de marque & contenu, rédaction) | Listées | Absentes (le CV cite d'autres formations continues) | Conservées, sans date | Certificats, organismes, années |
-| 4 | Diplôme de Limoges | « détenteur d'une maîtrise en droit international de l'environnement » (biographie) ; « Master II » (formation) | « Master II Droit international et comparé de l'environnement », 2023–2024 | Texte biographique inchangé ; intitulé Master II dans les formations | « Maîtrise » ou « Master II » dans la biographie ? |
-| 5 | Licence | « Licence en Sciences Juridiques », UEH/FDSE | « Licence en droit », UEH, FDSE, 2010–2014 | Intitulé du site sur À propos ; intitulé du CV sur Parcours | Intitulé exact du diplôme |
-| 6 | BADI | Organisation « cofondée » | Directeur exécutif, 2014 (pas de mention de cofondation) | Les deux affichés séparément | Cofondateur : oui/non ? Années exactes de la direction |
-| 7 | OJH | Initiative « cofondée » | Secrétaire à la communication, 2017–2019 | Les deux affichés séparément | Cofondateur : oui/non ? |
-| 8 | Fondation Lakounsa | « Fondation Lakounsa », organisation « cofondée » | « Fondation pour la démocratie et la culture « Lakounsa » », Directeur exécutif, 2019–2020 | Nom du site en titre, nom complet du CV sous la fonction | Nom officiel ; cofondateur : oui/non ? |
-| 9 | Primature | « Secrétaire exécutif à la Primature » (sans date) | Secrétaire exécutif du Premier ministre Alix Didier Fils-Aimé, nov. 2024 – juillet 2026 | Synthèse du site inchangée ; dates du CV dans la chronologie | La synthèse doit-elle indiquer que la fonction est terminée ? |
-| 10 | Radio | « Radio Pacific » | Présentateur, émission *Tribune parlementaire*, Pacific FM, 2017–2018 | Les deux libellés coexistent | Nom exact de la station |
-| 11 | Cour supérieure des comptes | « Consultant » | « Consultant en communication », janv.–avril 2019 | Les deux coexistent | — (simple précision) |
-| 12 | Engagements politiques | Non mentionnés | Vice-président, RELANS ! (depuis mars 2022) ; Coordonnateur national, PAC (2013) ; candidat aux législatives de 2015 (Saint-Marc) | Affichés | **Validation de l'affichage public** |
-| 13 | Enseignement | « Professeur au niveau secondaire et professionnel » | Philosophie (2016–2018), littérature au Collège FILSECCAM (2015), français à PAODES-Université (2012) | Les deux coexistent | Établissement des cours de philosophie (non précisé) |
+### Notes non bloquantes
+- Orthographe du prénom : le CV écrit « Reginald » sans accent ; le site, le logo, les métadonnées et les échanges utilisent « Réginald ». La forme accentuée est conservée.
+- Le CV ne précise pas l'établissement des cours de philosophie (2016 – 2018) : affiché sans établissement.

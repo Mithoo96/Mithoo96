@@ -47,7 +47,7 @@ export const bio = {
   title: 'Un parcours construit entre droit, communication et service public.',
   paragraphs: [
     'Je suis né à Saint-Marc, commune-pivot du Bas-Artibonite. Mon profil peut être résumé en trois mots créoles : <strong>« Moun, Ayisyen, Sitwayen. »</strong>',
-    "Avocat régulièrement inscrit au Barreau de Port-au-Prince et détenteur d'une maîtrise en droit international de l'environnement, je suis un fervent défenseur de l'État de droit et de la bonne gouvernance.",
+    "Avocat régulièrement inscrit au Barreau de Port-au-Prince et détenteur d'un master II en droit international et comparé de l'environnement, je suis un fervent défenseur de l'État de droit et de la bonne gouvernance.",
     "Guidé par les principes de responsabilité et d'engagement citoyen, je porte une vision de la politique fondée sur le respect de la dignité humaine et de l'intérêt général.",
   ],
   triad: ['Moun.', 'Ayisyen.', 'Sitwayen.'],
@@ -114,16 +114,16 @@ export const experience = [
   {
     field: 'Secteur public',
     items: [
-      { role: 'Secrétaire exécutif à la Primature' },
-      { role: 'Consultant', place: "Bureau du Secrétaire d'État à la Population" },
-      { role: 'Consultant', place: "Ministère de l'Agriculture" },
-      { role: 'Consultant', place: 'Cour Supérieure des Comptes' },
+      { role: 'Secrétaire exécutif du Premier ministre', place: 'Primature' },
+      { role: 'Consultant', place: "cabinet du Secrétaire d'État à la Population" },
+      { role: 'Consultant juridique', place: "Ministère de l'Agriculture" },
+      { role: 'Consultant en communication', place: 'Cour supérieure des comptes et du contentieux administratif' },
     ],
   },
   {
     field: 'Secteur privé',
     items: [
-      { role: 'Radio Pacific' },
+      { role: 'Pacific FM', place: 'émission Tribune parlementaire' },
       { role: 'Journal Le National' },
       { role: 'Haiti Press Network' },
       { role: 'Consultant indépendant', place: 'auprès de plusieurs entreprises' },
@@ -139,12 +139,12 @@ export const experience = [
 export const organisations = [
   { acronym: 'BADI', name: "Bureau d'Appui au Développement Intégré", text: 'Organisation sociale à but non lucratif cofondée pour appuyer le développement intégré des communautés.' },
   { acronym: 'OJH', name: 'Observatoire de la Jeunesse Haïtienne', text: "Initiative cofondée dédiée à l'observation, à l'écoute et à la valorisation de la jeunesse haïtienne." },
-  { acronym: 'Fondation Lakounsa', name: 'Fondation Lakounsa', text: "Organisation cofondée engagée dans l'accompagnement d'initiatives citoyennes et de projets sociaux." },
+  { acronym: 'Fondation Lakounsa', name: 'Fondation pour la démocratie et la culture « Lakounsa »', text: "Organisation cofondée engagée dans l'accompagnement d'initiatives citoyennes et de projets sociaux." },
 ];
 
 export const formation = [
-  { title: 'Licence en Sciences Juridiques', place: "Université d'État d'Haïti (UEH/FDSE)" },
-  { title: "Master II — Droit international et comparé de l'environnement", place: 'Université de Limoges' },
+  { title: "Master II — Droit international et comparé de l'environnement", place: 'Université de Limoges, 2023 – 2024' },
+  { title: 'Licence en droit', place: "Université d'État d'Haïti, Faculté de Droit et des Sciences Économiques, 2010 – 2014" },
   { title: 'Maîtrise en Droit pénal et sciences criminelles', place: 'Formation avancée' },
   { title: 'Certifications professionnelles', place: 'Gestion de projet, management, création de marque & contenu, rédaction' },
 ];
@@ -221,7 +221,6 @@ export const cv = {
     { role: 'Rédacteur en chef', org: 'Trip Info Magazine', period: '2013', note: "Donner des consignes à l'équipe de rédaction." },
     { role: 'Professeur de français', org: 'PAODES-Université', period: '2012', note: 'Enseigner les rudiments de la langue française aux apprenants suivant un modèle interactif.' },
   ],
-  /** À VALIDER avant mise en production (affichage public des engagements partisans). */
   political: [
     { role: 'Vice-président', org: 'Organisation du parti politique RELANS !', period: 'Depuis mars 2022' },
     { role: 'Coordonnateur national', org: "Parti PAC (Plan d'actions citoyennes)", period: '2013', note: 'Candidat à la députation de la Circonscription de Saint-Marc, Législatives de 2015.' },

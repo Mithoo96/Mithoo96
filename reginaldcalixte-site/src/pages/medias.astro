@@ -10,7 +10,7 @@ const [feature, ...rest] = videos;
 <Base title="Médias" description="Réginald Calixte dans les médias : interviews, vidéos, radio et presse. Interventions, conversations et prises de parole publiques." headerTone="light">
   <PageHead title="Réginald dans les médias." subtitle="Interventions, conversations et prises de parole publiques." crumb="Médias" />
 
-  <section class="media section" aria-labelledby="media-title">
+  <section class="media section on-dark" aria-labelledby="media-title">
     <div class="wrap">
       <h2 class="visually-hidden" id="media-title">Vidéos</h2>
       <article class="media__feature" data-reveal>
@@ -44,6 +44,11 @@ const [feature, ...rest] = videos;
 </Base>
 
 <style>
+  .media { background: var(--navy-deep); color: #fff; }
+  .media .h2, .media .h3 { color: #fff; }
+  .media .media__cat { color: rgba(255,255,255,.72) !important; }
+  .media .media__feature { border-bottom-color: var(--rule-light) !important; }
+  .media .link-arrow { color: #fff; }
   .media__feature { display: grid; gap: 2rem var(--gutter); padding-bottom: 3.5rem; margin-bottom: 3.5rem; border-bottom: 1px solid var(--rule-strong); }
   .media__cat { font-size: .92rem; color: var(--ink-3); }
   .media__info .media__cat { margin-top: .5rem; }
