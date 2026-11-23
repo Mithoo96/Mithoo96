@@ -221,6 +221,7 @@ export const cv = {
     { role: 'Rédacteur en chef', org: 'Trip Info Magazine', period: '2013', note: "Donner des consignes à l'équipe de rédaction." },
     { role: 'Professeur de français', org: 'PAODES-Université', period: '2012', note: 'Enseigner les rudiments de la langue française aux apprenants suivant un modèle interactif.' },
   ],
+  /** À VALIDER avant mise en production (affichage public des engagements partisans). */
   political: [
     { role: 'Vice-président', org: 'Organisation du parti politique RELANS !', period: 'Depuis mars 2022' },
     { role: 'Coordonnateur national', org: "Parti PAC (Plan d'actions citoyennes)", period: '2013', note: 'Candidat à la députation de la Circonscription de Saint-Marc, Législatives de 2015.' },

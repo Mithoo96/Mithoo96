@@ -48,11 +48,30 @@ Non testé : envoi réel d'e-mails (aucune clé Resend), Safari/Firefox réels (
 
 ## 6. Intégration du résumé professionnel (CV « version web »)
 
-La page Parcours présente désormais une chronologie complète tirée du CV transmis : 14 postes datés, engagements politiques, fonctions associatives (BADI, OJH, Fondation Lakounsa), formations universitaires et continues, langues, prix et reconnaissance, ainsi que le résumé de compétences. Les textes d'origine du site (positionnement, trois champs d'action, présentation des organisations) sont conservés.
+Source : `ME_REGINALD_CALIXTE_RESUME_WEB_VERSION.pdf` (4 pages), transmis le 23/11/2026.
 
-Points à confirmer :
-- **Formations** : « Maîtrise en Droit pénal et sciences criminelles » et « Certifications professionnelles » figurent sur le site actuel mais pas dans le CV. Elles sont conservées sans date.
-- **Organisations** : le site indique que BADI, l'OJH et la Fondation Lakounsa ont été *cofondées* ; le CV mentionne les fonctions de Directeur exécutif (BADI 2014, Lakounsa 2019–2020) et de Secrétaire à la communication (OJH 2017–2019). Les deux informations sont affichées.
-- **Engagements politiques** désormais publics : vice-président de RELANS ! (depuis mars 2022), coordonnateur national du PAC (2013), candidat aux législatives de 2015. À valider avant publication.
-- Libellé radio : « Radio Pacific » (site) / « Pacific FM » (CV) — les deux apparaissent.
-- **Non publiés** : l'adresse personnelle (Frécyneau) et l'adresse Gmail du CV. Le site conserve annpale@reginaldcalixte.com et les deux numéros existants. Le PDF n'est pas proposé en téléchargement.
+**Présentation retenue (page Parcours)** : positionnement du site + résumé du CV ; « Trois champs d'action » réduit à une synthèse en trois lignes ; chronologie professionnelle groupée par année (14 postes) ; engagements politiques ; organisations (présentation du site et *fonction exercée* selon le CV, affichées séparément) ; formations universitaires et continues, langues, prix.
+
+**Règles appliquées**
+- Aucune coordonnée personnelle du CV publiée (adresse à Frécyneau, adresse Gmail, lien LinkedIn sans URL). Vérifié par recherche dans le code source et dans le site compilé : aucune occurrence.
+- Engagements politiques affichés avec fonctions et périodes exactes du CV — **à valider avant toute mise en production**.
+- Diplômes et certifications du site conservés provisoirement, signalés ci-dessous.
+- Statut de cofondateur (site) et fonctions exercées (CV) présentés séparément, sans fusion.
+
+### Informations à faire confirmer
+
+| # | Sujet | Site actuel | Résumé professionnel (CV) | Traitement provisoire | Pièce à fournir / question |
+|---|---|---|---|---|---|
+| 1 | Orthographe du prénom | « Réginald » (avec accent) | « Reginald » (sans accent) | « Réginald » conservé partout | Graphie officielle à confirmer |
+| 2 | Maîtrise en Droit pénal et sciences criminelles | Listée (« Formation avancée ») | Absente | Conservée, sans date | Diplôme ou attestation, établissement, année |
+| 3 | Certifications professionnelles (gestion de projet, management, création de marque & contenu, rédaction) | Listées | Absentes (le CV cite d'autres formations continues) | Conservées, sans date | Certificats, organismes, années |
+| 4 | Diplôme de Limoges | « détenteur d'une maîtrise en droit international de l'environnement » (biographie) ; « Master II » (formation) | « Master II Droit international et comparé de l'environnement », 2023–2024 | Texte biographique inchangé ; intitulé Master II dans les formations | « Maîtrise » ou « Master II » dans la biographie ? |
+| 5 | Licence | « Licence en Sciences Juridiques », UEH/FDSE | « Licence en droit », UEH, FDSE, 2010–2014 | Intitulé du site sur À propos ; intitulé du CV sur Parcours | Intitulé exact du diplôme |
+| 6 | BADI | Organisation « cofondée » | Directeur exécutif, 2014 (pas de mention de cofondation) | Les deux affichés séparément | Cofondateur : oui/non ? Années exactes de la direction |
+| 7 | OJH | Initiative « cofondée » | Secrétaire à la communication, 2017–2019 | Les deux affichés séparément | Cofondateur : oui/non ? |
+| 8 | Fondation Lakounsa | « Fondation Lakounsa », organisation « cofondée » | « Fondation pour la démocratie et la culture « Lakounsa » », Directeur exécutif, 2019–2020 | Nom du site en titre, nom complet du CV sous la fonction | Nom officiel ; cofondateur : oui/non ? |
+| 9 | Primature | « Secrétaire exécutif à la Primature » (sans date) | Secrétaire exécutif du Premier ministre Alix Didier Fils-Aimé, nov. 2024 – juillet 2026 | Synthèse du site inchangée ; dates du CV dans la chronologie | La synthèse doit-elle indiquer que la fonction est terminée ? |
+| 10 | Radio | « Radio Pacific » | Présentateur, émission *Tribune parlementaire*, Pacific FM, 2017–2018 | Les deux libellés coexistent | Nom exact de la station |
+| 11 | Cour supérieure des comptes | « Consultant » | « Consultant en communication », janv.–avril 2019 | Les deux coexistent | — (simple précision) |
+| 12 | Engagements politiques | Non mentionnés | Vice-président, RELANS ! (depuis mars 2022) ; Coordonnateur national, PAC (2013) ; candidat aux législatives de 2015 (Saint-Marc) | Affichés | **Validation de l'affichage public** |
+| 13 | Enseignement | « Professeur au niveau secondaire et professionnel » | Philosophie (2016–2018), littérature au Collège FILSECCAM (2015), français à PAODES-Université (2012) | Les deux coexistent | Établissement des cours de philosophie (non précisé) |
