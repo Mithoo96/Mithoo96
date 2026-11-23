@@ -2,91 +2,213 @@
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
-import Formation from '../components/Formation.astro';
 import { photo } from '../data/photos';
-import { parcoursIntro, positionnement, experience, organisations } from '../data/site';
+import { parcoursIntro, positionnement, experience, organisations, formation, cv } from '../data/site';
+
+// Fonctions associatives (résumé professionnel) rattachées aux organisations du site
+const roleFor: Record<string, { role: string; period: string; note?: string }> = {
+  BADI: cv.social[2],
+  OJH: cv.social[1],
+  'Fondation Lakounsa': cv.social[0],
+};
+// Formations du site absentes du résumé professionnel : conservées
+const otherTraining = formation.filter((f) => /pénal|Certifications/.test(f.title));
 ---
-<Base title="Parcours" description="Le parcours de Me Réginald Calixte : secteur public, secteur privé, engagement communautaire et formation juridique.">
+<Base title="Parcours" description="Le parcours de Me Réginald Calixte : expérience professionnelle, engagements, formation, langues et distinctions.">
   <PageHead title="L'expérience au service de la collectivité" subtitle={parcoursIntro} crumb="Parcours" image="assemblee-quartier" position="50% 40%" />
 
+  <!-- Positionnement -->
   <section class="pos section bg-white" aria-labelledby="pos-title">
     <div class="wrap pos__grid">
-      <div>
-        <h2 class="h2" id="pos-title" data-reveal>Un parcours construit entre droit, communication et service public.</h2>
-      </div>
-      <div>
-        <p class="lead" data-reveal style="--d:.1s">{positionnement}</p>
-        <figure class="pos__img" data-reveal style="--d:.15s">
-          <Picture src={photo('terrain-marche')} formats={['avif', 'webp']} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 55vw, 92vw" alt="Déplacement sur le terrain, dans une rue de Saint-Marc" />
-        </figure>
+      <h2 class="h2 ruled pos__title" id="pos-title" data-reveal>Un parcours construit entre droit, communication et service public.</h2>
+      <div class="pos__text" data-reveal style="--d:.08s">
+        <p class="lead">{positionnement}</p>
+        <p>{cv.summary}</p>
+        <dl class="pos__domain">
+          <dt>Domaine</dt><dd>{cv.domain}</dd>
+        </dl>
+        <p>{cv.skills}</p>
       </div>
     </div>
   </section>
 
-  <section class="ledger section" aria-labelledby="ledger-title">
+  <!-- Trois champs d'action (synthèse) -->
+  <section class="fields section" aria-labelledby="fields-title">
     <div class="wrap">
-      <div class="section-head">
-        <h2 class="h2" id="ledger-title" data-reveal>Trois champs d'action</h2>
-      </div>
-      <div class="ledger__cols">
-        {experience.map((col, i) => (
-          <section class="ledger__col" data-reveal style={`--d:${i * 0.08}s`} aria-labelledby={`field-${i}`}>
-            <header>
-              <h3 class="ledger__field" id={`field-${i}`}>{col.field}</h3>
-            </header>
-            <ul>
-              {col.items.map((it) => (
-                <li>
-                  <p class="ledger__role">{it.role}</p>
-                  {it.place && <p class="ledger__place">{it.place}</p>}
-                </li>
-              ))}
-            </ul>
-          </section>
+      <h2 class="h2 ruled" id="fields-title" data-reveal>Trois champs d'action</h2>
+      <div class="fields__cols">
+        {experience.map((col) => (
+          <div class="fields__col" data-reveal>
+            <h3 class="fields__name">{col.field}</h3>
+            <ul>{col.items.map((it) => <li>{it.role}{it.place && <span> — {it.place}</span>}</li>)}</ul>
+          </div>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="orgs section bg-navy on-dark" aria-labelledby="orgs-title">
-    <div class="wrap">
-      <div class="section-head">
-        <h2 class="h2" id="orgs-title" data-reveal>Construire avec les communautés</h2>
+  <!-- Chronologie -->
+  <section class="chrono section bg-white" aria-labelledby="chrono-title">
+    <div class="wrap chrono__grid">
+      <div class="chrono__aside">
+        <h2 class="h2 ruled" id="chrono-title" data-reveal>Expérience professionnelle</h2>
+        <figure class="chrono__img" data-reveal>
+          <Picture src={photo('terrain-marche')} formats={['avif', 'webp']} widths={[480, 800]} sizes="(min-width: 1024px) 34vw, 92vw" alt="Déplacement sur le terrain, dans une rue de Saint-Marc" />
+        </figure>
       </div>
-      <ol class="orgs__grid">
-        {organisations.map((o, i) => (
-          <li data-reveal style={`--d:${i * 0.08}s`}>
-            <h3 class="orgs__acr">{o.acronym}</h3>
-            {o.acronym !== o.name && <p class="orgs__name">{o.name}</p>}
-            <p class="orgs__text">{o.text}</p>
+      <ol class="timeline">
+        {cv.jobs.map((j) => (
+          <li data-reveal>
+            <p class="timeline__period">{j.period}</p>
+            <div>
+              <h3 class="timeline__role">{j.role}</h3>
+              {j.org && <p class="timeline__org">{j.org}</p>}
+              {j.note && <p class="timeline__note">{j.note}</p>}
+            </div>
           </li>
         ))}
       </ol>
     </div>
   </section>
 
-  <Formation />
+  <!-- Engagements politiques -->
+  <section class="chrono section" aria-labelledby="pol-title">
+    <div class="wrap chrono__grid">
+      <h2 class="h2 ruled" id="pol-title" data-reveal>Engagements politiques</h2>
+      <ol class="timeline">
+        {cv.political.map((j) => (
+          <li data-reveal>
+            <p class="timeline__period">{j.period}</p>
+            <div>
+              <h3 class="timeline__role">{j.role}</h3>
+              <p class="timeline__org">{j.org}</p>
+              {j.note && <p class="timeline__note">{j.note}</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
 
+  <!-- Engagement communautaire -->
+  <section class="orgs section bg-navy on-dark" aria-labelledby="orgs-title">
+    <div class="wrap">
+      <h2 class="h2 ruled" id="orgs-title" data-reveal>Construire avec les communautés</h2>
+      <ol class="orgs__grid">
+        {organisations.map((o, i) => (
+          <li data-reveal style={`--d:${i * 0.08}s`}>
+            <h3 class="orgs__acr">{o.acronym}</h3>
+            {o.acronym !== o.name && <p class="orgs__name">{o.name}</p>}
+            <p class="orgs__text">{o.text}</p>
+            {roleFor[o.acronym] && <p class="orgs__role">{roleFor[o.acronym].role} · {roleFor[o.acronym].period}</p>}
+            {roleFor[o.acronym]?.note && <p class="orgs__text">{roleFor[o.acronym].note}</p>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Formation -->
+  <section class="chrono section bg-white" aria-labelledby="edu-title">
+    <div class="wrap chrono__grid">
+      <div>
+        <h2 class="h2 ruled" id="edu-title" data-reveal>Un parcours académique avancé</h2>
+        <p class="edu__motto" data-reveal>Apprendre pour mieux agir.</p>
+      </div>
+      <div class="edu__groups">
+        <div data-reveal>
+          <h3 class="edu__label">Formations universitaires</h3>
+          <ol class="timeline">
+            {cv.degrees.map((d) => (
+              <li><p class="timeline__period">{d.period}</p><div><p class="timeline__role">{d.title}</p><p class="timeline__org">{d.place}</p></div></li>
+            ))}
+            {otherTraining.map((d) => (
+              <li><p class="timeline__period"></p><div><p class="timeline__role">{d.title}</p><p class="timeline__org">{d.place}</p></div></li>
+            ))}
+          </ol>
+        </div>
+        <div data-reveal>
+          <h3 class="edu__label">Formations continues</h3>
+          <ol class="timeline">
+            {cv.training.map((d) => (
+              <li><p class="timeline__period">{d.period}</p><div><p class="timeline__role">{d.title}</p><p class="timeline__org">{d.place}</p></div></li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Langues & distinctions -->
+  <section class="extras section" aria-label="Langues, prix et reconnaissance">
+    <div class="wrap extras__grid">
+      <div data-reveal>
+        <h2 class="h3 ruled">Langues</h2>
+        <dl class="extras__list">
+          {cv.languages.map((l) => <div><dt>{l.name}</dt><dd>{l.level}</dd></div>)}
+        </dl>
+      </div>
+      <div data-reveal style="--d:.08s">
+        <h2 class="h3 ruled">Prix et reconnaissance</h2>
+        <dl class="extras__list">
+          {cv.awards.map((a) => <div><dt>{a.title}</dt><dd>{a.org}</dd></div>)}
+        </dl>
+      </div>
+    </div>
+  </section>
 </Base>
 
 <style>
   .pos__grid { display: grid; gap: 2.5rem var(--gutter); }
-  .pos__img { margin-top: 2.5rem; }
-  .pos__img :global(img) { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
-  @media (min-width: 1024px) { .pos__grid { grid-template-columns: 5fr 7fr; } }
+  .pos__title { color: var(--navy); max-width: 16ch; }
+  .pos__text { display: grid; gap: 1.25rem; color: var(--ink-2); max-width: 62ch; }
+  .pos__text .lead { color: var(--ink); }
+  .pos__domain { margin: 0; padding-block: 1rem; border-block: 1px solid var(--rule); display: grid; gap: .25rem; }
+  .pos__domain dt { font-family: var(--sans); font-size: .9rem; font-weight: 600; color: var(--ink-3); }
+  .pos__domain dd { margin: 0; font-family: var(--display); font-stretch: 80%; font-weight: 600; font-size: var(--fs-xl); line-height: 1.15; color: var(--navy); }
+  @media (min-width: 1024px) { .pos__grid { grid-template-columns: 5fr 7fr; align-items: start; } .pos__title { position: sticky; top: calc(var(--header-h) + 2rem); } }
 
-  .ledger__cols { display: grid; gap: 3rem var(--gutter); }
-  .ledger__col header { padding-bottom: 1.1rem; border-bottom: 2px solid var(--navy); }
-  .ledger__field { font-family: var(--sans); font-size: .82rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--navy); }
-  .ledger__col li { padding-block: 1.15rem; border-bottom: 1px solid var(--rule); }
-  .ledger__role { font-family: var(--serif); font-size: 1.3rem; line-height: 1.25; color: var(--ink); font-variation-settings: 'opsz' 24; }
-  .ledger__place { margin-top: .25rem; font-size: .92rem; color: var(--ink-3); }
-  @media (min-width: 900px) { .ledger__cols { grid-template-columns: repeat(3, 1fr); } }
+  .fields .h2 { color: var(--navy); margin-bottom: 2.5rem; }
+  .fields__cols { display: grid; gap: 2.5rem var(--gutter); }
+  .fields__name { font-family: var(--display); font-stretch: 80%; font-weight: 640; font-size: 1.35rem; color: var(--navy); padding-bottom: .75rem; border-bottom: 2px solid var(--navy); }
+  .fields__col li { padding-block: .85rem; border-bottom: 1px solid var(--rule); }
+  .fields__col li span { color: var(--ink-3); }
+  @media (min-width: 900px) { .fields__cols { grid-template-columns: repeat(3, 1fr); } }
 
+  .chrono__grid { display: grid; gap: 2.5rem var(--gutter); }
+  .chrono h2 { color: var(--navy); }
+  .chrono__img { margin-top: 2rem; }
+  .chrono__img :global(img) { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 60% 40%; }
+  @media (min-width: 1024px) {
+    .chrono__grid { grid-template-columns: 4fr 8fr; align-items: start; }
+    .chrono__aside { position: sticky; top: calc(var(--header-h) + 2rem); }
+  }
+  .timeline li { display: grid; gap: .35rem var(--gutter); padding-block: 1.35rem; border-top: 1px solid var(--rule); }
+  .timeline li:last-child { border-bottom: 1px solid var(--rule); }
+  .timeline__period { font-family: var(--sans); font-size: .9rem; font-weight: 600; color: var(--orange-ink); font-variant-numeric: tabular-nums; }
+  .timeline__role { font-family: var(--display); font-stretch: 82%; font-weight: 620; font-size: clamp(1.2rem, 1.05rem + .5vw, 1.45rem); line-height: 1.15; color: var(--navy); }
+  .timeline__org { margin-top: .25rem; color: var(--ink-2); }
+  .timeline__note { margin-top: .5rem; color: var(--ink-3); font-size: 1rem; max-width: 60ch; }
+  @media (min-width: 720px) { .timeline li { grid-template-columns: 11rem 1fr; } .timeline__period { padding-top: .25rem; } }
+
+  .orgs .h2 { margin-bottom: 2.5rem; }
   .orgs__grid { display: grid; gap: 0 var(--gutter); }
-  .orgs__grid li { padding: 2rem 0; border-top: 1px solid var(--rule-light); }
-  .orgs__acr { font-family: var(--serif); font-size: var(--fs-2xl); line-height: 1; font-variation-settings: 'opsz' 60; }
-  .orgs__name { margin-top: .75rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 650; color: var(--orange); }
-  .orgs__text { margin-top: 1rem; color: rgba(255,255,255,.82); max-width: 40ch; }
-  @media (min-width: 900px) { .orgs__grid { grid-template-columns: repeat(3, 1fr); } .orgs__grid li { padding-top: 2.4rem; } }
+  .orgs__grid li { padding: 2rem 0; border-top: 1px solid var(--rule-light); display: grid; gap: .75rem; align-content: start; }
+  .orgs__acr { font-family: var(--display); font-stretch: 74%; font-weight: 640; font-size: var(--fs-2xl); line-height: 1; }
+  .orgs__name { font-family: var(--sans); font-size: .95rem; font-weight: 600; color: #ffb399; }
+  .orgs__text { color: rgba(255,255,255,.84); max-width: 40ch; }
+  .orgs__role { font-family: var(--sans); font-size: .9rem; color: #fff; padding-top: .75rem; border-top: 1px solid var(--rule-light); }
+  @media (min-width: 900px) { .orgs__grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .edu__motto { margin-top: 1rem; font-style: italic; color: var(--ink-3); font-size: var(--fs-lg); }
+  .edu__groups { display: grid; gap: 3rem; }
+  .edu__label { font-family: var(--sans); font-size: 1rem; font-weight: 650; color: var(--ink); margin-bottom: 1rem; }
+
+  .extras__grid { display: grid; gap: 3rem var(--gutter); }
+  .extras h2 { color: var(--navy); }
+  .extras__list { margin: 1.25rem 0 0; }
+  .extras__list div { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-block: 1rem; border-bottom: 1px solid var(--rule); }
+  .extras__list dt { font-family: var(--display); font-stretch: 82%; font-weight: 620; font-size: 1.25rem; color: var(--navy); }
+  .extras__list dd { margin: 0; color: var(--ink-2); }
+  @media (min-width: 900px) { .extras__grid { grid-template-columns: 1fr 1fr; } }
 </style>

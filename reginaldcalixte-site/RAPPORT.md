@@ -45,3 +45,14 @@ Non testé : envoi réel d'e-mails (aucune clé Resend), Safari/Firefox réels (
 8. **Note interne retirée** du public : « La section Engagement communautaire sera enrichie progressivement… » (page Parcours) — informations complètes à fournir.
 9. **Images au statut incertain** : deux vues aériennes de Saint-Marc et une photo de groupe utilisées par le site actuel semblent générées ou non documentées ; elles ne sont pas utilisées.
 10. Textes juridiques (mentions, confidentialité, conditions) rédigés à partir du fonctionnement réel du site : relecture juridique conseillée.
+
+## 6. Intégration du résumé professionnel (CV « version web »)
+
+La page Parcours présente désormais une chronologie complète tirée du CV transmis : 14 postes datés, engagements politiques, fonctions associatives (BADI, OJH, Fondation Lakounsa), formations universitaires et continues, langues, prix et reconnaissance, ainsi que le résumé de compétences. Les textes d'origine du site (positionnement, trois champs d'action, présentation des organisations) sont conservés.
+
+Points à confirmer :
+- **Formations** : « Maîtrise en Droit pénal et sciences criminelles » et « Certifications professionnelles » figurent sur le site actuel mais pas dans le CV. Elles sont conservées sans date.
+- **Organisations** : le site indique que BADI, l'OJH et la Fondation Lakounsa ont été *cofondées* ; le CV mentionne les fonctions de Directeur exécutif (BADI 2014, Lakounsa 2019–2020) et de Secrétaire à la communication (OJH 2017–2019). Les deux informations sont affichées.
+- **Engagements politiques** désormais publics : vice-président de RELANS ! (depuis mars 2022), coordonnateur national du PAC (2013), candidat aux législatives de 2015. À valider avant publication.
+- Libellé radio : « Radio Pacific » (site) / « Pacific FM » (CV) — les deux apparaissent.
+- **Non publiés** : l'adresse personnelle (Frécyneau) et l'adresse Gmail du CV. Le site conserve annpale@reginaldcalixte.com et les deux numéros existants. Le PDF n'est pas proposé en téléchargement.

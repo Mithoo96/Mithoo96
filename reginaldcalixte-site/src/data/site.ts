@@ -194,3 +194,59 @@ export const gallery = [
   { image: 'distribution-cadeaux', alt: 'Préparation de cadeaux lors d\'une activité communautaire' },
   { image: 'activite-communautaire', alt: 'Activité communautaire festive avec la population' },
 ];
+
+/* --------------------------------------------------------------------------
+ * Résumé professionnel (source : « ME_REGINALD_CALIXTE_RESUME_WEB_VERSION.pdf »,
+ * transmis le 23/11/2026). Repris tel quel ; coordonnées personnelles non publiées.
+ * ------------------------------------------------------------------------ */
+export const cv = {
+  summary:
+    "Détenteur d'un master II en Droit international et comparé de l'environnement et licencié en droit, j'ai acquis des connaissances et expériences approfondies qui m'ont permis d'occuper des postes stratégiques. Aujourd'hui, je mets à profit mes compétences en conseil juridique, en contentieux environnemental, en gouvernance publique, en rédaction de documents stratégiques et en gestion de dossiers complexes.",
+  domain: 'Droit, communication, gouvernance et planification stratégique',
+  skills:
+    "Ces compétences me permettent d'offrir des consultations juridiques, de concevoir des documents techniques pour la prise de décision, d'assurer une gestion efficace des ressources d'une institution et d'élaborer des stratégies pour la mise en œuvre de projets.",
+  jobs: [
+    { role: 'Consultant juridique', org: 'FOS-LA', period: 'Octobre 2025 à nos jours' },
+    { role: 'Secrétaire exécutif du Premier ministre', org: "Alix Didier Fils-Aimé, Primature de la République d'Haïti", period: 'Novembre 2024 à juillet 2026' },
+    { role: 'Consultant juridique', org: 'Succès École professionnelle St-Monfort de Saint-Marc', period: 'Juin 2021 à nos jours' },
+    { role: 'Consultant juridique', org: "Ministère de l'Agriculture", period: 'Avril 2020 – juillet 2021', note: 'Donner des directives sur toute question juridique.' },
+    { role: "Consultant au cabinet du Secrétaire d'État à la Population", org: "Bureau du Secrétaire d'État à la Population", period: 'Mars 2020', note: "Participer à la coordination du cabinet, aider à la conception et à l'implémentation de la politique sectorielle." },
+    { role: 'Consultant en communication', org: 'Cour supérieure des comptes et du contentieux administratif', period: 'Janvier – avril 2019' },
+    { role: 'Directeur de la publication', org: 'Magazine critique La Voie', period: 'Avril 2018 – mars 2020', note: "Veiller au respect de la ligne éditoriale du magazine, proposer les sujets, élaborer des articles et faire le lien avec la direction." },
+    { role: 'Rédacteur', org: 'Agence de presse HPN (Haiti Press Network)', period: '2018 – 2019', note: "Rédiger des articles d'actualité et d'opinion pour le quotidien." },
+    { role: 'Rédacteur', org: 'Journal Le National', period: '2017 – 2018', note: 'Rédiger des articles pour le quotidien.' },
+    { role: 'Présentateur', org: 'Émission Tribune parlementaire, Pacific FM', period: '2017 – 2018', note: 'Échanger avec des parlementaires et des spécialistes de droit public sur le Parlement haïtien.' },
+    { role: 'Professeur de philosophie', org: '', period: '2016 – 2018', note: "Aider les apprenants à développer l'esprit critique, à connaître les philosophes et philosophies du programme de la Terminale." },
+    { role: 'Professeur de littérature', org: 'Collège FILSECCAM', period: '2015', note: 'Aider les apprenants à comprendre la portée de la littérature et à connaître les auteurs, œuvres et périodes marquants des littératures haïtienne et française.' },
+    { role: 'Rédacteur en chef', org: 'Trip Info Magazine', period: '2013', note: "Donner des consignes à l'équipe de rédaction." },
+    { role: 'Professeur de français', org: 'PAODES-Université', period: '2012', note: 'Enseigner les rudiments de la langue française aux apprenants suivant un modèle interactif.' },
+  ],
+  political: [
+    { role: 'Vice-président', org: 'Organisation du parti politique RELANS !', period: 'Depuis mars 2022' },
+    { role: 'Coordonnateur national', org: "Parti PAC (Plan d'actions citoyennes)", period: '2013', note: 'Candidat à la députation de la Circonscription de Saint-Marc, Législatives de 2015.' },
+  ],
+  social: [
+    { role: 'Directeur exécutif', org: 'Fondation pour la démocratie et la culture « Lakounsa »', period: '2019 – 2020' },
+    { role: 'Secrétaire à la communication', org: 'Observatoire de la Jeunesse Haïtienne', period: '2017 – 2019' },
+    { role: 'Directeur exécutif', org: "Bureau d'Appui au Développement Intégré", period: '2014', note: "Planifier et coordonner les activités du bureau, le représenter et discuter avec les partenaires de l'institution. Garantir le respect des priorités de l'institution, de ses statuts et de son règlement intérieur." },
+  ],
+  degrees: [
+    { title: "Master II Droit international et comparé de l'environnement", place: 'Université de Limoges, Faculté de Droit et des Sciences Économiques, France', period: '2023 – 2024' },
+    { title: 'Licence en droit', place: "Université d'État d'Haïti, Faculté de Droit et des Sciences Économiques, Haïti", period: '2010 – 2014' },
+    { title: 'Génie informatique', place: 'Université Quisqueya, Haïti', period: '2009 – 2011 (inachevé)' },
+  ],
+  training: [
+    { title: 'Droits économiques, sociaux et culturels (DESC) et le Pacte international relatif aux droits économiques, sociaux et culturels (PIDESC)', place: 'Séminaire suivi avec la MINUSTAH', period: 'Août 2012' },
+    { title: 'Parlementarisme', place: 'Université Laval', period: 'Juin 2018' },
+    { title: 'Écrire pour gouverner', place: 'CEFAN, Université Laval', period: 'Décembre 2018' },
+  ],
+  languages: [
+    { name: 'Créole haïtien', level: 'Langue maternelle' },
+    { name: 'Français', level: 'Très bien' },
+    { name: 'Anglais', level: 'Niveau avancé' },
+  ],
+  awards: [
+    { title: 'Certificat de reconnaissance', org: 'Tribune nationale de la jeunesse haïtienne' },
+    { title: 'Leader certifié', org: 'Global Leadership Summit' },
+  ],
+};
