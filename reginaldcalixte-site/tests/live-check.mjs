@@ -36,7 +36,7 @@ for (const f of ['/presse/reginald-calixte-portrait-officiel.jpg', '/presse/regi
   const r = await page.request.get(BASE + f); ok(`téléchargement ${f}`, r.status() === 200 && r.headers()['content-type'] === 'image/jpeg');
 }
 // Multilingue : redirections /fr, sélecteur, préférence
-const fr1 = await page.request.get(BASE + '/fr/vision', { maxRedirects: 0 }); ok('/fr/vision → 301 vers /vision', fr1.status() === 301 && (fr1.headers().location || '').endsWith('/vision'), `${fr1.status()} ${fr1.headers().location}`);
+const fr1 = await page.request.get(BASE + '/fr/vision', { maxRedirects: 0 }); ok('/fr/vision → redirection permanente vers /vision', [301, 308].includes(fr1.status()) && (fr1.headers().location || '').endsWith('/vision'), `${fr1.status()} ${fr1.headers().location}`);
 await page.goto(BASE + '/vision'); await page.click('.lang-switch--bar a[hreflang=ht]'); await page.waitForURL('**/ht/vision');
 await page.click('.lang-switch--bar a[hreflang=en]'); await page.waitForURL('**/en/vision');
 await page.goto(BASE + '/'); await page.waitForURL('**/en', { timeout: 5000 }).catch(() => {});

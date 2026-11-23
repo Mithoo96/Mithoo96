@@ -77,7 +77,7 @@ Source de référence : `ME_REGINALD_CALIXTE_RESUME_WEB_VERSION.pdf` (4 pages), 
 ## 7. Version multilingue (français · kreyòl ayisyen · English)
 
 ### Architecture
-- Français par défaut, aux adresses existantes (`/`, `/vision`, `/parcours`…) : aucune URL publique ne change, le référencement acquis est conservé. `/fr` et `/fr/...` redirigent (301) vers ces adresses.
+- Français par défaut, aux adresses existantes (`/`, `/vision`, `/parcours`…) : aucune URL publique ne change, le référencement acquis est conservé. `/fr` et `/fr/...` redirigent de façon permanente (308) vers ces adresses.
 - Créole sous `/ht/...`, anglais sous `/en/...`, avec les mêmes chemins (ex. `/ht/parcours`, `/en/parcours`). 42 pages générées (14 × 3), toutes statiques : aucune traduction automatique côté navigateur.
 - Sélecteur « FR | KRE | EN » dans l'en-tête (desktop ≥ 560 px) et en tête du menu mobile ; il renvoie vers la même page dans l'autre langue.
 - Préférence mémorisée dans le navigateur (`localStorage`, clé `rc-lang`, aucun cookie) : un visiteur qui a choisi le créole ou l'anglais et revient par une page française depuis l'extérieur est redirigé vers la même page dans sa langue ; un lien explicite vers `/ht/...` ou `/en/...` est toujours respecté. Mention ajoutée dans la politique de confidentialité.
