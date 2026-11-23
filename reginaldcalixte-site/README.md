@@ -25,3 +25,11 @@ node tests/e2e.mjs   # tests navigateur (Playwright + axe) sur dist/ + vraies fo
 4. Seulement ensuite, et avec autorisation : rattacher le domaine `reginaldcalixte.com` (modification DNS).
 
 Les en-têtes de sécurité (CSP, HSTS…) sont dans `vercel.json`.
+
+## Prévisualisation (Vercel)
+
+- Projet Vercel séparé : `reginaldcalixte-preview` (équipe Team Mithoo) — https://reginaldcalixte-preview.vercel.app
+- Déployé depuis la branche de travail avec `vercel.preview.json` (copié en `vercel.json` dans l'export) :
+  `PUBLIC_NOINDEX=1` (meta robots + robots.txt `Disallow: /`) et en-tête `X-Robots-Tag: noindex`.
+- Vérification en ligne : `node tests/live-check.mjs https://reginaldcalixte-preview.vercel.app`
+- Aucun lien avec le domaine reginaldcalixte.com ni ses DNS.
