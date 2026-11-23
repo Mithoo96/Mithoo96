@@ -21,7 +21,9 @@ const DEFAULT_TITLE = 'Me Réginald Calixte — Candidat à la députation, 1èr
 const DEFAULT_DESC = "Me Réginald Calixte, candidat à la députation pour la 1ère Circonscription de Saint-Marc. Yon lòt lidèchip ! Une vision fondée sur la dignité, la gouvernance et l'engagement citoyen.";
 const OG_DESC = "Yon lòt lidèchip ! Une vision fondée sur la dignité, la gouvernance et l'engagement citoyen pour Saint-Marc.";
 
-const { title, description = DEFAULT_DESC, image = '/og-reginald-calixte.jpg', headerTone = 'dark', noindex = false } = Astro.props;
+const { title, description = DEFAULT_DESC, image = '/og-reginald-calixte.jpg', headerTone = 'dark', noindex: pageNoindex = false } = Astro.props;
+// Environnement de prévisualisation : PUBLIC_NOINDEX=1 au build → aucune page indexable
+const noindex = pageNoindex || import.meta.env.PUBLIC_NOINDEX === '1';
 const fullTitle = title ? `${title} — Me Réginald Calixte` : DEFAULT_TITLE;
 const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', Astro.site);
 const ogImage = new URL(image, Astro.site);
@@ -48,7 +50,7 @@ const person = {
     <meta name="description" content={description} />
     <meta name="author" content="Réginald Calixte" />
     <meta name="keywords" content="Réginald Calixte, Reginald Calixte, candidat députation Saint-Marc, 1ère circonscription Saint-Marc, Saint-Marc Haïti, leadership Saint-Marc, développement Saint-Marc, juriste haïtien, avocat Port-au-Prince, développement communautaire Haïti, gouvernance locale Haïti" />
-    {noindex && <meta name="robots" content="noindex, follow" />}
+    {noindex && <meta name="robots" content="noindex, nofollow, noarchive" />}
     <link rel="canonical" href={canonical.href} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#001856" />
