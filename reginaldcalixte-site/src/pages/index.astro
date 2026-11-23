@@ -37,7 +37,7 @@ const [leadNews, ...moreNews] = news;
   <section class="conviction" aria-label="Conviction">
     <div class="wrap">
       <figure class="conviction__fig">
-        <blockquote><p data-scrub-words>{nb(conviction).split(' ').map((w) => <span class="w">{w} </span>)}</p></blockquote>
+        <blockquote><p>{nb(conviction)}</p></blockquote>
         <figcaption>Réginald Calixte</figcaption>
       </figure>
       <div class="conviction__lines" data-reveal style="--d:.1s">
@@ -47,7 +47,7 @@ const [leadNews, ...moreNews] = news;
   </section>
 
   <!-- 3 — Qui suis-je : image à fond perdu -->
-  <section class="bio on-dark" aria-labelledby="bio-title">
+  <section class="bio" aria-labelledby="bio-title">
     <div class="bio__media">
       <Picture src={photo('terrain-foule')} formats={['avif', 'webp']} widths={[640, 960, 1280]} sizes="(min-width: 1024px) 50vw, 100vw" alt="Réginald Calixte, souriant, au milieu de la population" />
     </div>
@@ -66,7 +66,7 @@ const [leadNews, ...moreNews] = news;
     <div class="wrap beliefs__grid">
       <h2 class="h2 ruled beliefs__title" id="beliefs-title">Ce en quoi je crois, sans concession.</h2>
       <ul class="beliefs__list">
-        {convictions.map((c) => <li data-scrub>{c}</li>)}
+        {convictions.map((c, i) => <li data-reveal style={`--d:${(i % 2) * 0.05}s`}>{c}</li>)}
       </ul>
     </div>
   </section>
@@ -183,7 +183,7 @@ const [leadNews, ...moreNews] = news;
 
 <style>
   /* 1 — Hero */
-  .hero { position: sticky; top: 0; z-index: 0; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; background: var(--navy-deep); color: #fff; }
+  .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; background: var(--navy-deep); color: #fff; }
   .hero__media { position: absolute; inset: 0; z-index: -2; }
   .hero__media :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 80% 30%; }
   .hero::after {
@@ -196,7 +196,7 @@ const [leadNews, ...moreNews] = news;
   .hero__title { font-family: var(--display); font-stretch: 72%; font-weight: 660; font-size: clamp(2.9rem, 1.6rem + 4.4vw, 5.6rem); line-height: .92; letter-spacing: -0.015em; max-width: 11ch; }
   @media (min-width: 900px) { .hero__title { max-width: none; } }
   .hero__status { margin-top: 1.25rem; font-family: var(--sans); font-size: clamp(1rem, .9rem + .4vw, 1.2rem); font-weight: 500; color: rgba(255,255,255,.92); }
-  .hero__sign { margin-top: .35rem; font-style: italic; font-size: clamp(1.25rem, 1rem + .8vw, 1.7rem); color: #fff; }
+  .hero__sign { margin-top: .5rem; font-style: italic; font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.6rem); line-height: 1.1; color: #fff; }
   .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.75rem; margin-top: 2rem; }
   .hero__link { font-family: var(--sans); font-weight: 600; text-decoration: none; border-bottom: 1.5px solid rgba(255,255,255,.6); padding-bottom: .2rem; }
   .hero__link:hover { border-color: #fff; }
@@ -216,7 +216,10 @@ const [leadNews, ...moreNews] = news;
     }
   }
   /* Tout ce qui suit le hero passe au-dessus de lui */
-  .hero ~ :global(*) { position: relative; z-index: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero { position: sticky; top: 0; z-index: 0; }
+    .hero ~ :global(*) { position: relative; z-index: 1; }
+  }
   @keyframes settle { from { transform: scale(1.06); } to { transform: none; } }
   @keyframes up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
   @keyframes recede { to { transform: scale(1.06); filter: brightness(.55); } }
@@ -227,20 +230,20 @@ const [leadNews, ...moreNews] = news;
   .conviction { box-shadow: 0 -30px 60px rgba(0,12,40,.25); }
   .conviction__fig { max-width: 26ch; font-size: clamp(1.9rem, 1rem + 3.4vw, 4.4rem); }
   .conviction blockquote p { font-style: italic; line-height: 1.16; letter-spacing: -0.01em; color: var(--navy); text-wrap: pretty; }
-  .conviction .w { transition: opacity .25s linear; }
   .conviction figcaption { margin-top: 1.75rem; font-family: var(--sans); font-size: 1rem; font-weight: 600; color: var(--ink-2); }
   .conviction figcaption::before { content: '— '; color: var(--orange-ink); }
-  .conviction__lines { margin-top: clamp(3rem, 2rem + 4vw, 6rem); display: grid; gap: .75rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); max-width: 900px; margin-left: auto; font-size: var(--fs-lg); color: var(--ink-2); }
+  .conviction__lines { margin-top: clamp(3rem, 2rem + 4vw, 6rem); display: grid; gap: 1.25rem; padding-top: 1.75rem; border-top: 4px solid var(--navy); font-family: var(--display); font-stretch: 80%; font-weight: 600; font-size: clamp(1.35rem, 1.05rem + 1vw, 1.9rem); line-height: 1.15; color: var(--navy); }
   @media (min-width: 900px) { .conviction__lines { grid-template-columns: 1fr 1fr; gap: var(--gutter); } }
 
   /* 3 — Bio */
-  .bio { display: grid; background: var(--navy); color: #fff; }
+  .bio { display: grid; background: var(--white); color: var(--ink); }
+  .bio h2 { color: var(--navy); }
   .bio__media { overflow: hidden; }
   .bio__media :global(img) { width: 100%; height: 100%; min-height: 420px; max-height: 80svh; object-fit: cover; object-position: 30% 25%; }
   .bio__text { padding: clamp(3rem, 2rem + 4vw, 6.5rem) var(--gutter); display: grid; gap: 1.75rem; align-content: center; max-width: 720px; }
-  .bio__prose { display: grid; gap: 1.1rem; color: rgba(255,255,255,.86); }
-  .bio__prose :global(strong) { color: #fff; }
-  .bio__triad { font-family: var(--display); font-stretch: 74%; font-weight: 600; font-size: var(--fs-2xl); line-height: 1; letter-spacing: -0.01em; padding-block: 1.5rem; border-block: 1px solid var(--rule-light); }
+  .bio__prose { display: grid; gap: 1.1rem; color: var(--ink-2); }
+  .bio__prose :global(strong) { color: var(--ink); }
+  .bio__triad { font-family: var(--display); font-stretch: 74%; font-weight: 600; font-size: var(--fs-2xl); line-height: 1; letter-spacing: -0.01em; padding-block: 1.5rem; border-block: 1px solid var(--rule); color: var(--navy); }
   .bio .link-arrow { justify-self: start; }
   @media (min-width: 1024px) {
     .bio { grid-template-columns: 1fr 1fr; min-height: 88svh; }
@@ -257,7 +260,6 @@ const [leadNews, ...moreNews] = news;
     padding-block: clamp(1.5rem, 1rem + 2vw, 2.75rem); border-bottom: 1px solid var(--rule-light);
     font-family: var(--display); font-stretch: 76%; font-weight: 600; letter-spacing: -0.01em;
     font-size: clamp(1.7rem, 1.1rem + 2.4vw, 3.2rem); line-height: 1.04; text-wrap: balance;
-    transition: opacity .3s linear, transform .3s linear;
   }
   .beliefs__list li:first-child { padding-top: 0; }
   @media (min-width: 1024px) {
@@ -266,7 +268,8 @@ const [leadNews, ...moreNews] = news;
   }
 
   /* 5 — Interlude */
-  .interlude { height: clamp(320px, 78svh, 820px); overflow: hidden; position: relative; background: var(--navy-deep); }
+  .interlude { height: max(240px, 62vw); overflow: hidden; position: relative; background: var(--navy-deep); }
+  @media (min-width: 900px) { .interlude { height: clamp(420px, 78svh, 820px); } }
   .interlude__media { position: absolute; inset: -12% 0; }
   .interlude__media :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; }
   @media (prefers-reduced-motion: no-preference) {
@@ -274,7 +277,7 @@ const [leadNews, ...moreNews] = news;
       .interlude__media { animation: parallax linear both; animation-timeline: view(); }
     }
   }
-  @keyframes parallax { from { transform: translateY(-8%); } to { transform: translateY(8%); } }
+  @keyframes parallax { from { transform: translateY(-4%); } to { transform: translateY(4%); } }
 
   /* 6 — Boussole : rangée typographique */
   .compass { padding-block: var(--section) clamp(3rem, 2rem + 3vw, 5rem); background: var(--paper); }
@@ -327,7 +330,7 @@ const [leadNews, ...moreNews] = news;
   }
 
   /* 8 — Actualités */
-  .latest { padding-block: 0 var(--section); background: var(--paper); }
+  .latest { padding-block: var(--section); background: var(--white); }
   .latest__head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; color: var(--navy); }
   .latest__grid { display: grid; gap: 2.5rem var(--gutter); }
   .latest__lead :global(img) { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; margin-bottom: 1.25rem; }
@@ -360,7 +363,7 @@ const [leadNews, ...moreNews] = news;
   .call { position: relative; isolation: isolate; color: #fff; overflow: hidden; }
   .call__media { position: absolute; inset: 0; z-index: -2; }
   .call__media :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .call::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, rgba(0,12,40,.92), rgba(0,24,86,.72)); }
+  .call::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(0,12,40,.9) 0%, rgba(0,12,40,.7) 45%, rgba(0,12,40,.2) 100%); }
   .call__inner { padding-block: clamp(6rem, 4rem + 8vw, 11rem); display: grid; gap: 2.5rem; }
   .call__title { font-family: var(--display); font-stretch: 72%; font-weight: 640; font-size: clamp(2.2rem, 1.2rem + 3.6vw, 4.8rem); line-height: .98; letter-spacing: -0.012em; max-width: 18ch; text-wrap: balance; }
 </style>
