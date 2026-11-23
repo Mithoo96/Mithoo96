@@ -1,0 +1,58 @@
+---
+import { nav, contact, identity } from '../data/site';
+import Icon from './Icon.astro';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer on-dark">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <a href="/" aria-label="Accueil"><img src="/brand/logo-blanc-480.png" srcset="/brand/logo-blanc-240.webp 240w, /brand/logo-blanc-480.webp 480w" sizes="260px" alt="Me Réginald Calixte — L'engagement fait le citoyen" width="480" height="82" loading="lazy" /></a>
+        <p style="margin-top:1.4rem;color:#fff;font-weight:600">{identity.name}</p>
+        <p style="margin-top:.25rem;color:var(--orange);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:650">{identity.statusShort}</p>
+      </div>
+      <ul class="footer-mandate" aria-label="Le mandat de député">
+        <li>Représenter dignement</li>
+        <li>Contrôler rigoureusement</li>
+        <li>Légiférer consciencieusement</li>
+      </ul>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h2>Navigation</h2>
+        <ul>{nav.map((i) => <li><a href={i.path}>{i.name}</a></li>)}</ul>
+      </div>
+      <div>
+        <h2>Contact</h2>
+        <ul>
+          <li>{contact.addressFooter[0]}<br />{contact.addressFooter[1]}</li>
+          {contact.phones.map((p) => <li><a href={`tel:${p.replace(/\s/g, '')}`}>{p}</a></li>)}
+          <li><a href={`mailto:${contact.email}`} style="word-break:break-all">{contact.email}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>S'engager</h2>
+        <p>Chaque citoyen peut contribuer à définir un autre modèle de leadership.</p>
+        <a class="link-arrow mt-2" href="/contact">Nous contacter <Icon name="arrow" /></a>
+      </div>
+      <div>
+        <h2>Suivez Réginald Calixte</h2>
+        <div class="socials">
+          {contact.socials.map((s) => (
+            <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={`${s.name} (nouvel onglet)`}><Icon name={s.icon as any} /></a>
+          ))}
+        </div>
+        <p class="mt-2">Suivez les actualités et prises de position de Réginald Calixte.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <ul>
+        <li><a href="/politique-de-confidentialite">Politique de confidentialité</a></li>
+        <li><a href="/conditions-utilisation">Conditions d'utilisation</a></li>
+        <li><a href="/mentions-legales">Mentions légales</a></li>
+        <li><a href="/presse">Espace presse</a></li>
+      </ul>
+      <p>© {year} Réginald Calixte — Tous droits réservés.</p>
+    </div>
+  </div>
+</footer>

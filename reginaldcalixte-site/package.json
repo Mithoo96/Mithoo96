@@ -1,0 +1,27 @@
+{
+  "name": "reginaldcalixte-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Site officiel de Me Réginald Calixte — reconstruction indépendante (Astro, statique + fonctions serverless).",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:api": "node --test tests/api.test.mjs",
+    "test:e2e": "node tests/e2e.mjs",
+    "preview:static": "node scripts/make-relative.mjs dist preview-dist"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@fontsource-variable/newsreader": "^5.3.0",
+    "@fontsource-variable/public-sans": "^5.3.0",
+    "astro": "^7.4.13",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "axe-core": "^4.10.3"
+  }
+}

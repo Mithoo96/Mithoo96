@@ -1,0 +1,62 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Charter from '../components/Charter.astro';
+import Compass from '../components/Compass.astro';
+import Formation from '../components/Formation.astro';
+import NextLink from '../components/NextLink.astro';
+import { photo } from '../data/photos';
+import { bio, conviction } from '../data/site';
+---
+<Base title="À propos" description="Qui est Me Réginald Calixte ? Né à Saint-Marc, avocat inscrit au Barreau de Port-au-Prince : « Moun, Ayisyen, Sitwayen. »">
+  <PageHead title="Qui suis-je?" subtitle="Moun, Ayisyen, Sitwayen." crumb="À propos" image="portrait-editorial" />
+
+  <section class="profile section bg-white" aria-labelledby="profile-title">
+    <div class="wrap profile__grid">
+      <figure class="profile__media" data-reveal>
+        <Picture src={photo('portrait-officiel')} formats={['avif', 'webp']} widths={[420, 700, 1000]} sizes="(min-width: 1024px) 36vw, 92vw" alt="Portrait officiel de Réginald Calixte" />
+      </figure>
+      <div class="profile__text">
+        <h2 class="visually-hidden" id="profile-title">Qui suis-je ?</h2>
+        <div class="prose profile__prose" data-reveal style="--d:.08s">
+          {bio.paragraphs.map((p) => <p set:html={p} />)}
+        </div>
+        <p class="profile__triad mt-3" data-reveal>
+          {bio.triad.map((w) => <span>{w} </span>)}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Charter />
+  <Compass />
+
+  <section class="message section" aria-label="Message pour Saint-Marc">
+    <div class="wrap wrap-narrow" data-reveal>
+      <blockquote class="message__quote"><p>« {conviction} »</p></blockquote>
+      <p class="message__cite">— Réginald Calixte</p>
+    </div>
+  </section>
+
+  <Formation />
+
+  <NextLink href="/parcours" title="L'expérience au service de la collectivité" cta="Voir le parcours complet" />
+</Base>
+
+<style>
+  .profile__grid { display: grid; gap: 3rem var(--gutter); }
+  .profile__media :global(img) { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 15%; }
+  .profile__prose { font-size: var(--fs-lg); line-height: 1.65; }
+  .profile__prose > :global(p:first-child)::first-letter { float: left; font-family: var(--serif); font-size: 4.6em; line-height: .8; margin: .06em .12em 0 0; color: var(--navy); }
+  .profile__triad { display: grid; gap: .1rem; font-family: var(--serif); font-size: var(--fs-3xl); line-height: .98; color: var(--navy); font-variation-settings: 'opsz' 72; padding-top: 2rem; border-top: 1px solid var(--rule); }
+  .profile__triad span:nth-child(2) { font-style: italic; color: var(--orange-ink); padding-left: .6em; }
+  .profile__triad span:nth-child(3) { padding-left: 1.2em; }
+  @media (min-width: 1024px) {
+    .profile__grid { grid-template-columns: 5fr 1fr 6fr; align-items: start; }
+    .profile__media { position: sticky; top: calc(var(--header-h) + 2rem); }
+    .profile__text { grid-column: 3; padding-top: 1rem; }
+  }
+  .message__quote p { font-family: var(--serif); font-size: clamp(1.6rem, 1rem + 2.2vw, 2.9rem); line-height: 1.2; color: var(--navy); font-variation-settings: 'opsz' 60; text-wrap: pretty; }
+  .message__cite { margin-top: 1.75rem; font-size: 1rem; color: var(--ink-3); }
+</style>

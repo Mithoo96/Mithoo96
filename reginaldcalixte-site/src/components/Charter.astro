@@ -1,0 +1,28 @@
+---
+import { convictions } from '../data/site';
+interface Props { tone?: 'paper' | 'white' }
+const { tone = 'paper' } = Astro.props;
+---
+  <section class:list={["charter section", tone === "white" ? "bg-white" : "bg-paper-2"]} aria-labelledby="charter-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2" id="charter-title" data-reveal>Ce en quoi je crois, sans concession.</h2>
+      </div>
+      <ol class="charter__list">
+        {convictions.map((c, i) => (
+          <li data-reveal style={`--d:${(i % 3) * 0.08}s`}>
+            <p>{c}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+<style>
+  /* ------------------------------------------------------------- Charter */
+  .charter__list { display: grid; gap: 0 var(--gutter); counter-reset: art; }
+  .charter__list li { border-top: 1px solid var(--rule-strong); padding: 1.5rem 0 2.75rem; }
+  .charter__list p { font-family: var(--serif); font-size: var(--fs-xl); line-height: 1.2; color: var(--ink); font-variation-settings: 'opsz' 36; text-wrap: balance; }
+  @media (min-width: 720px) { .charter__list { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1100px) { .charter__list { grid-template-columns: repeat(3, 1fr); } }
+</style>

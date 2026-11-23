@@ -1,0 +1,18 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { contact } from '../data/site';
+---
+<Legal title="Conditions d'utilisation" description="Conditions d'utilisation du site officiel de Me Réginald Calixte." updated="23 novembre 2026">
+  <h2>Objet</h2>
+  <p>Le site reginaldcalixte.com présente le parcours, la vision, les priorités et les activités publiques de Me Réginald Calixte. Son utilisation implique l'acceptation des présentes conditions.</p>
+  <h2>Contenus</h2>
+  <p>Les contenus sont publiés à titre d'information. L'équipe veille à leur exactitude et les met à jour régulièrement.</p>
+  <h2>Utilisation des formulaires</h2>
+  <p>Les formulaires doivent être utilisés de bonne foi. Les messages injurieux, diffamatoires, menaçants ou sans rapport avec l'objet du site ne recevront pas de suite.</p>
+  <h2>Photographies</h2>
+  <p>Les photographies de l'<a href="/presse">Espace presse</a> peuvent être utilisées par les rédactions, journalistes et partenaires avec le crédit « © Réginald Calixte », sans modification altérant leur sens ou leur intégrité.</p>
+  <h2>Liens externes</h2>
+  <p>Le site renvoie vers des services tiers (Facebook, Instagram, YouTube). Ces services sont régis par leurs propres conditions.</p>
+  <h2>Contact</h2>
+  <p>Pour toute question : <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+</Legal>

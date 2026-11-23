@@ -1,0 +1,27 @@
+---
+import Base from './Base.astro';
+interface Props { title: string; description: string; updated: string }
+const { title, description, updated } = Astro.props;
+---
+<Base title={title} description={description} headerTone="light">
+  <article class="legal">
+    <header class="wrap wrap-narrow legal__head">
+      <nav aria-label="Fil d'Ariane"><ol class="crumb"><li><a href="/">Accueil</a></li><li aria-current="page">{title}</li></ol></nav>
+      <h1 class="h1 mt-3">{title}</h1>
+      <p class="text-muted mt-2">Dernière mise à jour : {updated}</p>
+    </header>
+    <div class="wrap wrap-narrow legal__body"><slot /></div>
+  </article>
+</Base>
+<style>
+  .legal { padding-top: calc(var(--header-h) + 3rem); padding-bottom: var(--section); }
+  .crumb { display: flex; gap: .5rem; font-size: .8rem; color: var(--ink-3); }
+  .crumb li + li::before { content: '/'; margin-right: .5rem; color: var(--orange-ink); }
+  .legal__head { padding-bottom: 2.5rem; border-bottom: 1px solid var(--rule); }
+  .legal__body { padding-top: 2rem; color: var(--ink-2); max-width: 920px; }
+  .legal__body :global(h2) { font-family: var(--serif); font-size: var(--fs-xl); color: var(--navy); margin: 2.4rem 0 .8rem; line-height: 1.2; }
+  .legal__body :global(p), .legal__body :global(li) { max-width: 72ch; }
+  .legal__body :global(p + p) { margin-top: 1em; }
+  .legal__body :global(ul) { list-style: disc; padding-left: 1.3rem; margin-top: .8rem; display: grid; gap: .4rem; }
+  .legal__body :global(a) { color: var(--ink); }
+</style>

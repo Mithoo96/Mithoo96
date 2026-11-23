@@ -1,0 +1,92 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Formation from '../components/Formation.astro';
+import { photo } from '../data/photos';
+import { parcoursIntro, positionnement, experience, organisations } from '../data/site';
+---
+<Base title="Parcours" description="Le parcours de Me Réginald Calixte : secteur public, secteur privé, engagement communautaire et formation juridique.">
+  <PageHead title="L'expérience au service de la collectivité" subtitle={parcoursIntro} crumb="Parcours" image="terrain-foule" />
+
+  <section class="pos section bg-white" aria-labelledby="pos-title">
+    <div class="wrap pos__grid">
+      <div>
+        <h2 class="h2" id="pos-title" data-reveal>Un parcours construit entre droit, communication et service public.</h2>
+      </div>
+      <div>
+        <p class="lead" data-reveal style="--d:.1s">{positionnement}</p>
+        <figure class="pos__img" data-reveal style="--d:.15s">
+          <Picture src={photo('terrain-marche')} formats={['avif', 'webp']} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 55vw, 92vw" alt="Déplacement sur le terrain, dans une rue de Saint-Marc" />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="ledger section" aria-labelledby="ledger-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2" id="ledger-title" data-reveal>Trois champs d'action</h2>
+      </div>
+      <div class="ledger__cols">
+        {experience.map((col, i) => (
+          <section class="ledger__col" data-reveal style={`--d:${i * 0.08}s`} aria-labelledby={`field-${i}`}>
+            <header>
+              <h3 class="ledger__field" id={`field-${i}`}>{col.field}</h3>
+            </header>
+            <ul>
+              {col.items.map((it) => (
+                <li>
+                  <p class="ledger__role">{it.role}</p>
+                  {it.place && <p class="ledger__place">{it.place}</p>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="orgs section bg-navy on-dark" aria-labelledby="orgs-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="h2" id="orgs-title" data-reveal>Construire avec les communautés</h2>
+      </div>
+      <ol class="orgs__grid">
+        {organisations.map((o, i) => (
+          <li data-reveal style={`--d:${i * 0.08}s`}>
+            <h3 class="orgs__acr">{o.acronym}</h3>
+            {o.acronym !== o.name && <p class="orgs__name">{o.name}</p>}
+            <p class="orgs__text">{o.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Formation />
+
+</Base>
+
+<style>
+  .pos__grid { display: grid; gap: 2.5rem var(--gutter); }
+  .pos__img { margin-top: 2.5rem; }
+  .pos__img :global(img) { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+  @media (min-width: 1024px) { .pos__grid { grid-template-columns: 5fr 7fr; } }
+
+  .ledger__cols { display: grid; gap: 3rem var(--gutter); }
+  .ledger__col header { padding-bottom: 1.1rem; border-bottom: 2px solid var(--navy); }
+  .ledger__field { font-family: var(--sans); font-size: .82rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--navy); }
+  .ledger__col li { padding-block: 1.15rem; border-bottom: 1px solid var(--rule); }
+  .ledger__role { font-family: var(--serif); font-size: 1.3rem; line-height: 1.25; color: var(--ink); font-variation-settings: 'opsz' 24; }
+  .ledger__place { margin-top: .25rem; font-size: .92rem; color: var(--ink-3); }
+  @media (min-width: 900px) { .ledger__cols { grid-template-columns: repeat(3, 1fr); } }
+
+  .orgs__grid { display: grid; gap: 0 var(--gutter); }
+  .orgs__grid li { padding: 2rem 0; border-top: 1px solid var(--rule-light); }
+  .orgs__acr { font-family: var(--serif); font-size: var(--fs-2xl); line-height: 1; font-variation-settings: 'opsz' 60; }
+  .orgs__name { margin-top: .75rem; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 650; color: var(--orange); }
+  .orgs__text { margin-top: 1rem; color: rgba(255,255,255,.82); max-width: 40ch; }
+  @media (min-width: 900px) { .orgs__grid { grid-template-columns: repeat(3, 1fr); } .orgs__grid li { padding-top: 2.4rem; } }
+</style>

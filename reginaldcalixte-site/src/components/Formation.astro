@@ -1,0 +1,29 @@
+---
+import { formation } from '../data/site';
+---
+<section class="formation section bg-white" aria-labelledby="formation-title">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <h2 class="h2" id="formation-title">Un parcours académique avancé</h2>
+      <p class="formation__motto">Apprendre pour mieux agir.</p>
+    </div>
+    <ol class="formation__list">
+      {formation.map((f, i) => (
+        <li data-reveal style={`--d:${i * 0.07}s`}>
+          <h3 class="h3">{f.title}</h3>
+          <p>{f.place}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+<style>
+  .formation__motto { font-family: var(--serif); font-style: italic; font-size: var(--fs-lg); color: var(--ink-3); }
+  .formation__list li { display: grid; gap: .35rem; padding-block: 1.6rem; border-top: 1px solid var(--rule); }
+  .formation__list li:last-child { border-bottom: 1px solid var(--rule); }
+  .formation__list p { color: var(--ink-3); }
+  @media (min-width: 900px) {
+    .formation__list li { grid-template-columns: 7fr 5fr; align-items: baseline; gap: var(--gutter); padding-block: 2rem; }
+    .formation__list p { text-align: right; }
+  }
+</style>

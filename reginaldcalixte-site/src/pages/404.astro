@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Page introuvable" noindex headerTone="light">
+  <section class="nf">
+    <div class="wrap">
+      <p class="nf__code">404</p>
+      <h1 class="h2">La page que vous recherchez est introuvable.</h1>
+      <div class="cluster mt-3">
+        <a class="btn" href="/">Retour à l'accueil <Icon name="arrow" /></a>
+        <a class="btn btn--ghost" href="/contact">Nous contacter</a>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .nf { min-height: 80svh; display: grid; align-items: center; padding-top: calc(var(--header-h) + 3rem); padding-bottom: 5rem; }
+  .nf__code { font-family: var(--serif); font-style: italic; font-size: clamp(7rem, 4rem + 14vw, 16rem); line-height: .85; color: var(--orange); }
+</style>

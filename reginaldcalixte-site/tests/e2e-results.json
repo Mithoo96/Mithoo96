@@ -1,0 +1,242 @@
+[
+  {
+    "name": "route / → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /biographie → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /vision → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /priorites → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /parcours → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /publications → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /medias → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /actualites → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /contact → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /presse → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /galerie → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /mentions-legales → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /politique-de-confidentialite → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "route /conditions-utilisation → 200, 1 h1, title, description, canonical, og:image",
+    "pass": true,
+    "detail": "status 200, h1=1"
+  },
+  {
+    "name": "axe-core WCAG 2.2 A/AA + bonnes pratiques : 0 violation sur toutes les routes",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "route inconnue → 404 + page 404 éditoriale",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "liens internes + ressources (250) → 200",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "liens réseaux sociaux conservés",
+    "pass": true,
+    "detail": "https://www.facebook.com/reginald.calixte.90, https://www.instagram.com/reginaldcalixte/, https://www.youtube.com/watch?v=_u33V7Isa80"
+  },
+  {
+    "name": "lien tel:+50955667762 présent",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "lien tel:+50934151662 présent",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "lien mailto:annpale@reginaldcalixte.com présent",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "sitemap.xml + robots.txt",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "menu principal : 9 entrées dans l’ordre imposé",
+    "pass": true,
+    "detail": "Accueil | À propos | Vision | Priorités | Parcours | Publications | Médias | Actualités | S'engager"
+  },
+  {
+    "name": "clic menu → /vision avec aria-current",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "premier Tab → lien d’évitement « Aller au contenu »",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "menu mobile : ouverture, 9 entrées, Échap ferme et rend le focus",
+    "pass": true,
+    "detail": "items=9"
+  },
+  {
+    "name": "menu mobile : navigation vers /contact",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "contact : envoi vide → 4 erreurs en créole, focus sur le 1er champ",
+    "pass": true,
+    "detail": "invalid=4"
+  },
+  {
+    "name": "contact : catégorie « Invitation » pré-remplit le sujet",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "contact : e-mail invalide signalé",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "contact : envoi valide → message « Mesaj la voye » + e-mail transmis à annpale@",
+    "pass": true,
+    "detail": "Mesaj la voyeN ap reponn ou. Noubyen resevwa mesaj ou a, ekip la ap tounen jiska ou byento."
+  },
+  {
+    "name": "contact : service d’envoi en panne → message d’erreur avec repli e-mail, saisie conservée",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "newsletter : envoi vide → 3 erreurs",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "newsletter : inscription → « Merci. Vous êtes maintenant inscrit(e). »",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "bouton « Rester informé(e) » → ancre newsletter",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "actualités : 6 articles conservés",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "actualités : filtre « Communiqués » → 2, « Tous » → 6",
+    "pass": true,
+    "detail": "communiqués=2"
+  },
+  {
+    "name": "publications : état vide éditorial + 6 rubriques listées (aucune publication inventée)",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "galerie : 10 photos, aucune légende décorative, lightbox ouvre, ← → naviguent, Échap ferme",
+    "pass": true,
+    "detail": "01 / 10 → 02 / 10"
+  },
+  {
+    "name": "accueil : rail photo, bouton suivant fait défiler",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "médias : 4 vidéos, aucun iframe YouTube avant clic",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "médias : clic → lecteur youtube-nocookie avec le bon ID",
+    "pass": true,
+    "detail": "https://www.youtube-nocookie.com/embed/bU1dTzDXobs?autoplay=1&rel=0"
+  },
+  {
+    "name": "presse : 4 fichiers HD téléchargeables (JPEG > 100 Ko)",
+    "pass": true,
+    "detail": "reginald-calixte-portrait-officiel.jpg"
+  },
+  {
+    "name": "vision : « Partager la vision » copie le lien",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "aucun défilement horizontal (320 → 1920 px, 14 routes)",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "prefers-reduced-motion : pas d’animation d’entrée, contenu visible",
+    "pass": true,
+    "detail": "anim=none, masqués=0"
+  },
+  {
+    "name": "sans JavaScript : contenus visibles",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "aucune erreur JavaScript / console sur l’ensemble du parcours",
+    "pass": true,
+    "detail": "http://localhost:4400/page-inexistante Failed to load resource: the server responded with a status of 404 (Not Found)"
+  }
+]

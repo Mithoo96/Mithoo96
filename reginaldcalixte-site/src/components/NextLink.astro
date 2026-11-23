@@ -1,0 +1,21 @@
+---
+import Icon from './Icon.astro';
+interface Props { href: string; title?: string; cta: string }
+const { href, title: rawTitle, cta } = Astro.props;
+const title = rawTitle?.replace(/Saint-Marc/g, 'Saint\u2011Marc');
+---
+<section class:list={['next', title ? 'bg-navy on-dark' : 'next--plain']}>
+  <div class="wrap next__inner">
+    {title && <h2 class="next__title">{title}</h2>}
+    <a class="next__cta" href={href}>{cta} <Icon name="arrow" /></a>
+  </div>
+</section>
+<style>
+  .next__inner { display: grid; gap: 1.5rem; padding-block: clamp(3.5rem, 2rem + 5vw, 6.5rem); }
+  .next--plain .next__inner { padding-block: 0 var(--section); }
+  .next__title { font-family: var(--serif); font-size: var(--fs-3xl); line-height: 1.02; max-width: 18ch; font-variation-settings: 'opsz' 72; }
+  .next__cta { justify-self: start; display: inline-flex; align-items: center; gap: .6rem; font-weight: 650; text-decoration: none; border-bottom: 1.5px solid var(--orange); padding-bottom: .25rem; }
+  .on-dark .next__cta { color: #fff; }
+  .next__cta :global(svg) { width: 20px; height: 20px; transition: transform .35s var(--ease); }
+  .next__cta:hover :global(svg) { transform: translateX(6px); }
+</style>

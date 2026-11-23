@@ -1,0 +1,79 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Method from '../components/Method.astro';
+import Icon from '../components/Icon.astro';
+import { photo } from '../data/photos';
+import { axes, axesIntro, visionIntro, visionLead } from '../data/site';
+---
+<Base title="Vision" description="Une vision pour Saint-Marc : un leadership-solution axé sur la rigueur, l'écoute et une compréhension réelle des défis du pays.">
+  <PageHead title="Une vision pour Saint-Marc" subtitle={visionIntro} crumb="Vision" image="saint-marc-panorama" />
+
+  <Method link={false} title="Une vision de leadership-solution." lead={visionLead} />
+
+  <section class="axes section bg-white" aria-labelledby="axes-title">
+    <div class="wrap axes__grid">
+      <div class="axes__aside">
+        <h2 class="h2" id="axes-title" data-reveal>Les axes de mon engagement.</h2>
+        <p class="lead mt-2" data-reveal>{axesIntro}</p>
+        <figure class="axes__map" data-reveal>
+          <Picture src={photo('carte-bas-artibonite')} formats={['avif', 'webp']} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 38vw, 92vw" alt="Carte du Bas-Artibonite et de la région de Saint-Marc" />
+          <figcaption>Saint-Marc et le Bas-Artibonite</figcaption>
+        </figure>
+      </div>
+      <ol class="axes__list">
+        {axes.map((a, i) => (
+          <li id={`axe-${i + 1}`} data-reveal>
+            <h3 class="h3">{a.title}</h3>
+            <p>{a.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="share section" aria-label="Partager la vision">
+    <div class="wrap share__inner" data-reveal>
+      <div>
+        <button class="btn" type="button" data-share data-share-title="Une vision pour Saint-Marc — Me Réginald Calixte">Partager la vision <Icon name="arrow" /></button>
+        <p class="share__status" role="status" aria-live="polite" data-share-status></p>
+      </div>
+    </div>
+  </section>
+
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-share]').forEach((btn) => {
+    const status = document.querySelector<HTMLElement>('[data-share-status]');
+    btn.addEventListener('click', async () => {
+      const data = { title: btn.dataset.shareTitle || document.title, url: location.href };
+      try {
+        if (navigator.share) { await navigator.share(data); return; }
+        await navigator.clipboard.writeText(data.url);
+        if (status) status.textContent = 'Lien copié dans le presse-papiers.';
+      } catch (e) {
+        if ((e as DOMException)?.name !== 'AbortError' && status) status.textContent = `Copiez ce lien : ${data.url}`;
+      }
+    });
+  });
+</script>
+
+<style>
+  .axes__grid { display: grid; gap: 3rem var(--gutter); }
+  .axes__map { margin-top: 2.5rem; }
+  .axes__map :global(img) { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border: 1px solid var(--rule); filter: saturate(.75); }
+  .axes__map figcaption { margin-top: .6rem; font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+  .axes__list li { padding-block: 1.75rem; border-top: 1px solid var(--rule); scroll-margin-top: calc(var(--header-h) + 2rem); }
+  .axes__list li:last-child { border-bottom: 1px solid var(--rule); }
+  .axes__list li:target { background: linear-gradient(90deg, rgba(255,62,1,.07), transparent 70%); }
+  .axes__list p { margin-top: .6rem; color: var(--ink-2); max-width: 56ch; }
+  @media (min-width: 1024px) {
+    .axes__grid { grid-template-columns: 5fr 7fr; align-items: start; }
+    .axes__aside { position: sticky; top: calc(var(--header-h) + 2rem); }
+    .axes__list li { padding-block: 2.2rem; }
+  }
+  .share__inner { display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; gap: 2rem; padding-block: 2.5rem; border-block: 1px solid var(--rule-strong); }
+  .share__status { margin-top: .6rem; font-size: .85rem; color: var(--ink-3); min-height: 1.2em; }
+</style>

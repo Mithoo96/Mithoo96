@@ -1,0 +1,23 @@
+---
+import { Picture } from 'astro:assets';
+import { photo } from '../data/photos';
+interface Props { eyebrow?: string; title: string; highlight?: string; subtitle?: string; crumb: string; image?: string; meta?: string }
+const { title: rawTitle, highlight: rawHighlight, subtitle, crumb, image } = Astro.props;
+const nb = (t?: string) => t?.replace(/Saint-Marc/g, 'Saint\u2011Marc');
+const title = nb(rawTitle)!;
+const highlight = nb(rawHighlight);
+---
+<section class="page-head on-dark">
+  {image && (
+    <div class="page-head__media">
+      <Picture src={photo(image)} formats={['avif', 'webp']} widths={[800, 1400, 2000]} sizes="100vw" alt="" loading="eager" fetchpriority="high" />
+    </div>
+  )}
+  <div class="wrap page-head__inner">
+    <nav aria-label="Fil d'Ariane">
+      <ol class="breadcrumb"><li><a href="/">Accueil</a></li><li aria-current="page">{crumb}</li></ol>
+    </nav>
+    <h1 class="h1">{title}{highlight && <> {highlight}</>}</h1>
+    {subtitle && <p class="page-head__sub">{subtitle}</p>}
+  </div>
+</section>

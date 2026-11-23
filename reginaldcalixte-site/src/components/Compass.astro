@@ -1,0 +1,25 @@
+---
+import { boussole } from '../data/site';
+---
+  <section class="compass section bg-navy on-dark" aria-labelledby="compass-title">
+    <div class="wrap compass__grid">
+      <div data-reveal>
+        <h2 class="h2" id="compass-title">J'ai pour boussole&nbsp;:</h2>
+      </div>
+      <ol class="compass__list">
+        {boussole.map((b, i) => (
+          <li data-reveal style={`--d:${i * 0.08}s`}><p>{b}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+<style>
+  /* ------------------------------------------------------------- Compass */
+  .compass__grid { display: grid; gap: 3rem var(--gutter); }
+  .compass__list li { padding-block: 1.5rem; border-top: 1px solid var(--rule-light); }
+  .compass__list li:last-child { border-bottom: 1px solid var(--rule-light); }
+  .compass__list p { font-family: var(--serif); font-size: var(--fs-xl); line-height: 1.2; font-variation-settings: 'opsz' 36; }
+  .compass__list p::first-letter { text-transform: uppercase; }
+  @media (min-width: 1024px) { .compass__grid { grid-template-columns: 5fr 7fr; } }
+</style>

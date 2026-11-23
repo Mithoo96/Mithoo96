@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Icon from '../../components/Icon.astro';
+import { publicationCategories } from '../../data/site';
+
+const posts = (await getCollection('publications', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const fmt = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Base title="Publications" description="Écrits & réflexions de Réginald Calixte : articles, analyses, réflexions, tribunes et documents d'intérêt public.">
+  <PageHead title="Les idées comptent." subtitle="Articles, analyses, réflexions, tribunes et documents d'intérêt public." crumb="Publications" image="saint-marc-panorama" />
+
+  <section class="pubs section" aria-labelledby="pubs-title">
+    <div class="wrap">
+      <h2 class="visually-hidden" id="pubs-title">Publications</h2>
+      {posts.length > 0 && (
+        <div class="rubriques" data-filter-group="#pubs-list" data-filter-status="#pubs-status" role="group" aria-label="Filtrer par rubrique">
+          <button type="button" data-filter="Tous" aria-pressed="true">Tous</button>
+          {publicationCategories.map((c) => <button type="button" data-filter={c} aria-pressed="false">{c}</button>)}
+        </div>
+      )}
+      <p class="visually-hidden" id="pubs-status" role="status" aria-live="polite"></p>
+
+      {posts.length > 0 ? (
+        <ol class="pubs__list" id="pubs-list">
+          {posts.map((p) => (
+            <li data-cat={p.data.category}>
+              <a href={`/publications/${p.id}`}>
+                <p class="pubs__meta"><span>{p.data.category}</span><time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time></p>
+                <h3 class="h3">{p.data.title}</h3>
+                <p class="pubs__excerpt">{p.data.excerpt}</p>
+                <span class="link-arrow">Lire <Icon name="arrow" /></span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <div class="pubs__empty" id="pubs-list" data-reveal>
+          <h3 class="h2">Les publications arrivent</h3>
+          <p class="lead mt-2">Cette section est prête à accueillir les articles, analyses et tribunes produits par Réginald Calixte. Les publications seront intégrées dès qu'elles seront validées.</p>
+          <p class="pubs__topics mt-3">{publicationCategories.join(' · ')}</p>
+        </div>
+      )}
+    </div>
+  </section>
+  <div id="restons-connectes-pubs"></div>
+  <script is:inline>document.querySelector('a[href="/#restons-connectes"]')?.setAttribute('href', '/#restons-connectes');</script>
+</Base>
+
+<style>
+  .rubriques { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding-bottom: 2rem; margin-bottom: 3rem; border-bottom: 1px solid var(--rule-strong); }
+  .rubriques button { min-height: 40px; padding: .45rem 1rem; border: 1px solid var(--rule-strong); background: transparent; border-radius: 999px; font-size: .86rem; font-weight: 550; cursor: pointer; transition: background-color .25s, color .25s, border-color .25s; }
+  .rubriques button:hover { border-color: var(--navy); }
+  .rubriques button[aria-pressed='true'] { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .pubs__empty { max-width: 860px; }
+  .pubs__topics { color: var(--ink-3); font-size: .95rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+  .pubs__list li { border-top: 1px solid var(--rule); }
+  .pubs__list a { display: grid; gap: .75rem; padding-block: 2rem; text-decoration: none; }
+  .pubs__meta { display: flex; gap: 1rem; font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 650; color: var(--ink-3); }
+  .pubs__meta span { color: var(--orange-ink); }
+  .pubs__excerpt { color: var(--ink-2); max-width: 64ch; }
+</style>

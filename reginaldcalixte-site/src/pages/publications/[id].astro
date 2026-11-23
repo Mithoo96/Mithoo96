@@ -1,0 +1,35 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('publications', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content } = await render(post);
+const fmt = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Base title={post.data.title} description={post.data.excerpt} headerTone="light">
+  <article class="article">
+    <header class="wrap wrap-narrow article__head">
+      <nav aria-label="Fil d'Ariane"><ol class="crumb"><li><a href="/">Accueil</a></li><li><a href="/publications">Publications</a></li></ol></nav>
+      <p class="article__meta mt-3">{post.data.category} · <time datetime={post.data.date.toISOString()}>{fmt.format(post.data.date)}</time></p>
+      <h1 class="h1 mt-1">{post.data.title}</h1>
+      <p class="lead mt-2">{post.data.excerpt}</p>
+    </header>
+    <div class="wrap wrap-narrow article__body prose"><Content /></div>
+    <footer class="wrap wrap-narrow article__foot"><a class="link-arrow" href="/publications"><Icon name="prev" /> Toutes les publications</a></footer>
+  </article>
+</Base>
+<style>
+  .article { padding-top: calc(var(--header-h) + 3rem); padding-bottom: var(--section); }
+  .crumb { display: flex; gap: .5rem; font-size: .8rem; color: var(--ink-3); }
+  .crumb li + li::before { content: '/'; margin-right: .5rem; color: var(--orange-ink); }
+  .article__head { padding-bottom: 2.5rem; border-bottom: 1px solid var(--rule); }
+  .article__body { padding-top: 2.5rem; font-size: 1.15rem; line-height: 1.75; max-width: 920px; }
+  .article__body :global(h2) { font-family: var(--serif); font-size: var(--fs-xl); margin: 2em 0 .6em; color: var(--navy); }
+  .article__foot { margin-top: 3rem; }
+  .article__meta { color: var(--ink-3); font-size: .95rem; }
+</style>

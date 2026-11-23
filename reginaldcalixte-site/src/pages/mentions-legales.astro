@@ -1,0 +1,17 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { contact } from '../data/site';
+---
+<Legal title="Mentions légales" description="Mentions légales du site officiel de Me Réginald Calixte." updated="23 novembre 2026">
+  <h2>Éditeur du site</h2>
+  <p>Le site reginaldcalixte.com est le site officiel de Me Réginald Calixte, candidat à la députation dans la 1ère Circonscription de Saint-Marc.</p>
+  <p>Adresse : Sant vil, Senmak — Latibonit, Ayiti.<br />Téléphone : {contact.phones.join(' / ')}<br />Courriel : <a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+  <h2>Responsable de la publication</h2>
+  <p>Me Réginald Calixte.</p>
+  <h2>Hébergement</h2>
+  <p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis — vercel.com.</p>
+  <h2>Crédits</h2>
+  <p>Photographies : © Réginald Calixte, sauf mention contraire. Les vignettes des vidéos proviennent de YouTube et appartiennent à leurs auteurs respectifs.</p>
+  <h2>Propriété intellectuelle</h2>
+  <p>Les textes, photographies et éléments graphiques de ce site sont protégés. Toute reproduction est soumise à autorisation préalable, à l'exception des photographies de l'<a href="/presse">Espace presse</a>, utilisables selon les conditions qui y sont indiquées.</p>
+</Legal>

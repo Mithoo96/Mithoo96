@@ -1,0 +1,17 @@
+---
+import Icon from './Icon.astro';
+---
+<dialog class="lightbox on-dark" data-lightbox aria-label="Image agrandie">
+  <div class="lightbox__inner">
+    <div class="lightbox__bar">
+      <span class="num" data-lb-count></span>
+      <button class="icon-btn" type="button" data-lb-close aria-label="Fermer"><Icon name="close" /></button>
+    </div>
+    <div class="lightbox__stage"><img data-lb-img alt="" /></div>
+    <div class="lightbox__nav">
+      <button class="icon-btn" type="button" data-lb-prev aria-label="Image précédente"><Icon name="prev" /></button>
+      <p class="lightbox__caption" data-lb-caption></p>
+      <button class="icon-btn" type="button" data-lb-next aria-label="Image suivante"><Icon name="next" /></button>
+    </div>
+  </div>
+</dialog>

@@ -1,0 +1,55 @@
+---
+import Icon from './Icon.astro';
+---
+<section class="newsletter bg-navy on-dark" id="restons-connectes" aria-labelledby="nl-title">
+  <div class="wrap newsletter__grid">
+    <div data-reveal>
+      <h2 class="h2" id="nl-title">Restons connectés</h2>
+      <p class="mt-2" style="max-width:42ch;color:rgba(255,255,255,.82)">Recevez les actualités, prises de position, publications et initiatives de Réginald Calixte.</p>
+    </div>
+    <form class="newsletter__form" data-form="newsletter" action="/api/subscribe" method="post"
+      data-success-title="Merci. Vous êtes maintenant inscrit(e)."
+      data-success-text="Vous recevrez bientôt nos prochaines actualités."
+      data-sending="Inscription…" data-reveal style="--d:.1s">
+      <div class="newsletter__fields">
+        <div class="field">
+          <label for="nl-first">Prénom</label>
+          <input class="input" id="nl-first" name="firstName" autocomplete="given-name" required maxlength="80" data-msg-required="Indiquez votre prénom." />
+          <p class="field-error" data-error-for="firstName" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label for="nl-last">Nom</label>
+          <input class="input" id="nl-last" name="lastName" autocomplete="family-name" required maxlength="80" data-msg-required="Indiquez votre nom." />
+          <p class="field-error" data-error-for="lastName" aria-live="polite"></p>
+        </div>
+        <div class="field newsletter__email">
+          <label for="nl-email">E-mail</label>
+          <input class="input" id="nl-email" name="email" type="email" autocomplete="email" required maxlength="160" data-msg-required="Indiquez votre adresse e-mail." />
+          <p class="field-error" data-error-for="email" aria-live="polite"></p>
+        </div>
+      </div>
+      <div class="hp" aria-hidden="true"><label>Ne pas remplir <input name="website" tabindex="-1" autocomplete="off" /></label></div>
+      <input type="hidden" name="_t" value="" />
+      <div class="cluster mt-2">
+        <button class="btn btn--signal" type="submit">Je reste informé(e) <Icon name="arrow" /></button>
+      </div>
+      <p class="form-status mt-2" data-form-status role="status" tabindex="-1"></p>
+      <p class="newsletter__legal">En vous inscrivant, vous acceptez de recevoir des communications de Réginald Calixte. Vos données sont traitées conformément à notre <a href="/politique-de-confidentialite">politique de confidentialité</a>.</p>
+    </form>
+  </div>
+</section>
+<style>
+  .newsletter { padding-block: var(--section); position: relative; overflow: hidden; }
+  .newsletter::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; background: linear-gradient(90deg, var(--orange) 0 18%, transparent 18%); }
+  .newsletter__grid { display: grid; gap: 3rem var(--gutter); }
+  .newsletter__fields { display: grid; gap: 1.1rem; }
+  .newsletter .field label { color: rgba(255,255,255,.86); }
+  .newsletter .input { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.3); color: #fff; }
+  .newsletter .input:focus { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.18); }
+  .newsletter .field-error { color: #ffb4a8; }
+  .newsletter .input[aria-invalid='true'] { border-color: #ff9a8f; }
+  .newsletter__legal { margin-top: 1.4rem; font-size: .8rem; color: rgba(255,255,255,.66); max-width: 60ch; }
+  .newsletter__legal a { text-decoration: underline; text-underline-offset: 3px; }
+  @media (min-width: 720px) { .newsletter__fields { grid-template-columns: 1fr 1fr; } .newsletter__email { grid-column: 1 / -1; } }
+  @media (min-width: 1024px) { .newsletter__grid { grid-template-columns: 5fr 7fr; align-items: start; } }
+</style>
