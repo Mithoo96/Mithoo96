@@ -1,0 +1,7 @@
+/* Aperçu fidèle dans l'éditeur d'articles */
+@font-face{font-family:"Newsreader";src:url(../fonts/newsreader-normal.woff2) format("woff2");font-weight:400 800;font-style:normal}
+@font-face{font-family:"Newsreader";src:url(../fonts/newsreader-italic.woff2) format("woff2");font-weight:400 800;font-style:italic}
+body{font-family:"Newsreader",Georgia,serif;font-size:20px;line-height:1.62;color:#161B28;max-width:680px;margin-inline:auto}
+h1,h2,h3{font-family:"Newsreader",Georgia,serif;font-weight:600;letter-spacing:-.015em;line-height:1.1}
+a{color:#C5370F}
+blockquote{border-left:4px solid #EE4B23;padding-left:26px;font-style:italic}
